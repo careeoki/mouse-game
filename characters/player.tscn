@@ -184,7 +184,9 @@ num_segments = 16
 rope_length = 125.0
 gravity = 50.0
 damping = 20.0
+max_endpoint_distance = 0.0
 resolve_to_begin = true
+resolve_to_end = true
 render_line = false
 metadata/_custom_type_script = "uid://b2shq2gjd4fvt"
 
@@ -207,6 +209,20 @@ position_smoothing_speed = 10.0
 strength = 0.5
 rope_path = NodePath("..")
 metadata/_custom_type_script = "uid://1xluodkpnre3"
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
+remote_path = NodePath("../Camera2D")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(0, -260)
+zoom = Vector2(0.3, 0.3)
+process_callback = 0
+position_smoothing_enabled = true
+position_smoothing_speed = 25.0
+drag_vertical_enabled = true
+drag_left_margin = 0.05
+drag_top_margin = 0.4
+drag_right_margin = 0.05
 
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]

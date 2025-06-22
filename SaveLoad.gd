@@ -28,3 +28,13 @@ func _load():
 		contents_to_save.crackers = save_data.crackers
 		contents_to_save.cheese_count = save_data.cheese_count
 		contents_to_save.cheese = save_data.cheese
+		
+
+func add_persistent_value(value : String) -> void:
+	if check_persistent_value(value) == false:
+		contents_to_save.cheese.append(value)
+	pass
+
+func check_persistent_value(value : String) -> bool:
+	var p = contents_to_save.cheese as Array
+	return p.has(value)

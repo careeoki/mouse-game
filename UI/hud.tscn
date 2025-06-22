@@ -17,19 +17,19 @@ offset_bottom = 90.0
 
 [node name="TextureRect" type="TextureRect" parent="DeathCount"]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 11.0
-offset_right = 60.0
-offset_bottom = 60.0
+offset_left = 8.0
+offset_top = 29.0
+offset_right = 58.0
+offset_bottom = 78.0
 texture = ExtResource("3_2o5uh")
 expand_mode = 1
 
 [node name="DeathLabel" type="Label" parent="DeathCount"]
 layout_mode = 0
-offset_left = 66.0
-offset_top = 12.0
-offset_right = 106.0
-offset_bottom = 57.0
+offset_left = 64.0
+offset_top = 30.0
+offset_right = 104.0
+offset_bottom = 75.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "0"
@@ -42,16 +42,17 @@ offset_bottom = 40.0
 
 [node name="TextureRect" type="TextureRect" parent="CrackerCount"]
 layout_mode = 0
-offset_right = 69.0
+offset_left = 120.0
+offset_right = 189.0
 offset_bottom = 69.0
 texture = ExtResource("2_2o5uh")
 expand_mode = 1
 
 [node name="CrackerLabel" type="Label" parent="CrackerCount"]
 layout_mode = 0
-offset_left = 66.0
+offset_left = 186.0
 offset_top = 12.0
-offset_right = 106.0
+offset_right = 226.0
 offset_bottom = 57.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
@@ -60,15 +61,17 @@ text = "0"
 [node name="CheeseCount" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = -96.0
+offset_top = -2.0
+offset_right = -56.0
+offset_bottom = 38.0
 
 [node name="TextureRect" type="TextureRect" parent="CheeseCount"]
 layout_mode = 0
-offset_left = 111.0
-offset_top = 11.0
-offset_right = 159.0
-offset_bottom = 55.0
+offset_left = 103.0
+offset_top = 7.0
+offset_right = 162.0
+offset_bottom = 62.0
 texture = ExtResource("4_b1lf8")
 expand_mode = 1
 

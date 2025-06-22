@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cq3hg1d8yydqy"]
+
+[ext_resource type="Script" uid="uid://bnlt2lc3h8ao5" path="res://objects/level_transition.gd" id="1_ro37b"]
+
+[node name="LevelTransition" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("1_ro37b")

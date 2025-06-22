@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://jndsp3c7r5uy"]
+
+[ext_resource type="Script" uid="uid://dlgsivkdfpoj3" path="res://levels/player_spawn.gd" id="1_kn1ip"]
+[ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="1_x628t"]
+
+[node name="PlayerSpawn" type="Node2D"]
+script = ExtResource("1_kn1ip")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.4, 1, 0.51, 1)
+position = Vector2(0, 35)
+texture = ExtResource("1_x628t")
+offset = Vector2(0, -95)
