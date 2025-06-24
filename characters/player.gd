@@ -14,13 +14,13 @@ class_name Player extends CharacterBody2D
 	# Variables
 @onready var starting_position = global_position
 @onready var sprite = $Sprite
-@onready var tail_start = $Tail
-@onready var tail_end = $Tail/HandleEnd
-@onready var tail_start_initial = tail_start.position.x
-@onready var tail_end_initial = tail_end.position.x
+@onready var interact_icon: Sprite2D = $InteractIcon
+#@onready var tail_start = $Tail
+#@onready var tail_end = $Tail/HandleEnd
+#@onready var tail_start_initial = tail_start.position.x
+#@onready var tail_end_initial = tail_end.position.x
 @onready var hurt_shape: CollisionShape2D = $Hurtbox/HurtShape
 @onready var slide_hurt_shape: CollisionShape2D = $Hurtbox/SlideHurtShape
-@onready var collision_head: CollisionShape2D = $CollisionHead
 @onready var collision_feet: CollisionShape2D = $CollisionFeet
 @onready var collision_slide: CollisionShape2D = $CollisionSlide
 @onready var actionable_finder: Area2D = $ActionableFinder
@@ -68,6 +68,7 @@ func _physics_process(delta: float) -> void:
 	crouch()
 	stand()
 	squish()
+	can_interact()
 	var direction := Input.get_axis("move_left", "move_right")
 	update_animations(direction)
 	handle_direction(delta)
@@ -109,12 +110,12 @@ func handle_direction(delta):
 		velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
 		if direction == -1:
 			sprite.flip_h = true
-			tail_start.position.x = tail_start_initial * -1
-			tail_end.position.x = tail_end_initial * -1
+			#tail_start.position.x = tail_start_initial * -1
+			#tail_end.position.x = tail_end_initial * -1
 		else:
 			sprite.flip_h = false
-			tail_start.position.x = tail_start_initial
-			tail_end.position.x = tail_end_initial
+			#tail_start.position.x = tail_start_initial
+			#tail_end.position.x = tail_end_initial
 	else:
 		if is_crouching:
 			velocity.x = move_toward(velocity.x, 0, 30)
@@ -175,19 +176,18 @@ func crouch():
 	if Input.is_action_just_pressed("move_down") and is_on_floor() and not is_dialog:
 		var direction := Input.get_axis("move_left", "move_right")
 		sprite.scale = Vector2(1.3, 0.7)
-		if not can_stand:
+		if not can_stand and direction != 0:
 			velocity.x = direction * speed * slide_boost
 		if is_crouching:
 			return
 		is_crouching = true
 		#floor_stop_on_slope = false
 		slide_duration.start()
-		if velocity.x != 0 and slide_cooldown.is_stopped():
+		if direction != 0 and slide_cooldown.is_stopped():
 			slide_cooldown.start()
 			can_slide_boost = false
 			velocity.x = direction * speed * slide_boost
 		hurt_shape.disabled = true
-		collision_head.disabled = true
 		collision_feet.disabled = true
 		
 		slide_hurt_shape.disabled = false
@@ -209,7 +209,6 @@ func stand():
 		is_crouching = false
 		slide_buffer = false
 		hurt_shape.disabled = false
-		collision_head.disabled = false
 		collision_feet.disabled = false
 		
 		slide_hurt_shape.disabled = true
@@ -250,7 +249,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 
 func _ready():
-	checkpoint_manager = get_parent().get_node("CheckpointManager")
 	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
 
 func _on_dialogue_ended(_resource: DialogueResource):
@@ -268,6 +266,12 @@ func _on_hurtbox_body_entered(body: Node2D) -> void:
 	is_dying = true
 	death_timer.start()
 
+func can_interact():
+	var actionables = actionable_finder.get_overlapping_areas()
+	if actionables.size() > 0 and not is_dialog:
+		interact_icon.visible = true
+	else:
+		interact_icon.visible = false
 
 func _on_slide_duration_timeout() -> void:
 	
@@ -283,4 +287,4 @@ func _on_death_timer_timeout() -> void:
 	is_dying = false
 	var value = 1
 	EventManager.player_died(value)
-	position = checkpoint_manager.last_location
+	PlayerManager.set_player_position(spawn_position)

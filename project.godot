@@ -64,6 +64,7 @@ runtime/balloon_path="res://dialog/balloon.tscn"
 [display]
 
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [editor_plugins]
 

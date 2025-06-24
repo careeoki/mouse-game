@@ -15,6 +15,9 @@ func add_player_instance() -> void:
 func set_player_position(_new_pos : Vector2) -> void:
 	player.global_position = _new_pos
 
+func update_spawn_position(_new_pos : Vector2) -> void:
+	player.spawn_position = _new_pos
+
 #func set_as_parent(_p : Node2D) -> void:
 	#if player.get_parent():
 		#player.get_parent()

@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://bplgmp033tq5d"]
+
+[ext_resource type="Texture2D" uid="uid://bkroi436ox3dk" path="res://assets/backgrounds/test.png" id="1_cmi5u"]
+
+[node name="TestBack" type="Node2D"]
+
+[node name="Sky" type="Parallax2D" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Sky"]
+offset_right = 1216.0
+offset_bottom = 704.0
+color = Color(0.52, 0.8, 1, 1)
+
+[node name="Hills" type="Parallax2D" parent="."]
+scroll_scale = Vector2(1.5, 1.5)
+repeat_size = Vector2(1, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Hills"]
+position = Vector2(320, 320)
+texture = ExtResource("1_cmi5u")

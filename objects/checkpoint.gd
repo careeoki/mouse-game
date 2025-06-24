@@ -16,4 +16,4 @@ func _process(delta: float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player"):
 		print("player hit checkpoint")
-		checkpoint_manager.last_location = respawn_point.global_position
+		body.spawn_position = respawn_point.global_position

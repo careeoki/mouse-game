@@ -58,7 +58,7 @@ tile_set = SubResource("TileSet_avwfh")
 [node name="CheckpointManager" parent="." instance=ExtResource("4_djxo2")]
 
 [node name="Checkpoint" parent="CheckpointManager" instance=ExtResource("5_ie21w")]
-position = Vector2(192, 1728)
+position = Vector2(3264, 64.0002)
 scale = Vector2(5, 5)
 
 [node name="Cracker" parent="CheckpointManager" instance=ExtResource("6_s4fw0")]
@@ -72,10 +72,6 @@ position = Vector2(3392, 320)
 
 [node name="Cracker4" parent="CheckpointManager" instance=ExtResource("6_s4fw0")]
 position = Vector2(4416, 320)
-
-[node name="Door" parent="." instance=ExtResource("5_avwfh")]
-position = Vector2(-64, 1728)
-scene = "res://levels/level_test.tscn"
 
 [node name="Cracker" parent="." instance=ExtResource("6_s4fw0")]
 position = Vector2(1216, 1728)
@@ -115,3 +111,7 @@ level = "uid://d1sca4qg2pj6i"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LevelTransition"]
 position = Vector2(-128, 0)
 shape = SubResource("RectangleShape2D_11110")
+
+[node name="Door" parent="." instance=ExtResource("5_avwfh")]
+position = Vector2(-64, 1728)
+level = "uid://d1sca4qg2pj6i"

@@ -1,4 +1,4 @@
-extends Area2D
+class_name Actionable extends Area2D
 
 const Balloon = preload("res://dialog/balloon.tscn")
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=21 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://qg8oqi7hfujy" path="res://assets/characters/mable/slide.png" id="5_eho78"]
 [ext_resource type="Script" uid="uid://1xluodkpnre3" path="res://addons/ropesim/RopeHandle.gd" id="5_evndh"]
 [ext_resource type="Texture2D" uid="uid://deqi8wvtstywf" path="res://assets/characters/mable/walk.png" id="6_8sqrr"]
+[ext_resource type="Texture2D" uid="uid://cuw4ixqum6x6" path="res://assets/ui/interact arrow.png" id="11_eho78"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7eugy"]
 animations = [{
@@ -69,7 +70,7 @@ size = Vector2(96, 64)
 radius = 48.0104
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tory2"]
-size = Vector2(80, 100)
+size = Vector2(80, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3eadt"]
 size = Vector2(96, 36)
@@ -110,13 +111,13 @@ shape = SubResource("RectangleShape2D_qympx")
 [node name="CollisionHead" type="CollisionShape2D" parent="."]
 position = Vector2(0, -66)
 shape = SubResource("CircleShape2D_pgjtk")
+disabled = true
 
 [node name="CollisionStand" type="Area2D" parent="."]
-visible = false
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionStand"]
-position = Vector2(0, -52)
+position = Vector2(0, -62)
 shape = SubResource("RectangleShape2D_tory2")
 
 [node name="CollisionSlide" type="CollisionShape2D" parent="."]
@@ -178,21 +179,24 @@ position = Vector2(0, -64)
 shape = SubResource("CircleShape2D_3eadt")
 
 [node name="Tail" type="Node2D" parent="."]
-position = Vector2(-21, -55)
+visible = false
+position = Vector2(-33, -29)
 script = ExtResource("3_x0jl3")
 num_segments = 16
 rope_length = 125.0
-gravity = 50.0
-damping = 20.0
-max_endpoint_distance = 0.0
+stiffness = 2.0
+gravity = -50.0
+damping = 15.0
+fixate_begin = false
+max_endpoint_distance = 125.0
 resolve_to_begin = true
-resolve_to_end = true
+num_constraint_iterations = 100
 render_line = false
 metadata/_custom_type_script = "uid://b2shq2gjd4fvt"
 
 [node name="RopeRendererLine2D" type="Line2D" parent="Tail"]
 position = Vector2(25, 13)
-points = PackedVector2Array(-25, -13, -28.6228, -5.70687, -32.6944, 1.3124, -37.4626, 7.83476, -43.1431, 13.5295, -49.9097, 17.8264, -57.6502, 19.8866, -65.6464, 19.0523, -72.9591, 15.5641, -79.186, 10.2595, -84.3975, 3.86017, -88.7916, -3.18359, -92.5484, -10.5998, -95.8064, -18.2146, -98.6704, -25.9112, -101.227, -33.6102, -103.516, -41.0796)
+points = PackedVector2Array(-28.0145, -14.1455, -35.7841, -14.9741, -43.5461, -15.8754, -51.3056, -16.8014, -59.0624, -17.7535, -66.815, -18.7404, -74.5618, -19.7741, -82.2997, -20.8727, -90.024, -22.0627, -97.7268, -23.3844, -105.393, -24.901, -112.995, -26.7135, -120.471, -28.9889, -127.681, -32.0025, -134.283, -36.1821, -139.494, -42.0042, -142.242, -49.3177)
 width_curve = SubResource("Curve_evndh")
 default_color = Color(0.74902, 0.592157, 0.482353, 1)
 joint_mode = 2
@@ -201,13 +205,19 @@ end_cap_mode = 2
 script = ExtResource("4_evndh")
 metadata/_custom_type_script = "uid://dfppmnngy2wx4"
 
-[node name="HandleEnd" type="Marker2D" parent="Tail"]
-position = Vector2(-83, -46)
+[node name="RopeHandle" type="Marker2D" parent="Tail"]
+position = Vector2(-117, -37)
 script = ExtResource("5_evndh")
 smoothing = true
-position_smoothing_speed = 10.0
-strength = 0.5
+position_smoothing_speed = 8.0
+strength = 0.9
 rope_path = NodePath("..")
+metadata/_custom_type_script = "uid://1xluodkpnre3"
+
+[node name="RopeHandle2" type="Marker2D" parent="Tail"]
+script = ExtResource("5_evndh")
+rope_path = NodePath("..")
+rope_position = 0.0
 metadata/_custom_type_script = "uid://1xluodkpnre3"
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
@@ -218,11 +228,17 @@ offset = Vector2(0, -260)
 zoom = Vector2(0.3, 0.3)
 process_callback = 0
 position_smoothing_enabled = true
-position_smoothing_speed = 25.0
+position_smoothing_speed = 20.0
 drag_vertical_enabled = true
+drag_vertical_offset = -0.5
 drag_left_margin = 0.05
-drag_top_margin = 0.4
 drag_right_margin = 0.05
+
+[node name="InteractIcon" type="Sprite2D" parent="."]
+visible = false
+z_index = 1
+position = Vector2(0, -185)
+texture = ExtResource("11_eho78")
 
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]

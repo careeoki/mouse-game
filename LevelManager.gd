@@ -14,12 +14,10 @@ func _ready() -> void:
 func load_new_level(
 	level_path : String,
 	_target_transition : String,
-	_position_offset : Vector2
 ) -> void:
 	
 	get_tree().paused = true
 	target_transition = _target_transition
-	position_offset = _position_offset
 	
 	await SceneTransition.fade_out()
 	level_load_started.emit()
@@ -27,9 +25,8 @@ func load_new_level(
 	await get_tree().process_frame
 	get_tree().change_scene_to_file(level_path)
 	
-	await SceneTransition.fade_in()
 	get_tree().paused = false
-	
+	await SceneTransition.fade_in()
 	level_loaded.emit()
 	
 	pass
