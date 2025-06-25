@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=20 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://qg8oqi7hfujy" path="res://assets/characters/mable/slide.png" id="5_eho78"]
 [ext_resource type="Script" uid="uid://1xluodkpnre3" path="res://addons/ropesim/RopeHandle.gd" id="5_evndh"]
 [ext_resource type="Texture2D" uid="uid://deqi8wvtstywf" path="res://assets/characters/mable/walk.png" id="6_8sqrr"]
+[ext_resource type="Texture2D" uid="uid://dc7sngqajg6h5" path="res://assets/characters/mable/tail.png" id="9_8sqrr"]
 [ext_resource type="Texture2D" uid="uid://cuw4ixqum6x6" path="res://assets/ui/interact arrow.png" id="11_eho78"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7eugy"]
@@ -64,16 +65,13 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qympx"]
-size = Vector2(96, 64)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_pgjtk"]
-radius = 48.0104
+size = Vector2(80, 72)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tory2"]
 size = Vector2(80, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3eadt"]
-size = Vector2(96, 36)
+size = Vector2(80, 36)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c85ts"]
 radius = 36.0
@@ -85,17 +83,14 @@ size = Vector2(68, 41)
 [sub_resource type="CircleShape2D" id="CircleShape2D_3eadt"]
 radius = 76.99
 
-[sub_resource type="Curve" id="Curve_evndh"]
-_limits = [0.0, 1.5, 0.0, 1.0]
-_data = [Vector2(0, 1.5), 0.0, 0.0, 0, 0, Vector2(0.62766, 1.19101), -2.11236, -1.56918, 0, 1, Vector2(1, 0.606742), -1.56918, 0.0, 1, 0]
-point_count = 3
-
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 2
 floor_stop_on_slope = false
 floor_constant_speed = true
 floor_snap_length = 60.0
 script = ExtResource("1_rj012")
+speed = 1350
+jump_velocity = -2900
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 z_index = 1
@@ -105,15 +100,11 @@ animation = &"idle"
 offset = Vector2(0, -95)
 
 [node name="CollisionFeet" type="CollisionShape2D" parent="."]
-position = Vector2(0, -34)
+position = Vector2(0, -38)
 shape = SubResource("RectangleShape2D_qympx")
 
-[node name="CollisionHead" type="CollisionShape2D" parent="."]
-position = Vector2(0, -66)
-shape = SubResource("CircleShape2D_pgjtk")
-disabled = true
-
 [node name="CollisionStand" type="Area2D" parent="."]
+visible = false
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionStand"]
@@ -121,7 +112,6 @@ position = Vector2(0, -62)
 shape = SubResource("RectangleShape2D_tory2")
 
 [node name="CollisionSlide" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_3eadt")
 disabled = true
@@ -179,15 +169,13 @@ position = Vector2(0, -64)
 shape = SubResource("CircleShape2D_3eadt")
 
 [node name="Tail" type="Node2D" parent="."]
-visible = false
-position = Vector2(-33, -29)
+position = Vector2(-18, -37)
 script = ExtResource("3_x0jl3")
 num_segments = 16
-rope_length = 125.0
-stiffness = 2.0
-gravity = -50.0
+rope_length = 135.0
+stiffness = 0.5
+gravity = 50.0
 damping = 15.0
-fixate_begin = false
 max_endpoint_distance = 125.0
 resolve_to_begin = true
 num_constraint_iterations = 100
@@ -195,18 +183,19 @@ render_line = false
 metadata/_custom_type_script = "uid://b2shq2gjd4fvt"
 
 [node name="RopeRendererLine2D" type="Line2D" parent="Tail"]
-position = Vector2(25, 13)
-points = PackedVector2Array(-28.0145, -14.1455, -35.7841, -14.9741, -43.5461, -15.8754, -51.3056, -16.8014, -59.0624, -17.7535, -66.815, -18.7404, -74.5618, -19.7741, -82.2997, -20.8727, -90.024, -22.0627, -97.7268, -23.3844, -105.393, -24.901, -112.995, -26.7135, -120.471, -28.9889, -127.681, -32.0025, -134.283, -36.1821, -139.494, -42.0042, -142.242, -49.3177)
-width_curve = SubResource("Curve_evndh")
-default_color = Color(0.74902, 0.592157, 0.482353, 1)
+position = Vector2(31, -30)
+points = PackedVector2Array(-31, 30, -36.5225, 36.3899, -42.8907, 41.9372, -50.3369, 45.9227, -58.6142, 47.6053, -67.002, 46.5981, -74.7484, 43.2215, -81.5218, 38.1653, -87.3407, 32.0316, -92.349, 25.2177, -96.7004, 17.965, -100.524, 10.4195, -103.919, 2.67158, -106.966, -5.22015, -109.726, -13.2159, -112.263, -21.2838, -114.662, -29.3733)
+width = 20.0
+texture = ExtResource("9_8sqrr")
+texture_mode = 2
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
 script = ExtResource("4_evndh")
 metadata/_custom_type_script = "uid://dfppmnngy2wx4"
 
-[node name="RopeHandle" type="Marker2D" parent="Tail"]
-position = Vector2(-117, -37)
+[node name="HandleEnd" type="Marker2D" parent="Tail"]
+position = Vector2(-85, -65)
 script = ExtResource("5_evndh")
 smoothing = true
 position_smoothing_speed = 8.0
@@ -225,14 +214,15 @@ remote_path = NodePath("../Camera2D")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(0, -260)
-zoom = Vector2(0.3, 0.3)
+zoom = Vector2(0.25, 0.25)
 process_callback = 0
 position_smoothing_enabled = true
-position_smoothing_speed = 20.0
+position_smoothing_speed = 15.0
 drag_vertical_enabled = true
 drag_vertical_offset = -0.5
 drag_left_margin = 0.05
 drag_right_margin = 0.05
+drag_bottom_margin = 0.1
 
 [node name="InteractIcon" type="Sprite2D" parent="."]
 visible = false

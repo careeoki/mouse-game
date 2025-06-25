@@ -15,10 +15,10 @@ class_name Player extends CharacterBody2D
 @onready var starting_position = global_position
 @onready var sprite = $Sprite
 @onready var interact_icon: Sprite2D = $InteractIcon
-#@onready var tail_start = $Tail
-#@onready var tail_end = $Tail/HandleEnd
-#@onready var tail_start_initial = tail_start.position.x
-#@onready var tail_end_initial = tail_end.position.x
+@onready var tail_start = $Tail
+@onready var tail_end = $Tail/HandleEnd
+@onready var tail_start_initial = tail_start.position.x
+@onready var tail_end_initial = tail_end.position.x
 @onready var hurt_shape: CollisionShape2D = $Hurtbox/HurtShape
 @onready var slide_hurt_shape: CollisionShape2D = $Hurtbox/SlideHurtShape
 @onready var collision_feet: CollisionShape2D = $CollisionFeet
@@ -37,6 +37,7 @@ class_name Player extends CharacterBody2D
 
 var spawn_position = Vector2.ZERO
 
+var direction
 var can_coyote_jump = false
 var jump_buffer = false
 var can_slide_boost = true
@@ -47,6 +48,7 @@ var is_crouching = false
 var is_wall_jumping = false
 var is_dialog = false
 var is_dying = false
+var air_jumped = false
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
 var checkpoint_manager
@@ -69,7 +71,7 @@ func _physics_process(delta: float) -> void:
 	stand()
 	squish()
 	can_interact()
-	var direction := Input.get_axis("move_left", "move_right")
+	direction = Input.get_axis("move_left", "move_right")
 	update_animations(direction)
 	handle_direction(delta)
 	
@@ -94,14 +96,18 @@ func _physics_process(delta: float) -> void:
 		sprite.scale = Vector2(1.3, 0.7)
 		last_wall_jump = Vector2.ZERO
 		can_slide_boost = true
+		air_jumped = false
 		if jump_buffer:
 			jump_buffer = false
 			velocity.y = jump_velocity
 			print("bugger")
-		if slide_buffer:
-			slide_buffer = false
+		if Input.is_action_pressed("move_down"):
+			slide_buffer = true
 			crouch()
-	if is_on_wall_only() and Input.get_axis("move_left", "move_right") and velocity.y >= 0 and not is_crouching:
+		#if slide_buffer:
+			#slide_buffer = false
+			#crouch()
+	if is_on_wall_only() and Input.get_axis("move_left", "move_right") and velocity.y >= 0 and not Input.is_action_pressed("move_down"):
 		velocity.y *= wall_slide_gravity
 
 func handle_direction(delta):
@@ -110,12 +116,12 @@ func handle_direction(delta):
 		velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
 		if direction == -1:
 			sprite.flip_h = true
-			#tail_start.position.x = tail_start_initial * -1
-			#tail_end.position.x = tail_end_initial * -1
+			tail_start.position.x = tail_start_initial * -1
+			tail_end.position.x = tail_end_initial * -1
 		else:
 			sprite.flip_h = false
-			#tail_start.position.x = tail_start_initial
-			#tail_end.position.x = tail_end_initial
+			tail_start.position.x = tail_start_initial
+			tail_end.position.x = tail_end_initial
 	else:
 		if is_crouching:
 			velocity.x = move_toward(velocity.x, 0, 30)
@@ -169,12 +175,13 @@ func _on_jump_buffer_timeout() -> void:
 
 func _input(event):
 	if event.is_action_released("move_jump") and not is_wall_jumping and not is_dialog:
-		if velocity.y < 0:
+		if velocity.y < 0 and not air_jumped:
 			velocity.y *= jump_reduction
 			
 func crouch():
-	if Input.is_action_just_pressed("move_down") and is_on_floor() and not is_dialog:
+	if Input.is_action_just_pressed("move_down") and is_on_floor() or slide_buffer and not is_dialog:
 		var direction := Input.get_axis("move_left", "move_right")
+		slide_buffer = false
 		sprite.scale = Vector2(1.3, 0.7)
 		if not can_stand and direction != 0:
 			velocity.x = direction * speed * slide_boost

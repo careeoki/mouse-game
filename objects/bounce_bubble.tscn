@@ -1,0 +1,112 @@
+[gd_scene load_steps=9 format=3 uid="uid://dplns4xkwo54l"]
+
+[ext_resource type="Script" uid="uid://0vosibi3yic1" path="res://objects/bounce_bubble.gd" id="1_xobm6"]
+[ext_resource type="Texture2D" uid="uid://bldqwlmx11620" path="res://assets/objects/bounce_bubble.png" id="2_xobm6"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8uksb"]
+radius = 64.0
+
+[sub_resource type="Animation" id="Animation_52mln"]
+resource_name = "Idle"
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_jelfi"]
+resource_name = "Pop"
+length = 0.7
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_8uksb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_ml6pt"]
+resource_name = "Reform"
+length = 0.3
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [5, 6, 7]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bitdi"]
+_data = {
+&"Idle": SubResource("Animation_52mln"),
+&"Pop": SubResource("Animation_jelfi"),
+&"RESET": SubResource("Animation_8uksb"),
+&"Reform": SubResource("Animation_ml6pt")
+}
+
+[node name="BounceBubble" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_xobm6")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_xobm6")
+hframes = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_8uksb")
+
+[node name="CoyoteTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="BufferTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_bitdi")
+}
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
+[connection signal="timeout" from="BufferTimer" to="." method="_on_buffer_timer_timeout"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

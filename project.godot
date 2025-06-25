@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Flatpormer"
-run/main_scene="res://levels/level_test.tscn"
+run/main_scene="uid://pl2rnaiqi6s6"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
