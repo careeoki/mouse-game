@@ -24,6 +24,7 @@ class_name Player extends CharacterBody2D
 @onready var collision_feet: CollisionShape2D = $CollisionFeet
 @onready var collision_slide: CollisionShape2D = $CollisionSlide
 @onready var actionable_finder: Area2D = $ActionableFinder
+@onready var door_finder: Area2D = $DoorFinder #this is so fucking dumb
 @onready var collision_stand: Area2D = $CollisionStand
 
 @onready var coyote_timer = $CoyoteTimer
@@ -46,6 +47,7 @@ var stand_buffer = false
 var slide_buffer = false
 var is_crouching = false
 var is_wall_jumping = false
+var is_wall_sliding = false
 var is_dialog = false
 var is_dying = false
 var air_jumped = false
@@ -108,7 +110,10 @@ func _physics_process(delta: float) -> void:
 			#slide_buffer = false
 			#crouch()
 	if is_on_wall_only() and Input.get_axis("move_left", "move_right") and velocity.y >= 0 and not Input.is_action_pressed("move_down"):
+		is_wall_sliding = true
 		velocity.y *= wall_slide_gravity
+	else:
+		is_wall_sliding = false
 
 func handle_direction(delta):
 	var direction := Input.get_axis("move_left", "move_right")
@@ -230,7 +235,7 @@ func squish():
 		stand()
 
 func update_animations(direction):
-	if direction != 0:
+	if direction != 0 and not is_dialog:
 		sprite.play("walk")
 	else:
 		sprite.play("idle")
@@ -247,10 +252,10 @@ func update_animations(direction):
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("ui_cancel"):
 		get_tree().reload_current_scene()
+		PlayerManager.set_player_position(spawn_position)
 	if Input.is_action_just_pressed("move_up"):
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:
-			
 			actionables[0].action()
 			is_dialog = true
 			return
@@ -275,7 +280,8 @@ func _on_hurtbox_body_entered(body: Node2D) -> void:
 
 func can_interact():
 	var actionables = actionable_finder.get_overlapping_areas()
-	if actionables.size() > 0 and not is_dialog:
+	var doors = door_finder.get_overlapping_areas()
+	if actionables.size() > 0 or doors.size() > 0 and not is_dialog:
 		interact_icon.visible = true
 	else:
 		interact_icon.visible = false

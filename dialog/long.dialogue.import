@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bxd2ely5gan3r"
+path="res://.godot/imported/long.dialogue-327e068524550abcf981cc5242cb4959.tres"
+
+[deps]
+
+source_file="res://dialog/long.dialogue"
+dest_files=["res://.godot/imported/long.dialogue-327e068524550abcf981cc5242cb4959.tres"]
+
+[params]
+
+defaults=true

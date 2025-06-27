@@ -21,7 +21,7 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("move_up"):
-		var actionables = door.get_overlapping_areas()
+		var actionables = door.get_overlapping_bodies()
 		if actionables.size() > 0:
 			LevelManager.load_new_level(level, target_door)
 			
@@ -33,3 +33,6 @@ func _place_player() -> void:
 	PlayerManager.set_player_position(global_position)
 	PlayerManager.update_spawn_position(global_position)
 	print(global_position)
+
+func action():
+	print("it's a door, dumbass")

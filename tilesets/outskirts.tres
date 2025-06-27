@@ -1,8 +1,9 @@
-[gd_resource type="TileSet" load_steps=6 format=3 uid="uid://4sqjyjowhf0j"]
+[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://4sqjyjowhf0j"]
 
 [ext_resource type="Texture2D" uid="uid://njq0ks2nq02k" path="res://assets/tilesets/mousehold_outskirts.png" id="1_dlj26"]
 [ext_resource type="PackedScene" uid="uid://d3l4n05ojcl1c" path="res://objects/cracker.tscn" id="2_wvn2r"]
 [ext_resource type="PackedScene" uid="uid://dplns4xkwo54l" path="res://objects/bounce_bubble.tscn" id="3_wvn2r"]
+[ext_resource type="PackedScene" uid="uid://dvwc42rxsbgbs" path="res://objects/spring.tscn" id="4_edps0"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ucqwy"]
 texture = ExtResource("1_dlj26")
@@ -432,6 +433,7 @@ texture_region_size = Vector2i(128, 128)
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_3lak2"]
 scenes/1/scene = ExtResource("2_wvn2r")
 scenes/2/scene = ExtResource("3_wvn2r")
+scenes/3/scene = ExtResource("4_edps0")
 
 [resource]
 tile_size = Vector2i(128, 128)

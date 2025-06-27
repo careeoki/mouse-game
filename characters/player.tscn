@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=21 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -82,6 +82,9 @@ size = Vector2(68, 41)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3eadt"]
 radius = 76.99
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8sqrr"]
+radius = 40.0
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 2
@@ -168,6 +171,14 @@ collision_mask = 8
 position = Vector2(0, -64)
 shape = SubResource("CircleShape2D_3eadt")
 
+[node name="DoorFinder" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DoorFinder"]
+position = Vector2(0, -57)
+shape = SubResource("CircleShape2D_8sqrr")
+
 [node name="Tail" type="Node2D" parent="."]
 position = Vector2(-18, -37)
 script = ExtResource("3_x0jl3")
@@ -218,7 +229,6 @@ zoom = Vector2(0.25, 0.25)
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 15.0
-drag_vertical_enabled = true
 drag_vertical_offset = -0.5
 drag_left_margin = 0.05
 drag_right_margin = 0.05
