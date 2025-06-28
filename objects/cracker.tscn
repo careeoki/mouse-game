@@ -1,13 +1,34 @@
-[gd_scene load_steps=5 format=3 uid="uid://d3l4n05ojcl1c"]
+[gd_scene load_steps=8 format=3 uid="uid://d3l4n05ojcl1c"]
 
-[ext_resource type="Texture2D" uid="uid://57idvxg4qdmv" path="res://assets/objects/cracker.png" id="1_4li4v"]
 [ext_resource type="Script" uid="uid://bdyyjmti00e7y" path="res://objects/cracker.gd" id="1_y2ajn"]
+[ext_resource type="Texture2D" uid="uid://5s5sx3b30l1o" path="res://assets/objects/cracker_spin.png" id="2_y2ajn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rolyy"]
+atlas = ExtResource("2_y2ajn")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2bhyo"]
+atlas = ExtResource("2_y2ajn")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g0fty"]
+atlas = ExtResource("2_y2ajn")
+region = Rect2(256, 0, 128, 128)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_y2ajn"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_4li4v")
+"texture": SubResource("AtlasTexture_rolyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2bhyo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g0fty")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2bhyo")
 }],
 "loop": true,
 "name": &"default",
@@ -22,7 +43,7 @@ collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_y2ajn")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_y2ajn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

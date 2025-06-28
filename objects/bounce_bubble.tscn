@@ -93,7 +93,7 @@ hframes = 8
 shape = SubResource("CircleShape2D_8uksb")
 
 [node name="CoyoteTimer" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.06
 one_shot = true
 
 [node name="BufferTimer" type="Timer" parent="."]

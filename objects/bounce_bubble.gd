@@ -33,7 +33,7 @@ func _on_body_entered(body: Node2D) -> void:
 func air_jump():
 	if not is_cooldown:
 		player.air_jumped = true
-		player.velocity.y = player.jump_velocity
+		player.velocity.y = player.jump_velocity * 1.1
 		animation_player.play("Pop")
 		is_cooldown = true
 

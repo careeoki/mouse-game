@@ -5,8 +5,8 @@ const save_location = "user://SaveFilegds.json"
 var contents_to_save: Dictionary = {
 	"deaths" = 0,
 	"crackers" = 0,
-	"cheese_count" = 0,
-	"cheese" = []
+	"cheese" = [],
+	"cheese_gates" = []
 }
 
 func _ready() -> void:
@@ -26,15 +26,24 @@ func _load():
 		var save_data = data
 		contents_to_save.deaths = save_data.deaths
 		contents_to_save.crackers = save_data.crackers
-		contents_to_save.cheese_count = save_data.cheese_count
 		contents_to_save.cheese = save_data.cheese
-		
+		contents_to_save.cheese_gates = save_data.cheese_gates
 
-func add_persistent_value(value : String) -> void:
-	if check_persistent_value(value) == false:
-		contents_to_save.cheese.append(value)
+func add_persistent_value(value : String, type : String) -> void:
+	if check_persistent_value(value, type) == false:
+		if type == "IsCollected":
+			contents_to_save.cheese.append(value)
+		else:
+			contents_to_save.cheese_gates.append(value)
 	pass
 
-func check_persistent_value(value : String) -> bool:
-	var p = contents_to_save.cheese as Array
-	return p.has(value)
+func check_persistent_value(value : String, type : String) -> bool:
+	if type == "IsCollected":
+		var p = contents_to_save.cheese as Array
+		return p.has(value)
+	if type ==  "IsOpen":
+		var p = contents_to_save.cheese_gates as Array
+		return p.has(value)
+	else:
+		return false
+		print("persistent is fuck")

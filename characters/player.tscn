@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=22 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://deqi8wvtstywf" path="res://assets/characters/mable/walk.png" id="6_8sqrr"]
 [ext_resource type="Texture2D" uid="uid://dc7sngqajg6h5" path="res://assets/characters/mable/tail.png" id="9_8sqrr"]
 [ext_resource type="Texture2D" uid="uid://cuw4ixqum6x6" path="res://assets/ui/interact arrow.png" id="11_eho78"]
+[ext_resource type="Script" uid="uid://cp2u8sdgqi0c" path="res://characters/player_camera.gd" id="12_6rrl0"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7eugy"]
 animations = [{
@@ -68,7 +69,7 @@ animations = [{
 size = Vector2(80, 72)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tory2"]
-size = Vector2(80, 80)
+size = Vector2(80, 36)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3eadt"]
 size = Vector2(80, 36)
@@ -107,11 +108,10 @@ position = Vector2(0, -38)
 shape = SubResource("RectangleShape2D_qympx")
 
 [node name="CollisionStand" type="Area2D" parent="."]
-visible = false
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionStand"]
-position = Vector2(0, -62)
+position = Vector2(0, -56)
 shape = SubResource("RectangleShape2D_tory2")
 
 [node name="CollisionSlide" type="CollisionShape2D" parent="."]
@@ -221,24 +221,31 @@ rope_position = 0.0
 metadata/_custom_type_script = "uid://1xluodkpnre3"
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
-remote_path = NodePath("../Camera2D")
+remote_path = NodePath("../PlayerCamera")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-offset = Vector2(0, -260)
+[node name="PlayerCamera" type="Camera2D" parent="."]
+offset = Vector2(0, -500)
 zoom = Vector2(0.25, 0.25)
 process_callback = 0
 position_smoothing_enabled = true
-position_smoothing_speed = 15.0
+position_smoothing_speed = 10.0
+drag_vertical_enabled = true
 drag_vertical_offset = -0.5
 drag_left_margin = 0.05
+drag_top_margin = 0.33
 drag_right_margin = 0.05
-drag_bottom_margin = 0.1
+drag_bottom_margin = 0.22
+editor_draw_drag_margin = true
+script = ExtResource("12_6rrl0")
 
 [node name="InteractIcon" type="Sprite2D" parent="."]
 visible = false
 z_index = 1
 position = Vector2(0, -185)
 texture = ExtResource("11_eho78")
+
+[node name="CameraTweenTimer" type="Timer" parent="."]
+one_shot = true
 
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
@@ -247,3 +254,4 @@ texture = ExtResource("11_eho78")
 [connection signal="timeout" from="SlideCooldown" to="." method="_on_slide_cooldown_timeout"]
 [connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
+[connection signal="timeout" from="CameraTweenTimer" to="." method="_on_camera_tween_timer_timeout"]

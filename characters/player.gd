@@ -32,6 +32,8 @@ class_name Player extends CharacterBody2D
 @onready var wall_jump_timer = $WallJumpTimer
 @onready var wall_coyote_timer: Timer = $WallCoyoteTimer
 @onready var death_timer: Timer = $DeathTimer
+@onready var camera_tween_timer: Timer = $CameraTweenTimer
+
 
 @onready var slide_duration: Timer = $SlideDuration
 @onready var slide_cooldown: Timer = $SlideCooldown
@@ -51,6 +53,7 @@ var is_wall_sliding = false
 var is_dialog = false
 var is_dying = false
 var air_jumped = false
+var look_direction = 0
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
 var checkpoint_manager
@@ -103,13 +106,13 @@ func _physics_process(delta: float) -> void:
 			jump_buffer = false
 			velocity.y = jump_velocity
 			print("bugger")
-		if Input.is_action_pressed("move_down"):
+		if Input.is_action_pressed("move_slide"):
 			slide_buffer = true
 			crouch()
 		#if slide_buffer:
 			#slide_buffer = false
 			#crouch()
-	if is_on_wall_only() and Input.get_axis("move_left", "move_right") and velocity.y >= 0 and not Input.is_action_pressed("move_down"):
+	if is_on_wall_only() and Input.get_axis("move_left", "move_right") and velocity.y >= 0 and not Input.is_action_pressed("move_slide"):
 		is_wall_sliding = true
 		velocity.y *= wall_slide_gravity
 	else:
@@ -121,10 +124,12 @@ func handle_direction(delta):
 		velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
 		if direction == -1:
 			sprite.flip_h = true
+			look_direction = -1
 			tail_start.position.x = tail_start_initial * -1
 			tail_end.position.x = tail_end_initial * -1
 		else:
 			sprite.flip_h = false
+			look_direction = 1
 			tail_start.position.x = tail_start_initial
 			tail_end.position.x = tail_end_initial
 	else:
@@ -142,7 +147,7 @@ func jump():
 			if can_coyote_jump:
 				can_coyote_jump = false
 		
-		if Input.is_action_pressed("move_down") and is_on_floor():
+		if Input.is_action_pressed("move_slide") and is_on_floor():
 			sprite.scale = Vector2(0.9, 1.2)
 			velocity.y = jump_velocity * 0.7
 			velocity.x = velocity.x * 1.3
@@ -184,7 +189,7 @@ func _input(event):
 			velocity.y *= jump_reduction
 			
 func crouch():
-	if Input.is_action_just_pressed("move_down") and is_on_floor() or slide_buffer and not is_dialog:
+	if Input.is_action_just_pressed("move_slide") and is_on_floor() or slide_buffer and not is_dialog:
 		var direction := Input.get_axis("move_left", "move_right")
 		slide_buffer = false
 		sprite.scale = Vector2(1.3, 0.7)
@@ -209,7 +214,7 @@ func stand():
 	if not is_crouching:
 		return
 
-	if Input.is_action_just_released("move_down") or stand_buffer and not is_dialog:
+	if Input.is_action_just_released("move_slide") or stand_buffer and not is_dialog:
 		if stand_buffer:
 			stand_buffer = false
 		if not can_stand:
