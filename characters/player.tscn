@@ -1,7 +1,8 @@
-[gd_scene load_steps=22 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=23 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
+[ext_resource type="Texture2D" uid="uid://bpp0rp7qlwhkn" path="res://assets/characters/mable/collect.png" id="2_eus45"]
 [ext_resource type="Texture2D" uid="uid://cnmd71kbefpks" path="res://assets/characters/mable/fall.png" id="2_n8jd0"]
 [ext_resource type="Texture2D" uid="uid://37yhr18r23bq" path="res://assets/characters/mable/die.png" id="2_q605b"]
 [ext_resource type="Script" uid="uid://b2shq2gjd4fvt" path="res://addons/ropesim/Rope.gd" id="3_x0jl3"]
@@ -16,6 +17,14 @@
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7eugy"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_eus45")
+}],
+"loop": true,
+"name": &"collect",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 5.0,
 "texture": ExtResource("2_q605b")
@@ -224,17 +233,15 @@ metadata/_custom_type_script = "uid://1xluodkpnre3"
 remote_path = NodePath("../PlayerCamera")
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
-offset = Vector2(0, -500)
+offset = Vector2(0, -260)
 zoom = Vector2(0.25, 0.25)
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
-drag_vertical_enabled = true
-drag_vertical_offset = -0.5
-drag_left_margin = 0.05
-drag_top_margin = 0.33
-drag_right_margin = 0.05
-drag_bottom_margin = 0.22
+drag_left_margin = 0.1
+drag_top_margin = 0.45
+drag_right_margin = 0.1
+drag_bottom_margin = 0.0
 editor_draw_drag_margin = true
 script = ExtResource("12_6rrl0")
 

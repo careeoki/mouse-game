@@ -19,8 +19,11 @@ func cracker_collected(value: int):
 func cheese_collected():
 	emit_signal("cheese_update")
 
+func cheese_collect_ui(name: String):
+	emit_signal("cheese_collect", name)
 
 
 signal cracker_update(value: int)
 signal death_update(value: int)
 signal cheese_update()
+signal cheese_ui(name: String)

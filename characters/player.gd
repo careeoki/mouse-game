@@ -26,6 +26,7 @@ class_name Player extends CharacterBody2D
 @onready var actionable_finder: Area2D = $ActionableFinder
 @onready var door_finder: Area2D = $DoorFinder #this is so fucking dumb
 @onready var collision_stand: Area2D = $CollisionStand
+@onready var player_camera: Camera2D = $PlayerCamera
 
 @onready var coyote_timer = $CoyoteTimer
 @onready var jump_buffer_timer = $JumpBuffer
@@ -52,11 +53,14 @@ var is_wall_jumping = false
 var is_wall_sliding = false
 var is_dialog = false
 var is_dying = false
+var is_collecting = false
+var can_move_slide = true
 var air_jumped = false
 var look_direction = 0
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
 var checkpoint_manager
+var camera_y_pos
 
 
 func _physics_process(delta: float) -> void:
@@ -84,9 +88,10 @@ func _physics_process(delta: float) -> void:
 	var was_on_wall = is_on_wall_only()
 	if was_on_wall:
 		was_wall_normal = get_wall_normal()
-	if not is_dying:
+	if can_move_slide:
 		move_and_slide()
-	
+	if not can_move_slide:
+		look_direction = 0
 	# Started to fall
 	if was_on_floor && is_on_floor() && velocity.y >= 0:
 		can_coyote_jump = true
@@ -99,6 +104,7 @@ func _physics_process(delta: float) -> void:
 	# Touched ground
 	if !was_on_floor && is_on_floor():
 		sprite.scale = Vector2(1.3, 0.7)
+		camera_y_pos = global_position.y
 		last_wall_jump = Vector2.ZERO
 		can_slide_boost = true
 		air_jumped = false
@@ -124,14 +130,16 @@ func handle_direction(delta):
 		velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
 		if direction == -1:
 			sprite.flip_h = true
-			look_direction = -1
 			tail_start.position.x = tail_start_initial * -1
 			tail_end.position.x = tail_end_initial * -1
+			if velocity.x < -1300:
+				look_direction = -1
 		else:
 			sprite.flip_h = false
-			look_direction = 1
 			tail_start.position.x = tail_start_initial
 			tail_end.position.x = tail_end_initial
+			if velocity.x > 1300:
+				look_direction = 1
 	else:
 		if is_crouching:
 			velocity.x = move_toward(velocity.x, 0, 30)
@@ -251,6 +259,8 @@ func update_animations(direction):
 			sprite.play("jump")
 		else:
 			sprite.play("fall")
+	if is_collecting:
+		sprite.play("collect")
 	if is_dying:
 		sprite.play("die")
 
@@ -262,14 +272,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:
 			actionables[0].action()
+			player_camera.focus_zoom()
 			is_dialog = true
 			return
+	if Input.is_action_just_pressed("move_jump") and is_collecting:
+		is_collecting = false
+		can_move_slide = true
+		velocity = Vector2.ZERO
+		player_camera.reset_zoom()
 
 func _ready():
 	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
 
 func _on_dialogue_ended(_resource: DialogueResource):
 	is_dialog = false
+	player_camera.reset_zoom()
 
 func fast_fall():
 	velocity.y *= gravity_multiplier
@@ -281,6 +298,7 @@ func _on_wall_jump_timer_timeout() -> void:
 func _on_hurtbox_body_entered(body: Node2D) -> void:
 	print("im hurt")
 	is_dying = true
+	can_move_slide = false
 	death_timer.start()
 
 func can_interact():
@@ -303,6 +321,14 @@ func _on_slide_cooldown_timeout() -> void:
 
 func _on_death_timer_timeout() -> void:
 	is_dying = false
+	can_move_slide = true
 	var value = 1
 	EventManager.player_died(value)
 	PlayerManager.set_player_position(spawn_position)
+
+func collect_cheese():
+	player_camera.focus_zoom()
+	can_move_slide = false
+	is_collecting = true
+	look_direction = 0
+	

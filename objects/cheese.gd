@@ -17,6 +17,8 @@ func set_cheese_state() -> void:
 		queue_free()
 
 func _on_body_entered(body: Node2D) -> void:
+	body.collect_cheese()
 	is_collected_data.set_value()
 	EventManager.emit_signal("cheese_update")
+	EventManager.emit_signal("cheese_ui", cheese_name)
 	queue_free()
