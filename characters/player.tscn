@@ -239,7 +239,7 @@ process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 drag_left_margin = 0.1
-drag_top_margin = 0.45
+drag_top_margin = 0.3
 drag_right_margin = 0.1
 drag_bottom_margin = 0.0
 editor_draw_drag_margin = true
@@ -254,6 +254,10 @@ texture = ExtResource("11_eho78")
 [node name="CameraTweenTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="InteractCooldown" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
 [connection signal="timeout" from="WallJumpTimer" to="." method="_on_wall_jump_timer_timeout"]
@@ -262,3 +266,4 @@ one_shot = true
 [connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
 [connection signal="timeout" from="CameraTweenTimer" to="." method="_on_camera_tween_timer_timeout"]
+[connection signal="timeout" from="InteractCooldown" to="." method="_on_interact_cooldown_timeout"]

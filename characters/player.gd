@@ -7,6 +7,7 @@ class_name Player extends CharacterBody2D
 @export var wall_jump_boost = 1000
 @export var slide_boost = 1.7
 @export var jump_reduction = 0.5
+@export var max_fall_velocity = 6000
 
 @export var gravity_multiplier = 1.01
 @export var wall_slide_gravity = 0.8
@@ -34,6 +35,7 @@ class_name Player extends CharacterBody2D
 @onready var wall_coyote_timer: Timer = $WallCoyoteTimer
 @onready var death_timer: Timer = $DeathTimer
 @onready var camera_tween_timer: Timer = $CameraTweenTimer
+@onready var interact_cooldown: Timer = $InteractCooldown
 
 
 @onready var slide_duration: Timer = $SlideDuration
@@ -57,6 +59,7 @@ var is_collecting = false
 var can_move_slide = true
 var air_jumped = false
 var look_direction = 0
+var look_direction_y = 0
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
 var checkpoint_manager
@@ -68,12 +71,13 @@ func _physics_process(delta: float) -> void:
 	sprite.scale.y = move_toward(sprite.scale.y, 1, 1 * delta)
 	# Add the gravity.
 	if not is_on_floor():
-		velocity += get_gravity() * delta
-		if velocity.y > 0:
-			fast_fall()
-		else:
-			if is_crouching:
-				velocity += get_gravity() * delta
+		if velocity.y < max_fall_velocity:
+			velocity += get_gravity() * delta
+			if velocity.y > 0:
+				fast_fall()
+			else:
+				if is_crouching:
+					velocity += get_gravity() * delta
 
 	jump()
 	crouch()
@@ -126,20 +130,22 @@ func _physics_process(delta: float) -> void:
 
 func handle_direction(delta):
 	var direction := Input.get_axis("move_left", "move_right")
-	if direction and not is_crouching and not is_dialog:
+	if direction and not is_crouching and can_move_slide:
 		velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
 		if direction == -1:
 			sprite.flip_h = true
 			tail_start.position.x = tail_start_initial * -1
 			tail_end.position.x = tail_end_initial * -1
-			if velocity.x < -1300:
+			if velocity.x < -1300 and velocity.y == 0:
 				look_direction = -1
+				player_camera.lookahead(look_direction)
 		else:
 			sprite.flip_h = false
 			tail_start.position.x = tail_start_initial
 			tail_end.position.x = tail_end_initial
-			if velocity.x > 1300:
+			if velocity.x > 1300 and velocity.y == 0:
 				look_direction = 1
+				player_camera.lookahead(look_direction)
 	else:
 		if is_crouching:
 			velocity.x = move_toward(velocity.x, 0, 30)
@@ -274,6 +280,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			actionables[0].action()
 			player_camera.focus_zoom()
 			is_dialog = true
+			can_move_slide = false
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
 		is_collecting = false
@@ -285,7 +292,7 @@ func _ready():
 	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
 
 func _on_dialogue_ended(_resource: DialogueResource):
-	is_dialog = false
+	interact_cooldown.start()
 	player_camera.reset_zoom()
 
 func fast_fall():
@@ -327,8 +334,11 @@ func _on_death_timer_timeout() -> void:
 	PlayerManager.set_player_position(spawn_position)
 
 func collect_cheese():
-	player_camera.focus_zoom()
 	can_move_slide = false
+	player_camera.focus_zoom()
 	is_collecting = true
-	look_direction = 0
-	
+
+
+func _on_interact_cooldown_timeout() -> void:
+	is_dialog = false
+	can_move_slide = true
