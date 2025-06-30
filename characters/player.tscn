@@ -258,6 +258,9 @@ one_shot = true
 wait_time = 0.2
 one_shot = true
 
+[node name="HUDTimer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
 [connection signal="timeout" from="WallJumpTimer" to="." method="_on_wall_jump_timer_timeout"]
@@ -267,3 +270,4 @@ one_shot = true
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
 [connection signal="timeout" from="CameraTweenTimer" to="." method="_on_camera_tween_timer_timeout"]
 [connection signal="timeout" from="InteractCooldown" to="." method="_on_interact_cooldown_timeout"]
+[connection signal="timeout" from="HUDTimer" to="." method="_on_hud_timer_timeout"]

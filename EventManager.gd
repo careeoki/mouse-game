@@ -22,8 +22,11 @@ func cheese_collected():
 func cheese_collect_ui(name: String):
 	emit_signal("cheese_collect", name)
 
+func player_waiting(value: bool):
+	emit_signal("show_hud", value)
 
 signal cracker_update(value: int)
 signal death_update(value: int)
 signal cheese_update()
 signal cheese_ui(name: String)
+signal show_hud()

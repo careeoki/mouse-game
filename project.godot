@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Flatpormer"
+config/name="Mable & the Magic Cheese Wheel"
 run/main_scene="uid://pl2rnaiqi6s6"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
@@ -63,8 +63,13 @@ runtime/balloon_path="res://dialog/balloon.tscn"
 
 [display]
 
+window/size/mode=2
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[editor]
+
+movie_writer/movie_file="C:/Users/Dean/Documents/video.avi"
 
 [editor_plugins]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://bwxvf0mj1sqh"]
+[gd_scene load_steps=10 format=4 uid="uid://bwxvf0mj1sqh"]
 
 [ext_resource type="Script" uid="uid://1l26j032kbek" path="res://levels/level.gd" id="1_6h757"]
 [ext_resource type="PackedScene" uid="uid://cvx3eqbrpufui" path="res://assets/tilesets/test_tileset.tscn" id="2_lgt2o"]
@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://djswkwwvmmss3" path="res://assets/tilesets/mousehold_test.png" id="4_undra"]
 [ext_resource type="PackedScene" uid="uid://jndsp3c7r5uy" path="res://levels/PlayerSpawn.tscn" id="5_7wck0"]
 [ext_resource type="PackedScene" uid="uid://bcatcel8fkw83" path="res://objects/door.tscn" id="6_ck7lk"]
-[ext_resource type="PackedScene" uid="uid://dop6mqeurmmm7" path="res://UI/hud.tscn" id="7_s1tx1"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6h757"]
 texture = ExtResource("3_g4qdm")
@@ -56,6 +55,4 @@ position = Vector2(-1088, -64)
 
 [node name="Door" parent="." instance=ExtResource("6_ck7lk")]
 position = Vector2(-8128, -192)
-level = "uid://d1sca4qg2pj6i"
-
-[node name="HUD" parent="." instance=ExtResource("7_s1tx1")]
+level = "uid://pl2rnaiqi6s6"

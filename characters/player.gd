@@ -36,6 +36,7 @@ class_name Player extends CharacterBody2D
 @onready var death_timer: Timer = $DeathTimer
 @onready var camera_tween_timer: Timer = $CameraTweenTimer
 @onready var interact_cooldown: Timer = $InteractCooldown
+@onready var hud_timer: Timer = $HUDTimer
 
 
 @onready var slide_duration: Timer = $SlideDuration
@@ -56,6 +57,8 @@ var is_wall_sliding = false
 var is_dialog = false
 var is_dying = false
 var is_collecting = false
+var is_moving = false
+var hud_up = false
 var can_move_slide = true
 var air_jumped = false
 var look_direction = 0
@@ -78,7 +81,7 @@ func _physics_process(delta: float) -> void:
 			else:
 				if is_crouching:
 					velocity += get_gravity() * delta
-
+	
 	jump()
 	crouch()
 	stand()
@@ -87,6 +90,7 @@ func _physics_process(delta: float) -> void:
 	direction = Input.get_axis("move_left", "move_right")
 	update_animations(direction)
 	handle_direction(delta)
+	
 	
 	var was_on_floor = is_on_floor()
 	var was_on_wall = is_on_wall_only()
@@ -104,6 +108,25 @@ func _physics_process(delta: float) -> void:
 	var just_left_wall = was_on_wall and not is_on_wall()
 	if just_left_wall:
 		wall_coyote_timer.start()
+	
+	# Check if player is moving
+	if velocity.x == 0 and velocity.y == 0:
+		is_moving = false
+	else:
+		print("Not move")
+		is_moving = true
+	
+	# Watch for the player to stop
+	if is_moving:
+		if hud_up:
+			EventManager.player_waiting(false)
+			hud_up = false
+			return
+		if velocity.length() > 0.01:
+			hud_timer.start()
+			print("player is stopping.")
+		else:
+			return
 	
 	# Touched ground
 	if !was_on_floor && is_on_floor():
@@ -342,3 +365,9 @@ func collect_cheese():
 func _on_interact_cooldown_timeout() -> void:
 	is_dialog = false
 	can_move_slide = true
+
+
+func _on_hud_timer_timeout() -> void:
+	hud_up = true
+	EventManager.player_waiting(true)
+	print("player is sitting around")
