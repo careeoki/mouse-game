@@ -7,7 +7,7 @@ class_name Player extends CharacterBody2D
 @export var wall_jump_boost = 1000
 @export var slide_boost = 1.7
 @export var jump_reduction = 0.5
-@export var max_fall_velocity = 6000
+@export var max_fall_velocity = 5000
 
 @export var gravity_multiplier = 1.01
 @export var wall_slide_gravity = 0.8
@@ -62,7 +62,7 @@ var hud_up = false
 var can_move_slide = true
 var air_jumped = false
 var look_direction = 0
-var look_direction_y = 0
+var look_down = 0
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
 var checkpoint_manager
@@ -109,11 +109,16 @@ func _physics_process(delta: float) -> void:
 	if just_left_wall:
 		wall_coyote_timer.start()
 	
+	if velocity.y > max_fall_velocity * 0.8:
+		look_down = 1
+		player_camera.look_down()
+	else:
+		look_down = 0
+	
 	# Check if player is moving
 	if velocity.x == 0 and velocity.y == 0:
 		is_moving = false
 	else:
-		print("Not move")
 		is_moving = true
 	
 	# Watch for the player to stop
@@ -131,7 +136,7 @@ func _physics_process(delta: float) -> void:
 	# Touched ground
 	if !was_on_floor && is_on_floor():
 		sprite.scale = Vector2(1.3, 0.7)
-		camera_y_pos = global_position.y
+		player_camera.reset_vertical()
 		last_wall_jump = Vector2.ZERO
 		can_slide_boost = true
 		air_jumped = false
@@ -306,8 +311,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			can_move_slide = false
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
-		is_collecting = false
-		can_move_slide = true
+		interact_cooldown.start()
 		velocity = Vector2.ZERO
 		player_camera.reset_zoom()
 
@@ -363,7 +367,12 @@ func collect_cheese():
 
 
 func _on_interact_cooldown_timeout() -> void:
-	is_dialog = false
+	if is_dialog:
+		is_dialog = false
+	if is_collecting:
+		is_collecting = false
+	if jump_buffer:
+		jump_buffer = false
 	can_move_slide = true
 
 

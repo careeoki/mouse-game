@@ -255,7 +255,7 @@ texture = ExtResource("11_eho78")
 one_shot = true
 
 [node name="InteractCooldown" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.1
 one_shot = true
 
 [node name="HUDTimer" type="Timer" parent="."]
