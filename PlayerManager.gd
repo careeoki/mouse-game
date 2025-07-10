@@ -9,6 +9,8 @@ var hud
 var hud_spawned : bool = false
 
 func _ready() -> void:
+	#if get_parent().get_child():
+		#print("yeah thats a level")
 	add_player_instance()
 
 func add_player_instance() -> void:

@@ -230,16 +230,16 @@ rope_position = 0.0
 metadata/_custom_type_script = "uid://1xluodkpnre3"
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
-remote_path = NodePath("../PlayerCamera")
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
 offset = Vector2(0, -260)
-zoom = Vector2(0.25, 0.25)
+zoom = Vector2(0.22, 0.22)
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
+drag_vertical_enabled = true
 drag_left_margin = 0.1
-drag_top_margin = 0.3
+drag_top_margin = 0.35
 drag_right_margin = 0.1
 drag_bottom_margin = 0.0
 editor_draw_drag_margin = true
@@ -260,6 +260,9 @@ one_shot = true
 
 [node name="HUDTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="BubbleMarker" type="Marker2D" parent="."]
+position = Vector2(0, -64)
 
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]

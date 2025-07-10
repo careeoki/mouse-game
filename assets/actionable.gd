@@ -1,11 +1,14 @@
 class_name Actionable extends Area2D
+@export var timeline: String = "testi"
+@export var character: String = "empty"
+@onready var bubble_marker: Node2D = $BubbleMarker
+var player
 
-const Balloon = preload("res://dialog/balloon.tscn")
-
-@export var dialogue_resource: DialogueResource
-@export var dialog_start: String = "start"
+func _on_body_entered(body: Node2D) -> void:
+	player = body
+	print(player)
 
 func action() -> void:
-	var balloon: Node = Balloon.instantiate()
-	get_tree().current_scene.add_child(balloon)
-	balloon.start(dialogue_resource, dialog_start)
+	var layout = Dialogic.start(timeline)
+	layout.register_character(load(character), bubble_marker)
+	layout.register_character(load("res://dialog/characters/mable.dch"), player.bubble_marker)

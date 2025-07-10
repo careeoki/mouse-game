@@ -8,8 +8,9 @@ var target_transition : String
 var position_offset : Vector2
 
 func _ready() -> void:
-	await get_tree().process_frame
-	level_loaded.emit()
+	if get_tree().current_scene == Level:
+		await get_tree().process_frame
+		level_loaded.emit()
 
 func load_new_level(
 	level_path : String,

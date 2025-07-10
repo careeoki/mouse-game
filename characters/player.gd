@@ -28,6 +28,8 @@ class_name Player extends CharacterBody2D
 @onready var door_finder: Area2D = $DoorFinder #this is so fucking dumb
 @onready var collision_stand: Area2D = $CollisionStand
 @onready var player_camera: Camera2D = $PlayerCamera
+@onready var bubble_marker: Marker2D = $BubbleMarker
+
 
 @onready var coyote_timer = $CoyoteTimer
 @onready var jump_buffer_timer = $JumpBuffer
@@ -66,7 +68,7 @@ var look_down = 0
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
 var checkpoint_manager
-var camera_y_pos
+var camera_y = 0
 
 
 func _physics_process(delta: float) -> void:
@@ -100,6 +102,7 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 	if not can_move_slide:
 		look_direction = 0
+		player_camera.reset_vertical()
 	# Started to fall
 	if was_on_floor && is_on_floor() && velocity.y >= 0:
 		can_coyote_jump = true
@@ -109,11 +112,11 @@ func _physics_process(delta: float) -> void:
 	if just_left_wall:
 		wall_coyote_timer.start()
 	
-	if velocity.y > max_fall_velocity * 0.8:
-		look_down = 1
-		player_camera.look_down()
-	else:
-		look_down = 0
+	#if velocity.y > max_fall_velocity * 0.9:
+		#look_down = 1
+		#player_camera.look_down()
+	#else:
+		#look_down = 0
 	
 	# Check if player is moving
 	if velocity.x == 0 and velocity.y == 0:
@@ -136,7 +139,7 @@ func _physics_process(delta: float) -> void:
 	# Touched ground
 	if !was_on_floor && is_on_floor():
 		sprite.scale = Vector2(1.3, 0.7)
-		player_camera.reset_vertical()
+		#player_camera.reset_vertical()
 		last_wall_jump = Vector2.ZERO
 		can_slide_boost = true
 		air_jumped = false
@@ -316,11 +319,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		player_camera.reset_zoom()
 
 func _ready():
-	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
+	Dialogic.timeline_ended.connect(_on_timeline_ended)
 
-func _on_dialogue_ended(_resource: DialogueResource):
+func _on_timeline_ended():
 	interact_cooldown.start()
 	player_camera.reset_zoom()
+
 
 func fast_fall():
 	velocity.y *= gravity_multiplier
