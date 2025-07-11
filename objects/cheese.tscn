@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dvrt2nk5b5oi7"]
+
+[ext_resource type="Script" uid="uid://d4fiea5m5kgmh" path="res://objects/cheese.gd" id="1_a5xy8"]
+[ext_resource type="Texture2D" uid="uid://d1j08xltam68a" path="res://assets/objects/cheese.png" id="1_o2umf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_a5xy8"]
+radius = 75.0
+
+[node name="Cheese" type="Area2D"]
+script = ExtResource("1_a5xy8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_o2umf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_a5xy8")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

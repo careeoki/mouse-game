@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://cvx3eqbrpufui"]
+
+[ext_resource type="Texture2D" uid="uid://dpyrg8r4h1s1" path="res://assets/tilesets/dumb.png" id="1_rul1x"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6yos6"]
+texture = ExtResource("1_rul1x")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
+1:0/0 = 0
+1:0/0/physics_layer_1/polygon_0/points = PackedVector2Array(-64, -64, 64, -64, 64, 64, -64, 64)
+
+[sub_resource type="TileSet" id="TileSet_6aidi"]
+tile_size = Vector2i(128, 128)
+physics_layer_0/collision_layer = 1
+physics_layer_1/collision_layer = 4
+physics_layer_1/collision_mask = 2
+sources/0 = SubResource("TileSetAtlasSource_6yos6")
+
+[node name="TileMapLayer" type="TileMapLayer"]
+tile_set = SubResource("TileSet_6aidi")

@@ -1,0 +1,19 @@
+~ start
+Stupid: Here are some choices.
+Mouse: How are you today?
+Stupid: PICK MY CHOICES!
+- First one
+	Stupid: You picked the first one.
+	- Kill
+		Mouse: i kill you
+		Stupid: EXPLODES OF BLOOD
+		=> END
+	- Don't
+		Mouse: i spares you
+		Stupid: I live another day
+- Second one
+	Stupid: You picked the second one.
+- Start again => start
+- End the conversation => END
+Stupid: For more information see the online documentation.
+=> END

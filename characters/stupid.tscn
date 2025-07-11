@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://k6ukycm768rs"]
+
+[ext_resource type="Texture2D" uid="uid://bdc3roqql4mmk" path="res://assets/player.png" id="1_6ib4y"]
+
+[node name="A stupid" type="Sprite2D"]
+position = Vector2(-0.5, 5.00001)
+rotation = -2.91994
+scale = Vector2(0.96, 0.913)
+texture = ExtResource("1_6ib4y")
