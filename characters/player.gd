@@ -30,6 +30,7 @@ extends CharacterBody2D
 @onready var jump_buffer_timer = $JumpBuffer
 @onready var wall_jump_timer = $WallJumpTimer
 @onready var wall_coyote_timer: Timer = $WallCoyoteTimer
+@onready var death_timer: Timer = $DeathTimer
 
 @onready var slide_duration: Timer = $SlideDuration
 @onready var slide_cooldown: Timer = $SlideCooldown
@@ -45,14 +46,15 @@ var slide_buffer = false
 var is_crouching = false
 var is_wall_jumping = false
 var is_dialog = false
+var is_dying = false
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
+var checkpoint_manager
 
 
 func _physics_process(delta: float) -> void:
-	if !is_crouching:	
-		sprite.scale.x = move_toward(sprite.scale.x, 1, 1 * delta)
-		sprite.scale.y = move_toward(sprite.scale.y, 1, 1 * delta)
+	sprite.scale.x = move_toward(sprite.scale.x, 1, 1 * delta)
+	sprite.scale.y = move_toward(sprite.scale.y, 1, 1 * delta)
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -74,7 +76,8 @@ func _physics_process(delta: float) -> void:
 	var was_on_wall = is_on_wall_only()
 	if was_on_wall:
 		was_wall_normal = get_wall_normal()
-	move_and_slide()
+	if not is_dying:
+		move_and_slide()
 	
 	# Started to fall
 	if was_on_floor && is_on_floor() && velocity.y >= 0:
@@ -119,7 +122,7 @@ func handle_direction(delta):
 			velocity.x = move_toward(velocity.x, 0, friction)
 
 func jump():
-	if Input.is_action_just_pressed("move_jump") and not is_dialog:
+	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
 		if is_on_floor() or can_coyote_jump:
 			sprite.scale = Vector2(0.7, 1.3)
 			velocity.y = jump_velocity
@@ -169,6 +172,7 @@ func _input(event):
 func crouch():
 	if Input.is_action_just_pressed("move_down") and is_on_floor() and not is_dialog:
 		var direction := Input.get_axis("move_left", "move_right")
+		sprite.scale = Vector2(1.3, 0.7)
 		if not can_stand:
 			velocity.x = direction * speed * slide_boost
 		if is_crouching:
@@ -229,6 +233,8 @@ func update_animations(direction):
 			sprite.play("jump")
 		else:
 			sprite.play("fall")
+	if is_dying:
+		sprite.play("die")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("move_up"):
@@ -240,6 +246,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 
 func _ready():
+	checkpoint_manager = get_parent().get_node("CheckpointManager")
 	DialogueManager.dialogue_ended.connect(_on_dialogue_ended)
 
 func _on_dialogue_ended(_resource: DialogueResource):
@@ -254,7 +261,8 @@ func _on_wall_jump_timer_timeout() -> void:
 
 func _on_hurtbox_body_entered(body: Node2D) -> void:
 	print("im hurt")
-	position = spawn_position
+	is_dying = true
+	death_timer.start()
 
 
 func _on_slide_duration_timeout() -> void:
@@ -265,3 +273,10 @@ func _on_slide_duration_timeout() -> void:
 
 func _on_slide_cooldown_timeout() -> void:
 	can_slide_boost = true
+
+
+func _on_death_timer_timeout() -> void:
+	is_dying = false
+	var value = 1
+	EventManager.player_died(value)
+	position = checkpoint_manager.last_location

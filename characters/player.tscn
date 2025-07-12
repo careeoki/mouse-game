@@ -1,8 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=20 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
 [ext_resource type="Texture2D" uid="uid://cnmd71kbefpks" path="res://assets/characters/mable/fall.png" id="2_n8jd0"]
+[ext_resource type="Texture2D" uid="uid://37yhr18r23bq" path="res://assets/characters/mable/die.png" id="2_q605b"]
 [ext_resource type="Script" uid="uid://b2shq2gjd4fvt" path="res://addons/ropesim/Rope.gd" id="3_x0jl3"]
 [ext_resource type="Script" uid="uid://dfppmnngy2wx4" path="res://addons/ropesim/RopeRendererLine2D.gd" id="4_evndh"]
 [ext_resource type="Texture2D" uid="uid://dl6nf1vj7i4iw" path="res://assets/characters/mable/jump.png" id="4_q605b"]
@@ -12,6 +13,14 @@
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7eugy"]
 animations = [{
+"frames": [{
+"duration": 5.0,
+"texture": ExtResource("2_q605b")
+}],
+"loop": false,
+"name": &"die",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_n8jd0")
@@ -90,7 +99,7 @@ script = ExtResource("1_rj012")
 z_index = 1
 position = Vector2(0, 35)
 sprite_frames = SubResource("SpriteFrames_7eugy")
-animation = &"jump"
+animation = &"die"
 offset = Vector2(0, -95)
 
 [node name="CollisionFeet" type="CollisionShape2D" parent="."]
@@ -140,6 +149,9 @@ one_shot = true
 wait_time = 0.4
 one_shot = true
 
+[node name="DeathTimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 2
 collision_mask = 4
@@ -170,13 +182,14 @@ script = ExtResource("3_x0jl3")
 num_segments = 16
 rope_length = 125.0
 gravity = 50.0
-damping = 1.0
+damping = 10.0
+resolve_to_begin = true
 render_line = false
 metadata/_custom_type_script = "uid://b2shq2gjd4fvt"
 
 [node name="RopeRendererLine2D" type="Line2D" parent="Tail"]
 position = Vector2(25, 13)
-points = PackedVector2Array(-25, -13, -29.7687, -6.45282, -35.1525, -0.430145, -41.4089, 4.6461, -48.6117, 8.22699, -56.5316, 9.66089, -64.5347, 8.56891, -71.9316, 5.20184, -78.4062, 0.183403, -83.9769, -5.9217, -88.7844, -12.7356, -92.976, -20.0241, -96.6733, -27.6384, -99.9699, -35.4775, -102.938, -43.468, -105.649, -51.5496, -108, -59)
+points = PackedVector2Array(-25, -13, -29.0786, -5.97782, -33.6798, 0.681828, -39.0713, 6.67909, -45.4422, 11.5794, -52.8287, 14.7112, -60.8381, 15.3312, -68.6319, 13.2213, -75.5481, 8.92946, -81.4402, 3.20204, -86.4365, -3.41558, -90.7134, -10.586, -94.4213, -18.0972, -97.675, -25.8064, -100.563, -33.6118, -103.161, -41.4377, -105.469, -48.9015)
 width_curve = SubResource("Curve_evndh")
 default_color = Color(0.74902, 0.592157, 0.482353, 1)
 joint_mode = 2
@@ -190,7 +203,7 @@ position = Vector2(-83, -46)
 script = ExtResource("5_evndh")
 smoothing = true
 position_smoothing_speed = 10.0
-strength = 1.0
+strength = 0.7
 rope_path = NodePath("..")
 metadata/_custom_type_script = "uid://1xluodkpnre3"
 
@@ -199,4 +212,5 @@ metadata/_custom_type_script = "uid://1xluodkpnre3"
 [connection signal="timeout" from="WallJumpTimer" to="." method="_on_wall_jump_timer_timeout"]
 [connection signal="timeout" from="SlideDuration" to="." method="_on_slide_duration_timeout"]
 [connection signal="timeout" from="SlideCooldown" to="." method="_on_slide_cooldown_timeout"]
+[connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
