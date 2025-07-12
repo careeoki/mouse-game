@@ -21,9 +21,9 @@ func _process(delta: float) -> void:
 
 func lookahead(look_direction: int):
 	look_tween = create_tween()
-	look_tween.tween_property(self, "position:x", 100 * look_direction, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	look_tween.tween_property(self, "position:x", 200 * look_direction, 3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	await look_tween.finished
-	look_dir = 100 * look_direction
+	look_dir = 200 * look_direction
 
 func look_down():
 	var tween = create_tween()
@@ -45,7 +45,7 @@ func focus_zoom():
 	var tween = create_tween()
 	look_dir = 0
 	position = Vector2(0, 0)
-	tween.tween_property(self, "zoom", Vector2(0.25, 0.25), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "zoom", Vector2(0.3, 0.3), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 func reset_zoom():
 	var tween = create_tween()

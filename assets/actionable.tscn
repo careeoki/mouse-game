@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://b8obnpqag5o46"]
+[gd_scene load_steps=3 format=3 uid="uid://b8obnpqag5o46"]
 
 [ext_resource type="Script" uid="uid://caoxqlc8ujkjd" path="res://assets/actionable.gd" id="1_irjj8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_irjj8"]
+size = Vector2(208, 208)
 
 [node name="Actionable" type="Area2D"]
 collision_layer = 8
@@ -8,5 +11,14 @@ collision_mask = 2
 script = ExtResource("1_irjj8")
 
 [node name="BubbleMarker" type="Marker2D" parent="."]
+
+[node name="PersonalSpace" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PersonalSpace"]
+shape = SubResource("RectangleShape2D_irjj8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

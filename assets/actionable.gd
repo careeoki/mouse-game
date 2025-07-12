@@ -2,13 +2,34 @@ class_name Actionable extends Area2D
 @export var timeline: String = "testi"
 @export var character: String = "empty"
 @onready var bubble_marker: Node2D = $BubbleMarker
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var personal_space: Area2D = $PersonalSpace
+
+@export_file("*.png") var image
+
 var player
+var move_direction
+
+func _ready() -> void:
+	sprite.texture = load(image)
 
 func _on_body_entered(body: Node2D) -> void:
 	player = body
-	print(player)
 
 func action() -> void:
+	if Dialogic.current_timeline != null:
+		return
+	var space = personal_space.get_overlapping_bodies()
+	if space.size() > 0:
+		print("please move")
+		if player.global_position.x > global_position.x:
+			move_direction = 1
+			player.change_direction(-1)
+		else:
+			move_direction = -1
+			player.change_direction(1)
+		player.move_to(global_position.x + (256 * move_direction))
+		
 	var layout = Dialogic.start(timeline)
 	layout.register_character(load(character), bubble_marker)
 	layout.register_character(load("res://dialog/characters/mable.dch"), player.bubble_marker)
