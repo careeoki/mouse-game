@@ -4,7 +4,9 @@ const save_location = "user://SaveFilegds.json"
 
 var contents_to_save: Dictionary = {
 	"deaths" = 0,
-	"crackers" = 0
+	"crackers" = 0,
+	"cheese_count" = 0,
+	"cheese" = []
 }
 
 func _ready() -> void:
@@ -24,3 +26,5 @@ func _load():
 		var save_data = data
 		contents_to_save.deaths = save_data.deaths
 		contents_to_save.crackers = save_data.crackers
+		contents_to_save.cheese_count = save_data.cheese_count
+		contents_to_save.cheese = save_data.cheese

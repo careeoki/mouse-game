@@ -124,6 +124,7 @@ func handle_direction(delta):
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
 		if is_on_floor() or can_coyote_jump:
+			print("normal jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			velocity.y = jump_velocity
 			if can_coyote_jump:
@@ -135,6 +136,7 @@ func jump():
 			velocity.x = velocity.x * 1.3
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
+			print("wall jump")
 			var wall_normal = get_wall_normal()
 			if wall_jump_timer.time_left > 0.0:
 				wall_normal = was_wall_normal
@@ -237,6 +239,8 @@ func update_animations(direction):
 		sprite.play("die")
 
 func _unhandled_input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed("ui_cancel"):
+		get_tree().reload_current_scene()
 	if Input.is_action_just_pressed("move_up"):
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:

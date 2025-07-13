@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://dvwc42rxsbgbs"]
+
+[ext_resource type="Texture2D" uid="uid://dgkqk754iftw8" path="res://assets/objects/spring.png" id="1_lx0bb"]
+[ext_resource type="Script" uid="uid://bx4dvbnf3xrl3" path="res://objects/spring.gd" id="1_vfg45"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vfg45"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_lx0bb")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_14s6j"]
+size = Vector2(128, 32)
+
+[node name="Spring" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_vfg45")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_vfg45")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 32)
+shape = SubResource("RectangleShape2D_14s6j")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

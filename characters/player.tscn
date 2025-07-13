@@ -85,7 +85,8 @@ size = Vector2(68, 41)
 radius = 76.99
 
 [sub_resource type="Curve" id="Curve_evndh"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.75, 1), -0.0603528, -2.58177, 0, 1, Vector2(0.989362, 0.382023), -2.58177, 0.0, 1, 0]
+_limits = [0.0, 1.5, 0.0, 1.0]
+_data = [Vector2(0, 1.5), 0.0, 0.0, 0, 0, Vector2(0.62766, 1.19101), -2.11236, -1.56918, 0, 1, Vector2(1, 0.606742), -1.56918, 0.0, 1, 0]
 point_count = 3
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
@@ -99,7 +100,7 @@ script = ExtResource("1_rj012")
 z_index = 1
 position = Vector2(0, 35)
 sprite_frames = SubResource("SpriteFrames_7eugy")
-animation = &"die"
+animation = &"idle"
 offset = Vector2(0, -95)
 
 [node name="CollisionFeet" type="CollisionShape2D" parent="."]
@@ -182,14 +183,14 @@ script = ExtResource("3_x0jl3")
 num_segments = 16
 rope_length = 125.0
 gravity = 50.0
-damping = 10.0
+damping = 20.0
 resolve_to_begin = true
 render_line = false
 metadata/_custom_type_script = "uid://b2shq2gjd4fvt"
 
 [node name="RopeRendererLine2D" type="Line2D" parent="Tail"]
 position = Vector2(25, 13)
-points = PackedVector2Array(-25, -13, -29.0786, -5.97782, -33.6798, 0.681828, -39.0713, 6.67909, -45.4422, 11.5794, -52.8287, 14.7112, -60.8381, 15.3312, -68.6319, 13.2213, -75.5481, 8.92946, -81.4402, 3.20204, -86.4365, -3.41558, -90.7134, -10.586, -94.4213, -18.0972, -97.675, -25.8064, -100.563, -33.6118, -103.161, -41.4377, -105.469, -48.9015)
+points = PackedVector2Array(-25, -13, -28.6228, -5.70687, -32.6944, 1.3124, -37.4626, 7.83476, -43.1431, 13.5295, -49.9097, 17.8264, -57.6502, 19.8866, -65.6464, 19.0523, -72.9591, 15.5641, -79.186, 10.2595, -84.3975, 3.86017, -88.7916, -3.18359, -92.5484, -10.5998, -95.8064, -18.2146, -98.6704, -25.9112, -101.227, -33.6102, -103.516, -41.0796)
 width_curve = SubResource("Curve_evndh")
 default_color = Color(0.74902, 0.592157, 0.482353, 1)
 joint_mode = 2
@@ -203,7 +204,7 @@ position = Vector2(-83, -46)
 script = ExtResource("5_evndh")
 smoothing = true
 position_smoothing_speed = 10.0
-strength = 0.7
+strength = 0.5
 rope_path = NodePath("..")
 metadata/_custom_type_script = "uid://1xluodkpnre3"
 
