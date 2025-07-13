@@ -1,7 +1,8 @@
 class_name Player extends CharacterBody2D
 	# Parameters
 @export var speed = 1300
-@export var sliding_speed = 3500
+@export var p_speed = 2300
+@export var sliding_speed = 3000
 @export var acceleration = 6000
 @export var friction = 120
 @export var jump_velocity = -2800
@@ -55,6 +56,7 @@ var can_slide_boost = true
 var can_stand = true
 var stand_buffer = false
 var slide_buffer = false
+var is_p_speed = false
 var is_crouching = false
 var is_sliding = false
 var is_wall_jumping = false
@@ -89,9 +91,9 @@ func _physics_process(delta: float) -> void:
 					velocity += get_gravity() * delta
 	
 	jump()
+	slide(delta)
 	crouch()
 	stand()
-	slide(delta)
 	squish()
 	can_interact()
 	direction = Input.get_axis("move_left", "move_right")
@@ -116,6 +118,16 @@ func _physics_process(delta: float) -> void:
 	var just_left_wall = was_on_wall and not is_on_wall()
 	if just_left_wall:
 		wall_coyote_timer.start()
+	
+	if is_sliding:
+		floor_constant_speed = false
+	else:
+		floor_constant_speed = true
+	
+	if velocity.x > 2200 or velocity.x < -2200:
+		is_p_speed = true
+	else:
+		is_p_speed = false
 	
 	#if velocity.y > max_fall_velocity * 0.9:
 		#look_down = 1
@@ -155,9 +167,6 @@ func _physics_process(delta: float) -> void:
 		if Input.is_action_pressed("move_slide"):
 			slide_buffer = true
 			crouch()
-		#if slide_buffer:
-			#slide_buffer = false
-			#crouch()
 	if is_on_wall_only() and Input.get_axis("move_left", "move_right") and velocity.y >= 0 and not Input.is_action_pressed("move_slide"):
 		is_wall_sliding = true
 		velocity.y *= wall_slide_gravity
@@ -167,7 +176,10 @@ func _physics_process(delta: float) -> void:
 func handle_direction(delta):
 	var direction := Input.get_axis("move_left", "move_right")
 	if direction and not is_crouching and can_move_slide and not is_dialog:
-		velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
+		if is_p_speed:
+			velocity.x = move_toward(velocity.x, p_speed * direction, 500 * delta)
+		else:
+			velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
 		if direction == -1:
 			change_direction(-1)
 			if velocity.x < -1300 and velocity.y == 0:
@@ -181,11 +193,12 @@ func handle_direction(delta):
 	else:
 		if is_crouching:
 			if is_sliding and is_on_floor():
-				velocity.x = move_toward(velocity.x, sliding_speed * slope_direction, 2000 * delta)
+				velocity.x = move_toward(velocity.x, sliding_speed * slope_direction, 1500 * delta)
 			else:
 				velocity.x = move_toward(velocity.x, 0, 30)
 		else:
 			velocity.x = move_toward(velocity.x, 0, friction)
+			is_p_speed = false
 
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
@@ -201,7 +214,7 @@ func jump():
 				is_sliding = false
 			sprite.scale = Vector2(0.9, 1.2)
 			velocity.y = jump_velocity * 0.8
-			velocity.x = 2200 * 1.3 * direction
+			velocity.x = velocity.x * 1.4
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
 			print("wall jump")
@@ -249,12 +262,13 @@ func crouch():
 		if is_crouching:
 			return
 		is_crouching = true
-		#floor_stop_on_slope = false
 		slide_duration.start()
-		if direction != 0 and slide_cooldown.is_stopped():
-			slide_cooldown.start()
-			can_slide_boost = false
-			velocity.x = direction * speed * slide_boost
+		if not is_sliding:
+			if direction != 0 and slide_cooldown.is_stopped():
+				print("we slide boost")
+				slide_cooldown.start()
+				can_slide_boost = false
+				velocity.x = direction * speed * slide_boost
 		hurt_shape.disabled = true
 		collision_feet.disabled = true
 		
@@ -278,6 +292,7 @@ func stand():
 		slide_buffer = false
 		hurt_shape.disabled = false
 		collision_feet.disabled = false
+		is_sliding = false
 		
 		slide_hurt_shape.disabled = true
 		collision_slide.disabled = true
@@ -306,7 +321,10 @@ func squish():
 
 func update_animations(direction):
 	if direction != 0 and not is_dialog:
-		sprite.play("walk")
+		if velocity.x > speed or velocity.x < speed * -1:
+			sprite.play("p_speed")
+		else:
+			sprite.play("walk")
 	else:
 		sprite.play("idle")
 	if is_crouching:
