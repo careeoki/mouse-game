@@ -45,6 +45,7 @@ class_name Player extends CharacterBody2D
 @onready var interact_cooldown: Timer = $InteractCooldown
 @onready var hud_timer: Timer = $HUDTimer
 @onready var p_speed_timer: Timer = $PSpeedTimer
+@onready var long_jump_timer: Timer = $LongJumpTimer
 
 
 @onready var slide_duration: Timer = $SlideDuration
@@ -62,6 +63,7 @@ var slide_buffer = false
 var is_p_speed = false
 var is_crouching = false
 var is_sliding = false
+var is_long_jumping = false
 var is_wall_jumping = false
 var is_wall_sliding = false
 var is_dialog = false
@@ -71,7 +73,8 @@ var is_moving = false
 var hud_up = false
 var can_move_slide = true
 var air_jumped = false
-var lost_p_speed = false
+var allow_p_speed = true
+var turned_around = false
 var look_direction = 0
 var look_down = 0
 var was_wall_normal = Vector2.ZERO
@@ -128,25 +131,31 @@ func _physics_process(delta: float) -> void:
 	else:
 		floor_constant_speed = true
 	#they gonna kill me for this
-	if velocity.x > speed or velocity.x < -speed:
-		acceleration = 2000
+	
+	# Slow to normal speed when real fast
+	if velocity.x > speed and direction == 1 or velocity.x < -speed and direction == -1:
+		acceleration = 500
 	else:
 		acceleration = 6000
 		
-	#if velocity.x > p_speed and direction == -1 or velocity.x > -p_speed and direction == 1:
-		#p_acceleration = 5000
-	#else:
-		#p_acceleration = 500
-	if velocity.x > 2100 or velocity.x < -2100:
-		is_p_speed = true
+	if velocity.x > p_speed or velocity.x < -p_speed:
+		p_acceleration = 500
 	else:
-		if p_speed_timer.time_left > 0:
+		p_acceleration = 5000
+	
+	if velocity.x > 2300 or velocity.x < -2300:
+		if not is_p_speed and allow_p_speed:
 			is_p_speed = true
-		if is_p_speed and p_speed_timer.is_stopped():
-			p_speed_timer.start()
-			print("started timer")
+	
+	if is_p_speed:
+		if velocity.x > 2100 or velocity.x < -2100:
+			is_p_speed = true
 		else:
-			is_p_speed = false
+			#if p_speed_timer.time_left > 0:
+				#is_p_speed = true
+			if is_p_speed and p_speed_timer.is_stopped():
+				p_speed_timer.start()
+				print("started timer")
 
 	
 	# Stop from moving faster than max_move_velocity
@@ -184,6 +193,11 @@ func _physics_process(delta: float) -> void:
 		last_wall_jump = Vector2.ZERO
 		can_slide_boost = true
 		air_jumped = false
+		if is_long_jumping:
+			allow_p_speed = false
+			if long_jump_timer.time_left == 0:
+				long_jump_timer.start()
+			is_long_jumping = false
 		if jump_buffer:
 			jump_buffer = false
 			velocity.y = jump_velocity
@@ -236,12 +250,12 @@ func jump():
 		if Input.is_action_pressed("move_slide") and is_on_floor():
 			if is_sliding:
 				is_sliding = false
-			#if slide_cooldown.time_left > 0:
-				#slide_cooldown.stop()
-			can_slide_boost = true
+			is_long_jumping = true
+			allow_p_speed = false
+			do_slide_boost()
 			sprite.scale = Vector2(0.9, 1.2)
 			velocity.y = jump_velocity * 0.8
-			velocity.x += 600 * direction
+			velocity.x += 300 * direction
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
 			print("wall jump")
@@ -441,6 +455,8 @@ func collect_cheese():
 	is_collecting = true
 
 func change_direction(new_direction):
+	if acceleration == 1000:
+		turned_around = true
 	if new_direction == -1:
 		sprite.flip_h = true
 	else:
@@ -462,8 +478,16 @@ func _on_interact_cooldown_timeout() -> void:
 
 func _on_p_speed_timer_timeout() -> void:
 	#pass
-	if velocity.x < 1900 or velocity.x > -1900:
-		lost_p_speed = true
+	if not is_wall_sliding:
+		if velocity.x > 0 and velocity.x < 2000:
+			print("stop p speed")
+			is_p_speed = false
+		if velocity.x < 0 and velocity.x > -2000:
+			print("stop p speed")
+			is_p_speed = false
+
+func _on_long_jump_timer_timeout() -> void:
+	allow_p_speed = true
 
 
 func _on_hud_timer_timeout() -> void:
