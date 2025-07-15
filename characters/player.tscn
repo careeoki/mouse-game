@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=34 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -13,9 +13,18 @@
 [ext_resource type="Texture2D" uid="uid://deqi8wvtstywf" path="res://assets/characters/mable/walk.png" id="6_8sqrr"]
 [ext_resource type="Texture2D" uid="uid://bniv4d4ljq8uj" path="res://assets/characters/mable/p_speed.png" id="7_vcag3"]
 [ext_resource type="Texture2D" uid="uid://dc7sngqajg6h5" path="res://assets/characters/mable/tail.png" id="9_8sqrr"]
+[ext_resource type="Texture2D" uid="uid://b3ebu0sc4yqtd" path="res://assets/characters/mable/spin.png" id="9_lcfw7"]
 [ext_resource type="Texture2D" uid="uid://cuw4ixqum6x6" path="res://assets/ui/interact arrow.png" id="11_eho78"]
 [ext_resource type="Script" uid="uid://cp2u8sdgqi0c" path="res://characters/player_camera.gd" id="12_6rrl0"]
 [ext_resource type="Script" uid="uid://c1fiueiroyfb" path="res://characters/debug.gd" id="16_h076o"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_41yun"]
+atlas = ExtResource("9_lcfw7")
+region = Rect2(0, 0, 208, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_svrv0"]
+atlas = ExtResource("9_lcfw7")
+region = Rect2(208, 0, 208, 208)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eus45"]
 atlas = ExtResource("6_8sqrr")
@@ -100,6 +109,17 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_41yun")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_svrv0")
+}],
+"loop": true,
+"name": &"spin",
+"speed": 5.0
+}, {
+"frames": [{
 "duration": 0.6,
 "texture": SubResource("AtlasTexture_eus45")
 }, {
@@ -151,8 +171,6 @@ floor_stop_on_slope = false
 floor_constant_speed = true
 floor_snap_length = 60.0
 script = ExtResource("1_rj012")
-speed = 1350
-jump_velocity = -2900
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 z_index = 1
@@ -202,6 +220,9 @@ wait_time = 0.4
 one_shot = true
 
 [node name="DeathTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="PSpeedTimer" type="Timer" parent="."]
 one_shot = true
 
 [node name="Hurtbox" type="Area2D" parent="."]
@@ -328,6 +349,7 @@ text = "0"
 [connection signal="timeout" from="SlideDuration" to="." method="_on_slide_duration_timeout"]
 [connection signal="timeout" from="SlideCooldown" to="." method="_on_slide_cooldown_timeout"]
 [connection signal="timeout" from="DeathTimer" to="." method="_on_death_timer_timeout"]
+[connection signal="timeout" from="PSpeedTimer" to="." method="_on_p_speed_timer_timeout"]
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
 [connection signal="timeout" from="CameraTweenTimer" to="." method="_on_camera_tween_timer_timeout"]
 [connection signal="timeout" from="InteractCooldown" to="." method="_on_interact_cooldown_timeout"]

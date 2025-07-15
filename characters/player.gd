@@ -1,16 +1,18 @@
 class_name Player extends CharacterBody2D
 	# Parameters
-@export var speed = 1300
-@export var p_speed = 2300
+@export var speed = 1350
+@export var p_speed = 2200
 @export var sliding_speed = 3000
 @export var acceleration = 6000
+@export var p_acceleration = 5500
 @export var friction = 120
-@export var jump_velocity = -2800
+@export var jump_velocity = -2900
 @export var wall_jump_boost = 1000
 @export var long_jump_boost = 2200
 @export var slide_boost = 1.7
 @export var jump_reduction = 0.5
 @export var max_fall_velocity = 5000
+@export var max_move_velocity = 4000
 
 @export var gravity_multiplier = 1.01
 @export var wall_slide_gravity = 0.8
@@ -42,6 +44,7 @@ class_name Player extends CharacterBody2D
 @onready var camera_tween_timer: Timer = $CameraTweenTimer
 @onready var interact_cooldown: Timer = $InteractCooldown
 @onready var hud_timer: Timer = $HUDTimer
+@onready var p_speed_timer: Timer = $PSpeedTimer
 
 
 @onready var slide_duration: Timer = $SlideDuration
@@ -68,6 +71,7 @@ var is_moving = false
 var hud_up = false
 var can_move_slide = true
 var air_jumped = false
+var lost_p_speed = false
 var look_direction = 0
 var look_down = 0
 var was_wall_normal = Vector2.ZERO
@@ -75,6 +79,7 @@ var last_wall_jump = Vector2.ZERO
 var checkpoint_manager
 var camera_y = 0
 var slope_direction = 0
+var slope
 
 
 func _physics_process(delta: float) -> void:
@@ -100,7 +105,6 @@ func _physics_process(delta: float) -> void:
 	update_animations(direction)
 	slope_rotation()
 	handle_direction(delta)
-	
 	var was_on_floor = is_on_floor()
 	var was_on_wall = is_on_wall_only()
 	if was_on_wall:
@@ -123,12 +127,33 @@ func _physics_process(delta: float) -> void:
 		floor_constant_speed = false
 	else:
 		floor_constant_speed = true
-	
-	if velocity.x > 2200 or velocity.x < -2200:
+	#they gonna kill me for this
+	if velocity.x > speed or velocity.x < -speed:
+		acceleration = 2000
+	else:
+		acceleration = 6000
+		
+	#if velocity.x > p_speed and direction == -1 or velocity.x > -p_speed and direction == 1:
+		#p_acceleration = 5000
+	#else:
+		#p_acceleration = 500
+	if velocity.x > 2100 or velocity.x < -2100:
 		is_p_speed = true
 	else:
-		is_p_speed = false
+		if p_speed_timer.time_left > 0:
+			is_p_speed = true
+		if is_p_speed and p_speed_timer.is_stopped():
+			p_speed_timer.start()
+			print("started timer")
+		else:
+			is_p_speed = false
+
 	
+	# Stop from moving faster than max_move_velocity
+	if velocity.x > 4000:
+		velocity.x = max_move_velocity
+	if velocity.x < -4000:
+		velocity.x = max_move_velocity * -1
 	#if velocity.y > max_fall_velocity * 0.9:
 		#look_down = 1
 		#player_camera.look_down()
@@ -149,7 +174,6 @@ func _physics_process(delta: float) -> void:
 			return
 		if velocity.length() > 0.01:
 			hud_timer.start()
-			print("player is stopping.")
 		else:
 			return
 	
@@ -177,7 +201,7 @@ func handle_direction(delta):
 	var direction := Input.get_axis("move_left", "move_right")
 	if direction and not is_crouching and can_move_slide and not is_dialog:
 		if is_p_speed:
-			velocity.x = move_toward(velocity.x, p_speed * direction, 500 * delta)
+			velocity.x = move_toward(velocity.x, p_speed * direction, p_acceleration * delta)
 		else:
 			velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
 		if direction == -1:
@@ -193,7 +217,7 @@ func handle_direction(delta):
 	else:
 		if is_crouching:
 			if is_sliding and is_on_floor():
-				velocity.x = move_toward(velocity.x, sliding_speed * slope_direction, 1500 * delta)
+				velocity.x = move_toward(velocity.x, sliding_speed * slope_direction, 1250 * delta)
 			else:
 				velocity.x = move_toward(velocity.x, 0, 30)
 		else:
@@ -212,9 +236,12 @@ func jump():
 		if Input.is_action_pressed("move_slide") and is_on_floor():
 			if is_sliding:
 				is_sliding = false
+			#if slide_cooldown.time_left > 0:
+				#slide_cooldown.stop()
+			can_slide_boost = true
 			sprite.scale = Vector2(0.9, 1.2)
 			velocity.y = jump_velocity * 0.8
-			velocity.x = velocity.x * 1.4
+			velocity.x += 600 * direction
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
 			print("wall jump")
@@ -258,23 +285,25 @@ func crouch():
 		slide_buffer = false
 		sprite.scale = Vector2(1.3, 0.7)
 		if not can_stand and direction != 0:
-			velocity.x = direction * speed * slide_boost
+			do_slide_boost()
 		if is_crouching:
 			return
 		is_crouching = true
 		slide_duration.start()
-		if not is_sliding:
-			if direction != 0 and slide_cooldown.is_stopped():
-				print("we slide boost")
-				slide_cooldown.start()
-				can_slide_boost = false
-				velocity.x = direction * speed * slide_boost
+		if direction != 0 and slide_cooldown.is_stopped():
+			print("we slide boost")
+			slide_cooldown.start()
+			can_slide_boost = false
+			do_slide_boost()
 		hurt_shape.disabled = true
 		collision_feet.disabled = true
 		
 		slide_hurt_shape.disabled = false
 		collision_slide.disabled = false
-	
+
+func do_slide_boost():
+	velocity.x = direction * speed * slide_boost
+
 func stand():
 	if not is_crouching:
 		return
@@ -299,9 +328,8 @@ func stand():
 		sprite.rotation = 0
 
 func slide(delta):
+	slope = get_floor_normal().angle()
 	if is_crouching and is_on_floor():
-		var slope = get_floor_normal().angle()
-		print(rad_to_deg(slope))
 		if rad_to_deg(slope) < -100:
 			slope_direction = -1
 			is_sliding = true
@@ -321,7 +349,7 @@ func squish():
 
 func update_animations(direction):
 	if direction != 0 and not is_dialog:
-		if velocity.x > speed or velocity.x < speed * -1:
+		if is_p_speed:
 			sprite.play("p_speed")
 		else:
 			sprite.play("walk")
@@ -329,6 +357,8 @@ func update_animations(direction):
 		sprite.play("idle")
 	if is_crouching:
 		sprite.play("slide")
+		#if velocity.x > 2500 or velocity.x < 2500 * -1:
+			#sprite.play("spin")
 	if not is_on_floor():
 		if velocity.y < 0:
 			sprite.play("jump")
@@ -390,7 +420,7 @@ func can_interact():
 
 func _on_slide_duration_timeout() -> void:
 	
-	if is_on_floor():
+	if is_on_floor() and not is_sliding:
 		velocity.x = move_toward(velocity.x, 0, 250)
 
 
@@ -429,6 +459,11 @@ func _on_interact_cooldown_timeout() -> void:
 	if jump_buffer:
 		jump_buffer = false
 	can_move_slide = true
+
+func _on_p_speed_timer_timeout() -> void:
+	#pass
+	if velocity.x < 1900 or velocity.x > -1900:
+		lost_p_speed = true
 
 
 func _on_hud_timer_timeout() -> void:
