@@ -54,6 +54,7 @@ class_name Player extends CharacterBody2D
 var spawn_position = Vector2.ZERO
 
 var direction
+var facing_direction = 1
 var can_coyote_jump = false
 var jump_buffer = false
 var can_slide_boost = true
@@ -94,16 +95,16 @@ func _physics_process(delta: float) -> void:
 			velocity += get_gravity() * delta
 			if velocity.y > 0:
 				fast_fall()
-			else:
-				if is_crouching:
-					velocity += get_gravity() * delta
-	
+			#else:
+				#if is_crouching:
+					#velocity += get_gravity() * delta
+	print(slope_direction)
 	jump()
 	slide(delta)
 	crouch()
 	stand()
 	squish()
-	can_interact()
+	#can_interact()
 	direction = Input.get_axis("move_left", "move_right")
 	update_animations(direction)
 	slope_rotation()
@@ -134,7 +135,10 @@ func _physics_process(delta: float) -> void:
 	
 	# Slow to normal speed when real fast
 	if velocity.x > speed and direction == 1 or velocity.x < -speed and direction == -1:
-		acceleration = 500
+		if not is_on_floor():
+			acceleration = 200
+		else:
+			acceleration = 500
 	else:
 		acceleration = 6000
 		
@@ -159,9 +163,9 @@ func _physics_process(delta: float) -> void:
 
 	
 	# Stop from moving faster than max_move_velocity
-	if velocity.x > 4000:
+	if velocity.x > max_move_velocity:
 		velocity.x = max_move_velocity
-	if velocity.x < -4000:
+	if velocity.x < -max_move_velocity:
 		velocity.x = max_move_velocity * -1
 	#if velocity.y > max_fall_velocity * 0.9:
 		#look_down = 1
@@ -231,7 +235,7 @@ func handle_direction(delta):
 	else:
 		if is_crouching:
 			if is_sliding and is_on_floor():
-				velocity.x = move_toward(velocity.x, sliding_speed * slope_direction, 1250 * delta)
+				velocity.x = move_toward(velocity.x, sliding_speed * slope_direction, 1000 * delta)
 			else:
 				velocity.x = move_toward(velocity.x, 0, 30)
 		else:
@@ -247,15 +251,21 @@ func jump():
 			if can_coyote_jump:
 				can_coyote_jump = false
 		
-		if Input.is_action_pressed("move_slide") and is_on_floor():
+		if Input.is_action_pressed("move_slide") and is_on_floor() and direction == facing_direction:
 			if is_sliding:
 				is_sliding = false
+				if slope_direction != direction:
+					return
 			is_long_jumping = true
 			allow_p_speed = false
 			do_slide_boost()
+			
 			sprite.scale = Vector2(0.9, 1.2)
-			velocity.y = jump_velocity * 0.8
-			velocity.x += 300 * direction
+			velocity.y = jump_velocity * 0.6
+			if is_p_speed:
+				velocity.x += 600 * facing_direction
+			else:
+				velocity.x += 300 * facing_direction
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
 			print("wall jump")
@@ -303,7 +313,8 @@ func crouch():
 		if is_crouching:
 			return
 		is_crouching = true
-		slide_duration.start()
+		if not is_p_speed:
+			slide_duration.start()
 		if direction != 0 and slide_cooldown.is_stopped():
 			print("we slide boost")
 			slide_cooldown.start()
@@ -316,7 +327,13 @@ func crouch():
 		collision_slide.disabled = false
 
 func do_slide_boost():
-	velocity.x = direction * speed * slide_boost
+	if is_p_speed:
+		velocity.x = facing_direction * speed * 2.0
+	else:
+		if slope_direction != 0 and not is_long_jumping:
+			velocity.x = facing_direction * speed * 1.2
+		else:
+			velocity.x = facing_direction * speed * slide_boost
 
 func stand():
 	if not is_crouching:
@@ -343,15 +360,19 @@ func stand():
 
 func slide(delta):
 	slope = get_floor_normal().angle()
-	if is_crouching and is_on_floor():
-		if rad_to_deg(slope) < -100:
-			slope_direction = -1
-			is_sliding = true
-		elif rad_to_deg(slope) > -80:
-			slope_direction = 1
-			is_sliding = true
+	if is_on_floor():
+		if rad_to_deg(slope) != 0:
+			if rad_to_deg(slope) < -100:
+				slope_direction = -1
+			if rad_to_deg(slope) > -80:
+				slope_direction = 1
 		else:
-			is_sliding = false
+			slope_direction = 0
+	
+	if is_crouching and is_on_floor() and slope_direction:
+		is_sliding = true
+	else:
+		is_sliding = false
 
 func squish():
 	var actionables = collision_stand.get_overlapping_bodies()
@@ -424,13 +445,13 @@ func _on_hurtbox_body_entered(body: Node2D) -> void:
 	can_move_slide = false
 	death_timer.start()
 
-func can_interact():
-	var actionables = actionable_finder.get_overlapping_areas()
-	var doors = door_finder.get_overlapping_areas()
-	if actionables.size() > 0 or doors.size() > 0 and not is_dialog:
-		interact_icon.visible = true
-	else:
-		interact_icon.visible = false
+#func can_interact():
+	#var actionables = actionable_finder.get_overlapping_areas()
+	#var doors = door_finder.get_overlapping_areas()
+	#if actionables.size() > 0 or doors.size() > 0 and not is_dialog:
+		#interact_icon.visible = true
+	#else:
+		#interact_icon.visible = false
 
 func _on_slide_duration_timeout() -> void:
 	
@@ -455,6 +476,7 @@ func collect_cheese():
 	is_collecting = true
 
 func change_direction(new_direction):
+	facing_direction = new_direction
 	if acceleration == 1000:
 		turned_around = true
 	if new_direction == -1:

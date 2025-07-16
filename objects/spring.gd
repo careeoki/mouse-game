@@ -5,7 +5,8 @@ extends Area2D
 @onready var collider: CollisionShape2D = $Collider
 
 @export var spring_power = 1.5
-@export var sliding_spring_power = 2.5
+@export var sliding_spring_power = 1
+@export var sliding_spring_boost = 2.3
 
 var player
 
@@ -20,8 +21,10 @@ func _on_body_entered(body: Node2D) -> void:
 			player = body
 			body.air_jumped = true
 			if body.is_crouching and body.direction != 0:
-				body.velocity.x = body.speed * sliding_spring_power * body.direction
-			body.velocity.y = body.jump_velocity * spring_power
+				body.velocity.x = body.speed * sliding_spring_boost * body.direction
+				body.velocity.y = body.jump_velocity * sliding_spring_power
+			else:
+				body.velocity.y = body.jump_velocity * spring_power
 			
 
 
