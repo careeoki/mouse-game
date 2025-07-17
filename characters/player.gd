@@ -136,7 +136,7 @@ func _physics_process(delta: float) -> void:
 	# Slow to normal speed when real fast
 	if velocity.x > speed and direction == 1 or velocity.x < -speed and direction == -1:
 		if not is_on_floor():
-			acceleration = 200
+			acceleration = 400
 		else:
 			acceleration = 500
 	else:
@@ -150,6 +150,8 @@ func _physics_process(delta: float) -> void:
 	if velocity.x > 2300 or velocity.x < -2300:
 		if not is_p_speed and allow_p_speed:
 			is_p_speed = true
+		if not allow_p_speed:
+			is_p_speed = false
 	
 	if is_p_speed:
 		if velocity.x > 2100 or velocity.x < -2100:
@@ -199,8 +201,7 @@ func _physics_process(delta: float) -> void:
 		air_jumped = false
 		if is_long_jumping:
 			allow_p_speed = false
-			if long_jump_timer.time_left == 0:
-				long_jump_timer.start()
+			long_jump_timer.start()
 			is_long_jumping = false
 		if jump_buffer:
 			jump_buffer = false
@@ -331,7 +332,7 @@ func do_slide_boost():
 		velocity.x = facing_direction * speed * 2.0
 	else:
 		if slope_direction != 0 and not is_long_jumping:
-			velocity.x = facing_direction * speed * 1.2
+			velocity.x = facing_direction * speed * 1.5
 		else:
 			velocity.x = facing_direction * speed * slide_boost
 
@@ -359,15 +360,15 @@ func stand():
 		sprite.rotation = 0
 
 func slide(delta):
-	slope = get_floor_normal().angle()
+	slope = rad_to_deg(get_floor_normal().angle())
 	if is_on_floor():
-		if rad_to_deg(slope) != 0:
-			if rad_to_deg(slope) < -100:
-				slope_direction = -1
-			if rad_to_deg(slope) > -80:
-				slope_direction = 1
+		if slope < -100:
+			slope_direction = -1
+		elif slope > -80:
+			slope_direction = 1
 		else:
 			slope_direction = 0
+	
 	
 	if is_crouching and is_on_floor() and slope_direction:
 		is_sliding = true

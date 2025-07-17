@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://pl2rnaiqi6s6"]
+[gd_scene load_steps=15 format=4 uid="uid://pl2rnaiqi6s6"]
 
 [ext_resource type="Script" uid="uid://1l26j032kbek" path="res://levels/level.gd" id="1_ful3k"]
 [ext_resource type="TileSet" uid="uid://4sqjyjowhf0j" path="res://tilesets/outskirts.tres" id="3_3lak2"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b8obnpqag5o46" path="res://assets/actionable.tscn" id="8_u82bq"]
 [ext_resource type="PackedScene" uid="uid://bo448gij1mw6r" path="res://objects/cheese_gate.tscn" id="10_7j7u4"]
 [ext_resource type="PackedScene" uid="uid://cmby3tsa3mhsf" path="res://objects/p_boost.tscn" id="10_rswh4"]
+[ext_resource type="PackedScene" uid="uid://bplgmp033tq5d" path="res://levels/backgrounds/test_background.tscn" id="11_ahou7"]
 [ext_resource type="PackedScene" uid="uid://dvrt2nk5b5oi7" path="res://objects/cheese.tscn" id="11_rswh4"]
 [ext_resource type="PackedScene" uid="uid://bcatcel8fkw83" path="res://objects/door.tscn" id="12_ahou7"]
 
@@ -163,7 +164,8 @@ cheese_name = "Really Really Really Long Cheese"
 
 [node name="Door" parent="." instance=ExtResource("12_ahou7")]
 position = Vector2(-5184, -1600)
-level = "uid://bwxvf0mj1sqh"
+level = "uid://5w6gybyo32m3"
+target_door = "ExitLeft"
 
 [node name="Actionable" parent="." instance=ExtResource("8_u82bq")]
 position = Vector2(-4480, -1664)
@@ -184,3 +186,5 @@ position = Vector2(-9984, 1344)
 [node name="PBoost3" parent="." instance=ExtResource("10_rswh4")]
 position = Vector2(-21568, 192)
 direction = 1
+
+[node name="TestBack" parent="." instance=ExtResource("11_ahou7")]
