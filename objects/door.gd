@@ -17,13 +17,6 @@ func _ready() -> void:
 	monitoring = true
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed("move_up"):
-		var actionables = door.get_overlapping_bodies()
-		if actionables.size() > 0:
-			LevelManager.load_new_level(level, target_door)
-			
-			return
 
 func _place_player() -> void:
 	if name != LevelManager.target_transition:
@@ -33,4 +26,5 @@ func _place_player() -> void:
 	print(global_position)
 
 func action():
-	print("it's a door, dumbass")
+	print("it's a DOOR, luigi")
+	LevelManager.load_new_level(level, target_door)

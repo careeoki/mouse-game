@@ -3,21 +3,40 @@
 [ext_resource type="Texture2D" uid="uid://b4qqxv070hu5j" path="res://assets/backgrounds/retro_hills.png" id="1_cmi5u"]
 
 [node name="TestBack" type="Node2D"]
+z_index = -50
 
 [node name="Sky" type="Parallax2D" parent="."]
-repeat_size = Vector2(1152, 0)
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(1920, 1080)
+repeat_times = 4
 
 [node name="ColorRect" type="ColorRect" parent="Sky"]
 z_index = -2
-offset_right = 1152.0
-offset_bottom = 648.0
-color = Color(0.52, 0.8, 1, 1)
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.61, 0.896, 1, 1)
 
 [node name="Hills" type="Parallax2D" parent="."]
-scroll_scale = Vector2(1.5, 1.5)
-repeat_size = Vector2(1152, 1)
+scroll_scale = Vector2(0.2, 0.2)
+repeat_size = Vector2(1920, 0)
+repeat_times = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="Hills"]
+modulate = Color(1, 1, 1, 0.486275)
 z_index = -1
-position = Vector2(576, 324)
+position = Vector2(0, -528)
+scale = Vector2(1.67969, 3.04784)
 texture = ExtResource("1_cmi5u")
+centered = false
+
+[node name="Hills2" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.5, 0.5)
+repeat_size = Vector2(1920, 0)
+repeat_times = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="Hills2"]
+z_index = -1
+position = Vector2(0, -65)
+scale = Vector2(1.67969, 3.04784)
+texture = ExtResource("1_cmi5u")
+centered = false

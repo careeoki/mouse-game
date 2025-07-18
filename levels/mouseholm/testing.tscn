@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://pl2rnaiqi6s6"]
+[gd_scene load_steps=16 format=4 uid="uid://pl2rnaiqi6s6"]
 
 [ext_resource type="Script" uid="uid://1l26j032kbek" path="res://levels/level.gd" id="1_ful3k"]
 [ext_resource type="TileSet" uid="uid://4sqjyjowhf0j" path="res://tilesets/outskirts.tres" id="3_3lak2"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cmby3tsa3mhsf" path="res://objects/p_boost.tscn" id="10_rswh4"]
 [ext_resource type="PackedScene" uid="uid://bplgmp033tq5d" path="res://levels/backgrounds/test_background.tscn" id="11_ahou7"]
 [ext_resource type="PackedScene" uid="uid://dvrt2nk5b5oi7" path="res://objects/cheese.tscn" id="11_rswh4"]
+[ext_resource type="PackedScene" uid="uid://gt7mcmaiig3t" path="res://objects/hungry_door.tscn" id="12_a232b"]
 [ext_resource type="PackedScene" uid="uid://bcatcel8fkw83" path="res://objects/door.tscn" id="12_ahou7"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ph6ir"]
@@ -188,3 +189,8 @@ position = Vector2(-21568, 192)
 direction = 1
 
 [node name="TestBack" parent="." instance=ExtResource("11_ahou7")]
+
+[node name="HungryDoor" parent="." instance=ExtResource("12_a232b")]
+position = Vector2(-7680, -1664)
+level = "uid://buobyt8ctt5hh"
+cost = 30

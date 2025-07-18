@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://gt7mcmaiig3t"]
+
+[ext_resource type="Texture2D" uid="uid://dpyfrqqfpiosd" path="res://assets/objects/hungry_door.png" id="1_kqam1"]
+[ext_resource type="Script" uid="uid://bt6lgcii7mls8" path="res://objects/hungry_door.gd" id="1_psnw1"]
+[ext_resource type="PackedScene" uid="uid://d0vxr4jg6hndo" path="res://objects/persistent_data_handler.tscn" id="3_0grcv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_psnw1"]
+size = Vector2(208, 208)
+
+[node name="HungryDoor" type="Area2D"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_psnw1")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_kqam1")
+hframes = 2
+
+[node name="Collider" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_psnw1")
+
+[node name="BubbleMarker" type="Marker2D" parent="."]
+position = Vector2(0, -128)
+
+[node name="IsFed" parent="." instance=ExtResource("3_0grcv")]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

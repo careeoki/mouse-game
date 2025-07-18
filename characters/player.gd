@@ -30,7 +30,6 @@ class_name Player extends CharacterBody2D
 @onready var collision_feet: CollisionShape2D = $CollisionFeet
 @onready var collision_slide: CollisionShape2D = $CollisionSlide
 @onready var actionable_finder: Area2D = $ActionableFinder
-@onready var door_finder: Area2D = $DoorFinder #this is so fucking dumb
 @onready var collision_stand: Area2D = $CollisionStand
 @onready var player_camera: Camera2D = $PlayerCamera
 @onready var bubble_marker: Marker2D = $BubbleMarker
@@ -98,7 +97,7 @@ func _physics_process(delta: float) -> void:
 			#else:
 				#if is_crouching:
 					#velocity += get_gravity() * delta
-	print(slope_direction)
+	
 	jump()
 	slide(delta)
 	crouch()
@@ -417,13 +416,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:
 			actionables[0].action()
-			player_camera.focus_zoom()
-			is_dialog = true
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
 		interact_cooldown.start()
 		velocity = Vector2.ZERO
 		player_camera.reset_zoom()
+
+func dialog_start():
+	player_camera.focus_zoom()
+	is_dialog = true
+	velocity.x = 0
 
 func _ready():
 	Dialogic.timeline_ended.connect(_on_timeline_ended)

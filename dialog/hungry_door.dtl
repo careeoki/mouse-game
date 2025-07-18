@@ -1,0 +1,8 @@
+empty: (It's a hungry door…)
+empty: (Feed it {cracker_cost} crackers to open?)
+- Yes
+	if {latest_crackers} >= {cracker_cost}:
+		[signal arg="open_hungry_door"]
+	else:
+		mable: I don't have enough crackers.
+- Hell no

@@ -24,6 +24,7 @@ PlayerManager="*res://PlayerManager.gd"
 LevelManager="*res://LevelManager.gd"
 SceneTransition="*res://UI/transitions/scene_transition.tscn"
 Dialogic="*res://addons/dialogic/Core/DialogicGameHandler.gd"
+LoadStyle="*res://load_style.gd"
 
 [dialogic]
 
@@ -33,13 +34,17 @@ directories/dch_directory={
 "pants_guy": "res://dialog/characters/pants_guy.dch"
 }
 directories/dtl_directory={
+"hungry_door": "res://dialog/hungry_door.dtl",
 "if_this_works_i_kill_you": "res://if_this_works_i_kill_you.dtl",
 "pants_guy": "res://dialog/pants_guy.dtl",
 "testi": "res://dialog/testi.dtl"
 }
 layout/style_list=["res://UI/dialog/bubble.tres"]
 layout/default_style="res://UI/dialog/bubble.tres"
-variables={}
+variables={
+"cracker_cost": 0,
+"latest_crackers": 0
+}
 extensions_folder="res://addons/dialogic_additions"
 text/letter_speed=0.02
 text/initial_text_reveal_skippable=true
@@ -68,7 +73,6 @@ runtime/balloon_path="res://dialog/balloon.tscn"
 
 [display]
 
-window/size/mode=2
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

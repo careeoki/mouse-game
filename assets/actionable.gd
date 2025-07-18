@@ -30,6 +30,7 @@ func action() -> void:
 			player.change_direction(1)
 		player.move_to(global_position.x + (256 * move_direction))
 		
+	player.dialog_start()
 	var layout = Dialogic.start(timeline)
 	layout.register_character(load(character), bubble_marker)
 	layout.register_character(load("res://dialog/characters/mable.dch"), player.bubble_marker)
