@@ -73,6 +73,7 @@ runtime/balloon_path="res://dialog/balloon.tscn"
 
 [display]
 
+window/size/mode=2
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
