@@ -6,6 +6,7 @@ class_name Player extends CharacterBody2D
 @export var acceleration = 6000
 @export var p_acceleration = 5500
 @export var friction = 120
+@export var air_resistance = 80
 @export var jump_velocity = -2900
 @export var wall_jump_boost = 1000
 @export var long_jump_boost = 2200
@@ -239,19 +240,22 @@ func handle_direction(delta):
 			else:
 				velocity.x = move_toward(velocity.x, 0, 30)
 		else:
-			velocity.x = move_toward(velocity.x, 0, friction)
+			if is_on_floor():
+				velocity.x = move_toward(velocity.x, 0, friction)
+			else:
+				velocity.x = move_toward(velocity.x, 0, air_resistance)
 			is_p_speed = false
 
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
-		if is_on_floor() or can_coyote_jump:
+		if is_on_floor() or can_coyote_jump and not is_crouching:
 			print("normal jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			velocity.y = jump_velocity
 			if can_coyote_jump:
 				can_coyote_jump = false
 		
-		if Input.is_action_pressed("move_slide") and is_on_floor() and direction == facing_direction:
+		if Input.is_action_pressed("move_slide") and direction == facing_direction and is_on_floor() or can_coyote_jump:
 			if is_sliding:
 				is_sliding = false
 				if slope_direction != direction:
@@ -259,7 +263,8 @@ func jump():
 			is_long_jumping = true
 			allow_p_speed = false
 			do_slide_boost()
-			
+			if can_coyote_jump:
+				can_coyote_jump = false
 			sprite.scale = Vector2(0.9, 1.2)
 			velocity.y = jump_velocity * 0.6
 			if is_p_speed:

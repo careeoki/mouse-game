@@ -1,17 +1,15 @@
 class_name Actionable extends Area2D
-@export var timeline: String = "testi"
-@export var character: String = "empty"
+@export var timeline: String = "res://dialog/testi.dtl"
+@export var character: String = "res://dialog/characters/empty.dch"
 @onready var bubble_marker: Node2D = $BubbleMarker
-@onready var sprite: Sprite2D = $Sprite2D
 @onready var personal_space: Area2D = $PersonalSpace
-
-@export_file("*.png") var image
+@export var personal_space_distance = 256
 
 var player
 var move_direction
 
-func _ready() -> void:
-	sprite.texture = load(image)
+#func _ready() -> void:
+	#get_parent().timeline = timeline
 
 func _on_body_entered(body: Node2D) -> void:
 	player = body
@@ -28,7 +26,7 @@ func action() -> void:
 		else:
 			move_direction = -1
 			player.change_direction(1)
-		player.move_to(global_position.x + (256 * move_direction))
+		player.move_to(global_position.x + (personal_space_distance * move_direction))
 		
 	player.dialog_start()
 	var layout = Dialogic.start(timeline)

@@ -37,6 +37,7 @@ directories/dtl_directory={
 "hungry_door": "res://dialog/hungry_door.dtl",
 "if_this_works_i_kill_you": "res://if_this_works_i_kill_you.dtl",
 "pants_guy": "res://dialog/pants_guy.dtl",
+"sign_interact": "res://dialog/sign_interact.dtl",
 "testi": "res://dialog/testi.dtl"
 }
 layout/style_list=["res://UI/dialog/bubble.tres"]

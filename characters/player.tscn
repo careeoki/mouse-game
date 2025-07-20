@@ -295,14 +295,14 @@ metadata/_custom_type_script = "uid://1xluodkpnre3"
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
-offset = Vector2(0, -260)
-zoom = Vector2(0.22, 0.22)
+offset = Vector2(0, -230)
+zoom = Vector2(0.24, 0.24)
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 drag_vertical_enabled = true
 drag_left_margin = 0.1
-drag_top_margin = 0.35
+drag_top_margin = 0.4
 drag_right_margin = 0.1
 drag_bottom_margin = 0.0
 editor_draw_drag_margin = true
