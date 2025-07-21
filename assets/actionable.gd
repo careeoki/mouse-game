@@ -8,8 +8,8 @@ class_name Actionable extends Area2D
 var player
 var move_direction
 
-#func _ready() -> void:
-	#get_parent().timeline = timeline
+func _ready() -> void:
+	Dialogic.timeline_ended.connect(_on_timeline_ended)
 
 func _on_body_entered(body: Node2D) -> void:
 	player = body
@@ -32,3 +32,7 @@ func action() -> void:
 	var layout = Dialogic.start(timeline)
 	layout.register_character(load(character), bubble_marker)
 	layout.register_character(load("res://dialog/characters/mable.dch"), player.bubble_marker)
+
+
+func _on_timeline_ended():
+	pass

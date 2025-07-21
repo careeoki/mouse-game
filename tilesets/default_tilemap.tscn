@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://36pbgtog22d5"]
+
+[ext_resource type="TileSet" uid="uid://4sqjyjowhf0j" path="res://tilesets/outskirts.tres" id="1_4uf7l"]
+[ext_resource type="Script" uid="uid://bpgtamothcaib" path="res://tilesets/LevelTileMap.gd" id="2_8tybs"]
+
+[node name="DefaultTilemap" type="TileMapLayer"]
+tile_set = ExtResource("1_4uf7l")
+rendering_quadrant_size = 128
+script = ExtResource("2_8tybs")

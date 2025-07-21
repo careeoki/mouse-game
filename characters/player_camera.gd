@@ -1,5 +1,6 @@
 extends Camera2D
 
+@onready var smoothing_timer: Timer = $SmoothingTimer
 @onready var player: Player = $".."
 var look_tween: Tween
 var look_dir = 0
@@ -8,6 +9,8 @@ var default_zoom: Vector2
 
 func _ready() -> void:
 	default_zoom = zoom
+	LevelManager.tilemap_bounds_changed.connect(update_limits)
+	update_limits(LevelManager.current_tilemap_bounds)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -18,6 +21,17 @@ func _process(delta: float) -> void:
 		if look_tween:
 			look_tween.kill()
 		position.x = 0
+	if not position_smoothing_enabled and smoothing_timer.is_stopped():
+		smoothing_timer.start()
+
+func update_limits(bounds : Array[Vector2]) -> void:
+	if bounds == []:
+		return
+	limit_left = int(bounds[0].x)
+	limit_top = int(bounds[0].y)
+	limit_right = int(bounds[1].x)
+	limit_bottom = int(bounds[1].y)
+	pass
 
 func lookahead(look_direction: int):
 	look_tween = create_tween()
@@ -50,3 +64,7 @@ func focus_zoom():
 func reset_zoom():
 	var tween = create_tween()
 	tween.tween_property(self, "zoom", default_zoom, 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+
+
+func _on_smoothing_timer_timeout() -> void:
+	position_smoothing_enabled = true

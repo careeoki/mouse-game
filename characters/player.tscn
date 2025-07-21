@@ -308,6 +308,10 @@ drag_bottom_margin = 0.0
 editor_draw_drag_margin = true
 script = ExtResource("12_6rrl0")
 
+[node name="SmoothingTimer" type="Timer" parent="PlayerCamera"]
+wait_time = 0.02
+one_shot = true
+
 [node name="InteractIcon" type="Sprite2D" parent="."]
 visible = false
 z_index = 1
@@ -363,6 +367,7 @@ text = "0"
 [connection signal="timeout" from="PSpeedTimer" to="." method="_on_p_speed_timer_timeout"]
 [connection signal="timeout" from="LongJumpTimer" to="." method="_on_long_jump_timer_timeout"]
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
+[connection signal="timeout" from="PlayerCamera/SmoothingTimer" to="PlayerCamera" method="_on_smoothing_timer_timeout"]
 [connection signal="timeout" from="CameraTweenTimer" to="." method="_on_camera_tween_timer_timeout"]
 [connection signal="timeout" from="InteractCooldown" to="." method="_on_interact_cooldown_timeout"]
 [connection signal="timeout" from="HUDTimer" to="." method="_on_hud_timer_timeout"]

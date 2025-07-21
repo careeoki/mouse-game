@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://d3l4n05ojcl1c"]
+[gd_scene load_steps=9 format=3 uid="uid://d3l4n05ojcl1c"]
 
 [ext_resource type="Script" uid="uid://bdyyjmti00e7y" path="res://objects/cracker.gd" id="1_y2ajn"]
 [ext_resource type="Texture2D" uid="uid://5s5sx3b30l1o" path="res://assets/objects/cracker_spin.png" id="2_y2ajn"]
+[ext_resource type="AudioStream" uid="uid://be5islccnrrlk" path="res://assets/sound/cracker.wav" id="3_rolyy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rolyy"]
 atlas = ExtResource("2_y2ajn")
@@ -49,4 +50,8 @@ sprite_frames = SubResource("SpriteFrames_y2ajn")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_rolyy")
 
+[node name="CollectSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_rolyy")
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="finished" from="CollectSound" to="." method="_on_collect_sound_finished"]

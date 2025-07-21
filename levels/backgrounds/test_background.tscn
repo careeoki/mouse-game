@@ -14,7 +14,7 @@ repeat_times = 4
 z_index = -2
 offset_right = 1920.0
 offset_bottom = 1080.0
-color = Color(0.564, 0.8648, 0.94, 1)
+color = Color(0.6, 0.85098, 0.917647, 1)
 
 [node name="Hills" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.2, 0.2)

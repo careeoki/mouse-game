@@ -20,7 +20,9 @@ func add_player_instance() -> void:
 	add_child(hud)
 
 func set_player_position(_new_pos : Vector2) -> void:
+	player.player_camera.position_smoothing_enabled = false
 	player.global_position = _new_pos
+
 
 func update_spawn_position(_new_pos : Vector2) -> void:
 	player.spawn_position = _new_pos

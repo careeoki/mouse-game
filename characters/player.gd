@@ -495,7 +495,8 @@ func change_direction(new_direction):
 	tail_end.position.x = tail_end_initial * new_direction
 
 func move_to(new_pos):
-	global_position.x = new_pos
+	var tween = create_tween()
+	tween.tween_property(self, "global_position:x", new_pos, 0.2)
 
 func _on_interact_cooldown_timeout() -> void:
 	if is_dialog:
