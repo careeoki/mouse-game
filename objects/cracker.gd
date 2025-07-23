@@ -11,6 +11,7 @@ func _ready() -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if not is_collected:
+		collect_sound.pitch_scale = randf_range(0.9, 1.1)
 		collect_sound.play()
 		EventManager.cracker_collected(value)
 		is_collected = true

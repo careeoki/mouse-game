@@ -86,6 +86,10 @@ var camera_y = 0
 var slope_direction = 0
 var slope
 
+var moving_platform_speed = Vector2.ZERO
+var moving_platform_speed_bonus = Vector2.ZERO
+
+
 
 func _physics_process(delta: float) -> void:
 	sprite.scale.x = move_toward(sprite.scale.x, 1, 1 * delta)
@@ -99,7 +103,7 @@ func _physics_process(delta: float) -> void:
 			#else:
 				#if is_crouching:
 					#velocity += get_gravity() * delta
-	
+	print(moving_platform_speed_bonus)
 	jump()
 	slide(delta)
 	crouch()
@@ -119,6 +123,9 @@ func _physics_process(delta: float) -> void:
 	if not can_move_slide:
 		look_direction = 0
 		player_camera.reset_vertical()
+	
+	moving_platform_speed = get_platform_velocity()
+	
 	# Started to fall
 	if was_on_floor && is_on_floor() && velocity.y >= 0:
 		can_coyote_jump = true
@@ -199,6 +206,7 @@ func _physics_process(delta: float) -> void:
 		sprite.scale = Vector2(1.3, 0.7)
 		#player_camera.reset_vertical()
 		last_wall_jump = Vector2.ZERO
+		moving_platform_speed_bonus = Vector2.ZERO
 		can_slide_boost = true
 		air_jumped = false
 		if is_long_jumping:
@@ -223,9 +231,9 @@ func handle_direction(delta):
 	var direction := Input.get_axis("move_left", "move_right")
 	if direction and not is_crouching and can_move_slide and not is_dialog:
 		if is_p_speed:
-			velocity.x = move_toward(velocity.x, p_speed * direction, p_acceleration * delta)
+			velocity.x = move_toward(velocity.x, (p_speed + moving_platform_speed_bonus.x) * direction, p_acceleration * delta)
 		else:
-			velocity.x = move_toward(velocity.x, speed * direction, acceleration * delta)
+			velocity.x = move_toward(velocity.x, (speed + moving_platform_speed_bonus.x) * direction, acceleration * delta)
 		if direction == -1:
 			change_direction(-1)
 			if velocity.x < -1300 and velocity.y == 0:
@@ -246,7 +254,7 @@ func handle_direction(delta):
 			if is_on_floor():
 				velocity.x = move_toward(velocity.x, 0, friction)
 			else:
-				velocity.x = move_toward(velocity.x, 0, air_resistance)
+				velocity.x = move_toward(velocity.x, 0 + moving_platform_speed_bonus.x, air_resistance)
 			is_p_speed = false
 
 func jump():
@@ -255,6 +263,7 @@ func jump():
 			sound_effects.play_sound("jump")
 			print("normal jump")
 			sprite.scale = Vector2(0.7, 1.3)
+			moving_platform_speed_bonus += moving_platform_speed
 			velocity.y = jump_velocity
 			if can_coyote_jump:
 				can_coyote_jump = false
@@ -278,12 +287,12 @@ func jump():
 				velocity.x += 300 * facing_direction
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
-			sound_effects.play_sound("jump")
 			print("wall jump")
 			var wall_normal = get_wall_normal()
 			if wall_jump_timer.time_left > 0.0:
 				wall_normal = was_wall_normal
 			if wall_normal == Vector2.LEFT and not last_wall_jump == Vector2.LEFT:
+				sound_effects.play_sound("jump")
 				wall_jump_timer.start()
 				is_wall_jumping = true
 				last_wall_jump = Vector2.LEFT
@@ -291,6 +300,7 @@ func jump():
 				velocity.x = wall_normal.x * wall_jump_boost
 				velocity.y = jump_velocity
 			if wall_normal == Vector2.RIGHT and not last_wall_jump == Vector2.RIGHT:
+				sound_effects.play_sound("jump")
 				wall_jump_timer.start()
 				is_wall_jumping = true
 				last_wall_jump = Vector2.RIGHT

@@ -52,6 +52,7 @@ shape = SubResource("CircleShape2D_rolyy")
 
 [node name="CollectSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_rolyy")
+bus = &"Sounds"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="finished" from="CollectSound" to="." method="_on_collect_sound_finished"]

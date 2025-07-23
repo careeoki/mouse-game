@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=37 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -20,6 +20,7 @@
 [ext_resource type="Script" uid="uid://dh0t5ss55angs" path="res://characters/player_sound.gd" id="18_ke0a4"]
 [ext_resource type="AudioStream" uid="uid://be0oounebqt5l" path="res://assets/sound/jump.wav" id="19_41yun"]
 [ext_resource type="AudioStream" uid="uid://li1qtnq6w0lm" path="res://assets/sound/land.wav" id="20_41yun"]
+[ext_resource type="AudioStream" uid="uid://ds1srno2dv4t" path="res://assets/sound/p_speed.ogg" id="21_svrv0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_41yun"]
 atlas = ExtResource("9_lcfw7")
@@ -294,8 +295,6 @@ rope_path = NodePath("..")
 rope_position = 0.0
 metadata/_custom_type_script = "uid://1xluodkpnre3"
 
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
-
 [node name="PlayerCamera" type="Camera2D" parent="."]
 offset = Vector2(0, -230)
 zoom = Vector2(0.25, 0.25)
@@ -365,10 +364,15 @@ script = ExtResource("18_ke0a4")
 
 [node name="Jump" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("19_41yun")
+pitch_scale = 1.1
 bus = &"Sounds"
 
 [node name="Land" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("20_41yun")
+bus = &"Sounds"
+
+[node name="Pspeed" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("21_svrv0")
 bus = &"Sounds"
 
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]

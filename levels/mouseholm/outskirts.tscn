@@ -45,6 +45,7 @@ cheese_name = "Your Fist Cheese!"
 
 [node name="Sign" parent="." instance=ExtResource("7_pegqk")]
 position = Vector2(-17024, -64)
+timeline = "res://dialog/sign_interact.dtl"
 
 [node name="Hiker" parent="." instance=ExtResource("8_pegqk")]
 position = Vector2(-19584, -384)
