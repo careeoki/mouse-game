@@ -48,3 +48,8 @@ position = Vector2(-17024, -64)
 
 [node name="Hiker" parent="." instance=ExtResource("8_pegqk")]
 position = Vector2(-19584, -384)
+
+[node name="Sign2" parent="." instance=ExtResource("7_pegqk")]
+position = Vector2(-20928, -320)
+timeline = "res://dialog/pants_guy.dtl"
+character = "res://dialog/characters/pants_guy.dch"

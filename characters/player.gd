@@ -34,6 +34,7 @@ class_name Player extends CharacterBody2D
 @onready var collision_stand: Area2D = $CollisionStand
 @onready var player_camera: Camera2D = $PlayerCamera
 @onready var bubble_marker: Marker2D = $BubbleMarker
+@onready var sound_effects: Node2D = $SoundEffects
 
 
 @onready var coyote_timer = $CoyoteTimer
@@ -194,6 +195,7 @@ func _physics_process(delta: float) -> void:
 	
 	# Touched ground
 	if !was_on_floor && is_on_floor():
+		sound_effects.play_sound("land")
 		sprite.scale = Vector2(1.3, 0.7)
 		#player_camera.reset_vertical()
 		last_wall_jump = Vector2.ZERO
@@ -206,6 +208,7 @@ func _physics_process(delta: float) -> void:
 		if jump_buffer:
 			jump_buffer = false
 			velocity.y = jump_velocity
+			sound_effects.play_sound("jump")
 			print("bugger")
 		if Input.is_action_pressed("move_slide"):
 			slide_buffer = true
@@ -249,6 +252,7 @@ func handle_direction(delta):
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
 		if is_on_floor() or can_coyote_jump and not is_crouching:
+			sound_effects.play_sound("jump")
 			print("normal jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			velocity.y = jump_velocity
@@ -256,6 +260,7 @@ func jump():
 				can_coyote_jump = false
 		
 		if Input.is_action_pressed("move_slide") and direction == facing_direction and is_on_floor() or can_coyote_jump:
+			sound_effects.play_sound("jump")
 			if is_sliding:
 				is_sliding = false
 				if slope_direction != direction:
@@ -273,6 +278,7 @@ func jump():
 				velocity.x += 300 * facing_direction
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
+			sound_effects.play_sound("jump")
 			print("wall jump")
 			var wall_normal = get_wall_normal()
 			if wall_jump_timer.time_left > 0.0:
