@@ -29,11 +29,13 @@ LoadStyle="*res://load_style.gd"
 [dialogic]
 
 directories/dch_directory={
+"chef_fauxmage": "res://dialog/characters/chef_fauxmage.dch",
 "empty": "res://dialog/characters/empty.dch",
 "mable": "res://dialog/characters/mable.dch",
 "pants_guy": "res://dialog/characters/pants_guy.dch"
 }
 directories/dtl_directory={
+"fauxmage_test": "res://dialog/fauxmage_test.dtl",
 "hungry_door": "res://dialog/hungry_door.dtl",
 "if_this_works_i_kill_you": "res://if_this_works_i_kill_you.dtl",
 "pants_guy": "res://dialog/pants_guy.dtl",
@@ -67,6 +69,7 @@ save/encryption_on_exports_only=true
 text/autopauses={}
 audio/max_channels=4.0
 text/autoadvance_enabled=false
+audio/type_sound_bus="Sounds"
 
 [dialogue_manager]
 
@@ -74,7 +77,7 @@ runtime/balloon_path="res://dialog/balloon.tscn"
 
 [display]
 
-window/size/mode=2
+window/size/mode=3
 window/stretch/mode="canvas_items"
 
 [editor]

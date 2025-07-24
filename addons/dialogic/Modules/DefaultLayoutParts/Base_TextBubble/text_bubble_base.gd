@@ -4,7 +4,7 @@ extends DialogicLayoutBase
 ## This layout won't do anything on its own
 
 var bubbles: Array = []
-var registered_characters: Dictionary = {}
+static var registered_characters: Dictionary = {}
 
 @export_group("Main")
 @export_range(1, 25, 1) var bubble_count: int = 2

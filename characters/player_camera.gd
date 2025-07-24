@@ -6,6 +6,7 @@ var look_tween: Tween
 var look_dir = 0
 var vertical_look_dir = 0
 var default_zoom: Vector2
+var close_zoom: Vector2 = Vector2(0.35, 0.35)
 
 func _ready() -> void:
 	default_zoom = zoom
@@ -59,7 +60,7 @@ func focus_zoom():
 	var tween = create_tween()
 	look_dir = 0
 	position = Vector2(0, 0)
-	tween.tween_property(self, "zoom", Vector2(0.3, 0.3), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "zoom", close_zoom, 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 func reset_zoom():
 	var tween = create_tween()

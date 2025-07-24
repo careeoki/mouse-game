@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=4 uid="uid://dvmvgj3y1bly4"]
+[gd_scene load_steps=6 format=4 uid="uid://dvmvgj3y1bly4"]
 
 [ext_resource type="Script" uid="uid://1l26j032kbek" path="res://levels/level.gd" id="1_yc464"]
 [ext_resource type="PackedScene" uid="uid://36pbgtog22d5" path="res://tilesets/default_tilemap.tscn" id="2_mcn2j"]
 [ext_resource type="PackedScene" uid="uid://cq3hg1d8yydqy" path="res://objects/level_transition.tscn" id="3_bl6cj"]
+[ext_resource type="PackedScene" uid="uid://raq1rs1583ho" path="res://characters/chef_fauxmage.tscn" id="4_mcn2j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_01u77"]
 size = Vector2(128, 384)
@@ -21,3 +22,6 @@ target_transition_area = "CityTransition"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LevelTransition"]
 position = Vector2(256, 0)
 shape = SubResource("RectangleShape2D_01u77")
+
+[node name="Sprite2D" parent="." instance=ExtResource("4_mcn2j")]
+position = Vector2(640, -292)

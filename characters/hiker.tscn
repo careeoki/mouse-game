@@ -1,17 +1,32 @@
-[gd_scene load_steps=5 format=3 uid="uid://bmrmg72siq3k0"]
+[gd_scene load_steps=6 format=3 uid="uid://bmrmg72siq3k0"]
 
 [ext_resource type="Texture2D" uid="uid://cie7pcessx8t2" path="res://assets/characters/hiker.png" id="1_a0l2u"]
 [ext_resource type="Script" uid="uid://1j4stm2s7bjx" path="res://characters/npc.gd" id="2_a8q1m"]
 [ext_resource type="PackedScene" uid="uid://b8obnpqag5o46" path="res://assets/actionable.tscn" id="2_msbl8"]
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_msbl8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_a0l2u")
+}],
+"loop": true,
+"name": &"npc_idle",
+"speed": 5.0
+}]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a8q1m"]
 size = Vector2(208, 208)
 
-[node name="Hiker" type="Sprite2D"]
-texture = ExtResource("1_a0l2u")
+[node name="Hiker" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_msbl8")
+animation = &"npc_idle"
 script = ExtResource("2_a8q1m")
 
 [node name="Actionable" parent="." instance=ExtResource("2_msbl8")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Actionable"]
 shape = SubResource("RectangleShape2D_a8q1m")
+
+[node name="BubbleMarker" type="Marker2D" parent="Actionable"]
+position = Vector2(0, -40)

@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://raq1rs1583ho"]
+
+[ext_resource type="Texture2D" uid="uid://byl3bxrsoe1o2" path="res://assets/characters/chef_fauxmage/idle.png" id="1_g5hbt"]
+[ext_resource type="Texture2D" uid="uid://bswmvwgwv7pmc" path="res://assets/characters/chef_fauxmage/smug.png" id="2_amnmt"]
+[ext_resource type="Script" uid="uid://1j4stm2s7bjx" path="res://characters/npc.gd" id="2_c7rvv"]
+[ext_resource type="PackedScene" uid="uid://b8obnpqag5o46" path="res://assets/actionable.tscn" id="3_amnmt"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uqta6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_g5hbt")
+}],
+"loop": true,
+"name": &"npc_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_amnmt")
+}],
+"loop": true,
+"name": &"npc_smug",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uqta6"]
+size = Vector2(384, 256)
+
+[node name="Sprite2D" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_uqta6")
+animation = &"npc_idle"
+script = ExtResource("2_c7rvv")
+timeline = "res://dialog/fauxmage_test.dtl"
+character = "res://dialog/characters/chef_fauxmage.dch"
+
+[node name="Actionable" parent="." instance=ExtResource("3_amnmt")]
+position = Vector2(0, 214)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Actionable"]
+position = Vector2(0, -26)
+shape = SubResource("RectangleShape2D_uqta6")
+
+[node name="BubbleMarker" type="Marker2D" parent="Actionable"]
+position = Vector2(0, -436)

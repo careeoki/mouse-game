@@ -1,0 +1,7 @@
+chef_fauxmage: It is I, the great and talented Chef Fauxmage!
+[signal arg="npc_smug"]
+chef_fauxmage (smug): I am very rich and famous
+mable (serious): Okay...
+chef_fauxmage: You can start praising me whenever you like.
+[signal arg="emote_serious"]
+mable: Why would I do that!?

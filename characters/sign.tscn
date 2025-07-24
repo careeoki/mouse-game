@@ -1,14 +1,26 @@
-[gd_scene load_steps=5 format=3 uid="uid://2fv5atn1h8n8"]
+[gd_scene load_steps=6 format=3 uid="uid://2fv5atn1h8n8"]
 
 [ext_resource type="Texture2D" uid="uid://cp7p8mstjhyuv" path="res://assets/characters/sign.png" id="1_38n5n"]
 [ext_resource type="Script" uid="uid://1j4stm2s7bjx" path="res://characters/npc.gd" id="2_1pp5h"]
 [ext_resource type="PackedScene" uid="uid://b8obnpqag5o46" path="res://assets/actionable.tscn" id="2_hua1v"]
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_hua1v"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_38n5n")
+}],
+"loop": true,
+"name": &"npc_idle",
+"speed": 5.0
+}]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1pp5h"]
 size = Vector2(128, 128)
 
-[node name="Sign" type="Sprite2D"]
-texture = ExtResource("1_38n5n")
+[node name="Sign" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_hua1v")
+animation = &"npc_idle"
 script = ExtResource("2_1pp5h")
 
 [node name="Actionable" parent="." instance=ExtResource("2_hua1v")]
@@ -16,3 +28,5 @@ personal_space_distance = 128
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Actionable"]
 shape = SubResource("RectangleShape2D_1pp5h")
+
+[node name="BubbleMarker" type="Marker2D" parent="Actionable"]

@@ -81,8 +81,8 @@ var look_direction = 0
 var look_down = 0
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
-var checkpoint_manager
 var camera_y = 0
+
 var slope_direction = 0
 var slope
 
@@ -103,15 +103,16 @@ func _physics_process(delta: float) -> void:
 			#else:
 				#if is_crouching:
 					#velocity += get_gravity() * delta
-	print(moving_platform_speed_bonus)
+	
 	jump()
 	slide(delta)
 	crouch()
 	stand()
 	squish()
 	#can_interact()
-	direction = Input.get_axis("move_left", "move_right")
-	update_animations(direction)
+	if not is_dialog:
+		direction = Input.get_axis("move_left", "move_right")
+		update_animations(direction)
 	slope_rotation()
 	handle_direction(delta)
 	var was_on_floor = is_on_floor()
@@ -206,7 +207,10 @@ func _physics_process(delta: float) -> void:
 		sprite.scale = Vector2(1.3, 0.7)
 		#player_camera.reset_vertical()
 		last_wall_jump = Vector2.ZERO
-		moving_platform_speed_bonus = Vector2.ZERO
+		if not moving_platform_speed_bonus == Vector2.ZERO :
+			moving_platform_speed_bonus = Vector2.ZERO
+			if not direction:
+				velocity.x = 0
 		can_slide_boost = true
 		air_jumped = false
 		if is_long_jumping:
@@ -252,7 +256,10 @@ func handle_direction(delta):
 				velocity.x = move_toward(velocity.x, 0, 30)
 		else:
 			if is_on_floor():
-				velocity.x = move_toward(velocity.x, 0, friction)
+				#if moving_platform_speed == Vector2.ZERO:
+					velocity.x = move_toward(velocity.x, 0, friction)
+				#else:
+					#velocity.x = move_toward(velocity.x, 0, 1000)
 			else:
 				velocity.x = move_toward(velocity.x, 0 + moving_platform_speed_bonus.x, air_resistance)
 			is_p_speed = false
@@ -436,6 +443,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("move_up"):
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:
+			actionables[0].player = self
 			actionables[0].action()
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
@@ -450,6 +458,11 @@ func dialog_start():
 
 func _ready():
 	Dialogic.timeline_ended.connect(_on_timeline_ended)
+	Dialogic.signal_event.connect(_on_dialogic_signal)
+
+func _on_dialogic_signal(argument):
+	if  not "npc" in argument:
+		sprite.play(argument)
 
 func _on_timeline_ended():
 	interact_cooldown.start()
