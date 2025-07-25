@@ -17,6 +17,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			control.visible = true
 		else:
 			control.visible = false
+	if Input.is_key_pressed(KEY_F2):
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

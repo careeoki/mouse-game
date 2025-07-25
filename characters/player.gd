@@ -47,7 +47,7 @@ class_name Player extends CharacterBody2D
 @onready var hud_timer: Timer = $HUDTimer
 @onready var p_speed_timer: Timer = $PSpeedTimer
 @onready var long_jump_timer: Timer = $LongJumpTimer
-
+@onready var funny_timer: Timer = $FunnyTimer
 
 @onready var slide_duration: Timer = $SlideDuration
 @onready var slide_cooldown: Timer = $SlideCooldown
@@ -168,9 +168,16 @@ func _physics_process(delta: float) -> void:
 		else:
 			#if p_speed_timer.time_left > 0:
 				#is_p_speed = true
-			if is_p_speed and p_speed_timer.is_stopped():
-				p_speed_timer.start()
-				print("started timer")
+			if is_p_speed:
+				if velocity.x == 0 and is_on_floor():
+					is_p_speed = false
+					sound_effects.play_sound("p_speed_slam")
+					sound_effects.play_sound("punch")
+					is_dialog = true
+					sprite.play("slam")
+					funny_timer.start()
+				elif p_speed_timer.is_stopped():
+					p_speed_timer.start()
 
 	
 	# Stop from moving faster than max_move_velocity
@@ -282,6 +289,7 @@ func jump():
 				if slope_direction != direction:
 					return
 			is_long_jumping = true
+			
 			allow_p_speed = false
 			do_slide_boost()
 			if can_coyote_jump:
@@ -411,7 +419,7 @@ func squish():
 		stand()
 
 func update_animations(direction):
-	if direction != 0 and not is_dialog:
+	if direction != 0 and not is_dialog :
 		if is_p_speed:
 			sprite.play("p_speed")
 		else:
@@ -461,7 +469,7 @@ func _ready():
 	Dialogic.signal_event.connect(_on_dialogic_signal)
 
 func _on_dialogic_signal(argument):
-	if  not "npc" in argument:
+	if "emote" in argument:
 		sprite.play(argument)
 
 func _on_timeline_ended():
@@ -538,13 +546,16 @@ func _on_interact_cooldown_timeout() -> void:
 
 func _on_p_speed_timer_timeout() -> void:
 	#pass
-	if not is_wall_sliding:
-		if velocity.x > 0 and velocity.x < 2000:
-			print("stop p speed")
-			is_p_speed = false
-		if velocity.x < 0 and velocity.x > -2000:
-			print("stop p speed")
-			is_p_speed = false
+	#if not is_wall_sliding:
+	if is_wall_sliding:
+		print("stop p speed")
+		is_p_speed = false
+	if velocity.x > 0 and velocity.x < 2000:
+		print("stop p speed")
+		is_p_speed = false
+	if velocity.x < 0 and velocity.x > -2000:
+		print("stop p speed")
+		is_p_speed = false
 
 func _on_long_jump_timer_timeout() -> void:
 	allow_p_speed = true
@@ -554,3 +565,7 @@ func _on_hud_timer_timeout() -> void:
 	hud_up = true
 	EventManager.player_waiting(true)
 	print("player is sitting around")
+
+
+func _on_funny_timer_timeout() -> void:
+	is_dialog = false
