@@ -63,6 +63,7 @@ var can_stand = true
 var stand_buffer = false
 var slide_buffer = false
 var is_p_speed = false
+var was_p_speed = false
 var is_crouching = false
 var is_sliding = false
 var is_long_jumping = false
@@ -164,6 +165,7 @@ func _physics_process(delta: float) -> void:
 	
 	if is_p_speed:
 		if velocity.x > 2100 or velocity.x < -2100:
+			was_p_speed = true
 			is_p_speed = true
 		else:
 			#if p_speed_timer.time_left > 0:
@@ -445,9 +447,9 @@ func slope_rotation():
 		sprite.rotation = get_floor_normal().angle() + deg_to_rad(90)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed("ui_cancel"):
-		get_tree().reload_current_scene()
-		PlayerManager.set_player_position(spawn_position)
+	#if Input.is_action_just_pressed("ui_cancel"):
+		#get_tree().reload_current_scene()
+		#PlayerManager.set_player_position(spawn_position)
 	if Input.is_action_just_pressed("move_up"):
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:

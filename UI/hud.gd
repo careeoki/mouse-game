@@ -86,6 +86,10 @@ func hud_drop_out():
 	cheese_drop_out()
 	cracker_drop_out()
 
+func both_timers():
+	cheese_drop_timer.start()
+	cracker_drop_timer.start()
+
 func cheese_drop_in(temp: bool):
 	cheese_on_screen = true
 	var tween = create_tween()

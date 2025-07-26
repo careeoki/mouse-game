@@ -9,7 +9,7 @@ extends Node2D
 var p_speed_volume
 
 func _ready() -> void:
-	p_speed_volume = pspeed.volume_db
+	p_speed_volume = pspeed.volume_linear
 
 # Called when the node enters the scene tree for the first time.
 func play_sound(name):
@@ -31,7 +31,7 @@ func _physics_process(delta: float) -> void:
 			pspeed.play()
 	elif pspeed.playing:
 		var tween = create_tween()
-		tween.tween_property(pspeed, "volume_linear", 0, 0.5).set_ease(Tween.EASE_IN)
+		tween.tween_property(pspeed, "volume_linear", 0, 0.4)
 		await tween.finished
 		pspeed.stop()
-		pspeed.volume_linear = 1
+		pspeed.volume_linear = p_speed_volume

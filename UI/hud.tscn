@@ -1,11 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://dop6mqeurmmm7"]
+[gd_scene load_steps=6 format=3 uid="uid://dop6mqeurmmm7"]
 
 [ext_resource type="Script" uid="uid://c0fbmoxdhajwe" path="res://UI/hud.gd" id="1_bytes"]
 [ext_resource type="Texture2D" uid="uid://57idvxg4qdmv" path="res://assets/objects/cracker.png" id="2_2o5uh"]
 [ext_resource type="Texture2D" uid="uid://d117vmbhh0fo0" path="res://assets/ui/death_icon.png" id="3_2o5uh"]
 [ext_resource type="Texture2D" uid="uid://d1j08xltam68a" path="res://assets/objects/cheese.png" id="4_b1lf8"]
+[ext_resource type="PackedScene" uid="uid://bkn8dwvq4qx35" path="res://UI/pause_menu.tscn" id="5_rnl6m"]
 
 [node name="HUD" type="CanvasLayer"]
+process_mode = 3
 script = ExtResource("1_bytes")
 
 [node name="DeathCount" type="Control" parent="."]
@@ -122,6 +124,8 @@ one_shot = true
 [node name="CrackerDropTimer" type="Timer" parent="."]
 wait_time = 4.0
 one_shot = true
+
+[node name="PauseMenu" parent="." instance=ExtResource("5_rnl6m")]
 
 [connection signal="timeout" from="CheeseDropTimer" to="." method="_on_cheese_drop_timer_timeout"]
 [connection signal="timeout" from="CrackerDropTimer" to="." method="_on_cracker_drop_timer_timeout"]
