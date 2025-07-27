@@ -6,6 +6,8 @@ extends Node2D
 @onready var pspeed: AudioStreamPlayer2D = $Pspeed
 @onready var pspeed_slam: AudioStreamPlayer2D = $"Pspeed Slam"
 @onready var punch: AudioStreamPlayer2D = $Punch
+@onready var slide: AudioStreamPlayer2D = $Slide
+
 var p_speed_volume
 
 func _ready() -> void:
@@ -26,6 +28,10 @@ func play_sound(name):
 		punch.play()
 
 func _physics_process(delta: float) -> void:
+	p_speed_check()
+	slide_check()
+
+func p_speed_check():
 	if player.is_p_speed and not player.is_crouching:
 		if not pspeed.playing:
 			pspeed.play()
@@ -35,3 +41,10 @@ func _physics_process(delta: float) -> void:
 		await tween.finished
 		pspeed.stop()
 		pspeed.volume_linear = p_speed_volume
+
+func slide_check():
+	if player.is_crouching and player.is_on_floor() and player.velocity.x:
+		if not slide.playing:
+			slide.play()
+	elif slide.playing:
+		slide.stop()

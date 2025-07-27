@@ -1,0 +1,15 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cuugf37tcsp3"]
+
+[ext_resource type="FontFile" uid="uid://d1hq5cxmitppe" path="res://assets/fonts/CarrieType.ttf" id="1_0eq3d"]
+
+[sub_resource type="FontVariation" id="FontVariation_oxldw"]
+base_font = ExtResource("1_0eq3d")
+variation_embolden = 1.0
+spacing_glyph = 2
+
+[resource]
+Label/colors/font_color = Color(0, 0, 0, 1)
+Label/colors/font_outline_color = Color(1, 1, 1, 1)
+Label/constants/outline_size = 8
+Label/font_sizes/font_size = 48
+Label/fonts/font = SubResource("FontVariation_oxldw")

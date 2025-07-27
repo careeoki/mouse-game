@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://dop6mqeurmmm7"]
+[gd_scene load_steps=7 format=3 uid="uid://dop6mqeurmmm7"]
 
 [ext_resource type="Script" uid="uid://c0fbmoxdhajwe" path="res://UI/hud.gd" id="1_bytes"]
 [ext_resource type="Texture2D" uid="uid://57idvxg4qdmv" path="res://assets/objects/cracker.png" id="2_2o5uh"]
 [ext_resource type="Texture2D" uid="uid://d117vmbhh0fo0" path="res://assets/ui/death_icon.png" id="3_2o5uh"]
+[ext_resource type="Theme" uid="uid://cuugf37tcsp3" path="res://UI/themes/hud.tres" id="4_1ui3w"]
 [ext_resource type="Texture2D" uid="uid://d1j08xltam68a" path="res://assets/objects/cheese.png" id="4_b1lf8"]
 [ext_resource type="PackedScene" uid="uid://bkn8dwvq4qx35" path="res://UI/pause_menu.tscn" id="5_rnl6m"]
 
@@ -33,8 +34,6 @@ offset_left = 64.0
 offset_top = 30.0
 offset_right = 104.0
 offset_bottom = 75.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 32
 text = "0"
 
 [node name="CheeseCount" type="Control" parent="."]
@@ -55,10 +54,7 @@ expand_mode = 2
 
 [node name="CheeseLabel" type="Label" parent="CheeseCount/HFlowContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 40
+theme = ExtResource("4_1ui3w")
 text = "0"
 
 [node name="CrackerCount" type="Control" parent="."]
@@ -83,10 +79,7 @@ expand_mode = 2
 
 [node name="CrackerLabel" type="Label" parent="CrackerCount/HFlowContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 40
+theme = ExtResource("4_1ui3w")
 text = "0"
 horizontal_alignment = 2
 

@@ -29,7 +29,9 @@ overrides = {
 "choices_text_color": "Color(0.707031, 0.707031, 0.707031, 1)",
 "choices_text_color_focus": "Color(0, 0, 0, 1)",
 "choices_text_color_hover": "Color(0, 0, 0, 1)",
-"name_label_enabled": "false"
+"name_label_enabled": "false",
+"normal_font": "\"res://assets/fonts/CarrieType.ttf\"",
+"text_size": "20.0"
 }
 
 [resource]
@@ -43,4 +45,4 @@ layer_info = {
 }
 base_overrides = {}
 layers = Array[ExtResource("1_haqv2")]([])
-metadata/_latest_layer = "10"
+metadata/_latest_layer = "11"

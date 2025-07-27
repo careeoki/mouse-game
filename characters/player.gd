@@ -6,6 +6,7 @@ class_name Player extends CharacterBody2D
 @export var acceleration = 6000
 @export var p_acceleration = 5500
 @export var friction = 120
+@export var slope_friction = 1000
 @export var air_resistance = 80
 @export var jump_velocity = -2900
 @export var wall_jump_boost = 1000
@@ -36,7 +37,7 @@ class_name Player extends CharacterBody2D
 @onready var bubble_marker: Marker2D = $BubbleMarker
 @onready var sound_effects: Node2D = $SoundEffects
 
-
+# 1 million timers
 @onready var coyote_timer = $CoyoteTimer
 @onready var jump_buffer_timer = $JumpBuffer
 @onready var wall_jump_timer = $WallJumpTimer
@@ -157,6 +158,15 @@ func _physics_process(delta: float) -> void:
 	else:
 		p_acceleration = 5000
 	
+	# going upwards a slope is harder than going down
+	if is_sliding:
+		if velocity.x > 0 and slope_direction == -1:
+			slope_friction = 2000
+		elif velocity.x < 0 and slope_direction == 1:
+			slope_friction = 2000
+		else:
+			slope_friction = 1000
+	
 	if velocity.x > 2300 or velocity.x < -2300:
 		if not is_p_speed and allow_p_speed:
 			is_p_speed = true
@@ -260,7 +270,7 @@ func handle_direction(delta):
 	else:
 		if is_crouching:
 			if is_sliding and is_on_floor():
-				velocity.x = move_toward(velocity.x, sliding_speed * slope_direction, 1000 * delta)
+				velocity.x = move_toward(velocity.x, sliding_speed * slope_direction, slope_friction * delta)
 			else:
 				velocity.x = move_toward(velocity.x, 0, 30)
 		else:
@@ -369,7 +379,7 @@ func do_slide_boost():
 		velocity.x = facing_direction * speed * 2.0
 	else:
 		if slope_direction != 0 and not is_long_jumping:
-			velocity.x = facing_direction * speed * 1.5
+			velocity.x = facing_direction * speed * 1.2
 		else:
 			velocity.x = facing_direction * speed * slide_boost
 
@@ -447,9 +457,9 @@ func slope_rotation():
 		sprite.rotation = get_floor_normal().angle() + deg_to_rad(90)
 
 func _unhandled_input(event: InputEvent) -> void:
-	#if Input.is_action_just_pressed("ui_cancel"):
-		#get_tree().reload_current_scene()
-		#PlayerManager.set_player_position(spawn_position)
+	if Input.is_key_pressed(KEY_R):
+		get_tree().reload_current_scene()
+		PlayerManager.set_player_position(spawn_position)
 	if Input.is_action_just_pressed("move_up"):
 		var actionables = actionable_finder.get_overlapping_areas()
 		if actionables.size() > 0:

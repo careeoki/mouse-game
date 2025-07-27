@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=44 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -25,6 +25,7 @@
 [ext_resource type="AudioStream" uid="uid://ds1srno2dv4t" path="res://assets/sound/p_speed.ogg" id="21_svrv0"]
 [ext_resource type="AudioStream" uid="uid://qrbevf3dia3e" path="res://assets/sound/p_speed_slam.wav" id="23_hsn1j"]
 [ext_resource type="AudioStream" uid="uid://qqx50mdtd5d2" path="res://assets/sound/punch.wav" id="25_qp1es"]
+[ext_resource type="AudioStream" uid="uid://csnhcrd26ci6w" path="res://assets/sound/slide.ogg" id="26_qk7w8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qp1es"]
 atlas = ExtResource("9_dx8gg")
@@ -278,6 +279,7 @@ disabled = true
 debug_color = Color(1, 0.011095, 0.0241786, 0.42)
 
 [node name="ActionableFinder" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 8
 
@@ -414,6 +416,9 @@ stream = ExtResource("23_hsn1j")
 [node name="Punch" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("25_qp1es")
 volume_db = -25.0
+
+[node name="Slide" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("26_qk7w8")
 
 [node name="FunnyTimer" type="Timer" parent="."]
 one_shot = true
