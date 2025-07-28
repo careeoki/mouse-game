@@ -22,6 +22,8 @@ func add_player_instance() -> void:
 func set_player_position(_new_pos : Vector2) -> void:
 	player.player_camera.position_smoothing_enabled = false
 	player.global_position = _new_pos
+	await player.global_position == _new_pos
+	player.player_camera.position_smoothing_enabled = true
 
 
 func update_spawn_position(_new_pos : Vector2) -> void:

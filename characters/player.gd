@@ -61,6 +61,7 @@ var can_coyote_jump = false
 var jump_buffer = false
 var can_slide_boost = true
 var can_stand = true
+var is_squished = false
 var stand_buffer = false
 var slide_buffer = false
 var is_p_speed = false
@@ -109,7 +110,7 @@ func _physics_process(delta: float) -> void:
 	jump()
 	slide(delta)
 	crouch()
-	stand()
+	#stand()
 	squish()
 	#can_interact()
 	if not is_dialog:
@@ -165,16 +166,16 @@ func _physics_process(delta: float) -> void:
 		elif velocity.x < 0 and slope_direction == 1:
 			slope_friction = 2000
 		else:
-			slope_friction = 1000
+			slope_friction = 700
 	
-	if velocity.x > 2300 or velocity.x < -2300:
+	if abs(velocity.x) > 2500:
 		if not is_p_speed and allow_p_speed:
 			is_p_speed = true
 		if not allow_p_speed:
 			is_p_speed = false
 	
 	if is_p_speed:
-		if velocity.x > 2100 or velocity.x < -2100:
+		if abs(velocity.x) > 2400:
 			was_p_speed = true
 			is_p_speed = true
 		else:
@@ -205,7 +206,8 @@ func _physics_process(delta: float) -> void:
 	
 	# Check if player is moving
 	if velocity.x == 0 and velocity.y == 0:
-		is_moving = false
+		if is_moving:
+			is_moving = false
 	else:
 		is_moving = true
 	
@@ -294,7 +296,7 @@ func jump():
 			if can_coyote_jump:
 				can_coyote_jump = false
 		
-		if Input.is_action_pressed("move_slide") and direction == facing_direction and is_on_floor() or can_coyote_jump:
+		if is_crouching and direction == facing_direction and is_on_floor() or can_coyote_jump:
 			sound_effects.play_sound("jump")
 			if is_sliding:
 				is_sliding = false
@@ -361,7 +363,7 @@ func crouch():
 		if is_crouching:
 			return
 		is_crouching = true
-		if not is_p_speed:
+		if not is_p_speed and direction:
 			slide_duration.start()
 		if direction != 0 and slide_cooldown.is_stopped():
 			print("we slide boost")
@@ -373,38 +375,48 @@ func crouch():
 		
 		slide_hurt_shape.disabled = false
 		collision_slide.disabled = false
+	if Input.is_action_just_released("move_slide") and slide_duration.is_stopped():
+		stand()
+	if slide_duration.time_left > 0 and velocity.x == 0:
+		slide_duration.stop()
+	if is_crouching and velocity.x == 0 and is_on_wall() and is_on_floor():
+		stand()
+		velocity.x = 1500 * (facing_direction * -1)
+		velocity.y = jump_velocity * 0.3
 
 func do_slide_boost():
-	if is_p_speed:
+	if is_p_speed and allow_p_speed:
 		velocity.x = facing_direction * speed * 2.0
 	else:
 		if slope_direction != 0 and not is_long_jumping:
-			velocity.x = facing_direction * speed * 1.2
+			velocity.x = direction * speed * 1.5
 		else:
-			velocity.x = facing_direction * speed * slide_boost
+			velocity.x = direction * speed * slide_boost
+
 
 func stand():
 	if not is_crouching:
 		return
 
-	if Input.is_action_just_released("move_slide") or stand_buffer and not is_dialog:
-		if stand_buffer:
-			stand_buffer = false
-		if not can_stand:
-			stand_buffer = true
-			return
-		if velocity.y != 0:
-			can_slide_boost = true
-			slide_cooldown.stop()
-		is_crouching = false
-		slide_buffer = false
-		hurt_shape.disabled = false
-		collision_feet.disabled = false
-		is_sliding = false
-		
-		slide_hurt_shape.disabled = true
-		collision_slide.disabled = true
-		sprite.rotation = 0
+	#if Input.is_action_just_released("move_slide") or stand_buffer and not is_dialog:
+	if stand_buffer:
+		stand_buffer = false
+	if not can_stand:
+		stand_buffer = true
+		return
+	if velocity.y != 0:
+		can_slide_boost = true
+		slide_cooldown.stop()
+	is_crouching = false
+	slide_buffer = false
+	hurt_shape.disabled = false
+	collision_feet.disabled = false
+	is_sliding = false
+	is_squished = false
+	
+	slide_hurt_shape.disabled = true
+	collision_slide.disabled = true
+	sprite.rotation = 0
 
 func slide(delta):
 	slope = rad_to_deg(get_floor_normal().angle())
@@ -426,8 +438,10 @@ func squish():
 	var actionables = collision_stand.get_overlapping_bodies()
 	if actionables.size() > 0:
 		can_stand = false
+		is_squished = true
 	else:
 		can_stand = true
+	if is_squished and can_stand:
 		stand()
 
 func update_animations(direction):
@@ -514,6 +528,8 @@ func _on_slide_duration_timeout() -> void:
 	
 	if is_on_floor() and not is_sliding:
 		velocity.x = move_toward(velocity.x, 0, 250)
+	if not Input.is_action_pressed("move_slide"):
+		stand()
 
 
 func _on_slide_cooldown_timeout() -> void:

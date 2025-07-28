@@ -44,7 +44,10 @@ func p_speed_check():
 
 func slide_check():
 	if player.is_crouching and player.is_on_floor() and player.velocity.x:
+		slide.pitch_scale = 0.6 + abs(player.velocity.x) / player.max_move_velocity
+		slide.volume_linear = ( 1.5 * abs(player.velocity.x) / player.max_move_velocity) 
 		if not slide.playing:
 			slide.play()
 	elif slide.playing:
 		slide.stop()
+		slide.seek(0)

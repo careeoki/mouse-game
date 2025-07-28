@@ -22,8 +22,6 @@ func _process(delta: float) -> void:
 		if look_tween:
 			look_tween.kill()
 		position.x = 0
-	if not position_smoothing_enabled and smoothing_timer.is_stopped():
-		smoothing_timer.start()
 
 func update_limits(bounds : Array[Vector2]) -> void:
 	if bounds == []:

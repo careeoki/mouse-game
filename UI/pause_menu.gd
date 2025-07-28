@@ -12,7 +12,7 @@ func _process(delta: float) -> void:
 func resume():
 	get_tree().paused = false
 	visible = false
-	get_parent().both_timers()
+	get_parent().hud_drop_out()
 
 func pause():
 	get_tree().paused = true

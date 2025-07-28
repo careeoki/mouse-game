@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/slide.ogg-8d41330ba03a68a93ea37082b9b21483.og
 [params]
 
 loop=true
-loop_offset=0.0
+loop_offset=0.1
 bpm=0.0
 beat_count=0
 bar_beats=4

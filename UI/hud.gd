@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-@onready var death_label: Label = $DeathCount/DeathLabel
+@onready var death_label: Label = $DeathCount/HFlowContainer/DeathLabel
 @onready var cracker_label: Label = $CrackerCount/HFlowContainer/CrackerLabel
 @onready var cheese_label: Label = $CheeseCount/HFlowContainer/CheeseLabel
 @onready var cheese_collect: MarginContainer = $CheeseCollect
@@ -10,6 +10,8 @@ extends CanvasLayer
 
 @onready var cheese_count: Control = $CheeseCount
 @onready var cracker_count: Control = $CrackerCount
+@onready var death_count: Control = $DeathCount
+
 
 var player
 var deaths = 0
@@ -19,6 +21,7 @@ var loaded = false
 
 var cheese_on_screen = false
 var crackers_on_screen = false
+var deaths_on_screen = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -33,6 +36,7 @@ func _ready() -> void:
 		loaded = true
 		cheese_count.position.y = -100
 		cracker_count.position.y = -100
+		death_count.position.y += 748
 	EventManager.connect("death_update", _on_event_death_update)
 	EventManager.connect("cracker_update", _on_event_cracker_update)
 	EventManager.connect("cheese_update", _on_event_cheese_update)
@@ -81,10 +85,13 @@ func hud_drop_in():
 		cracker_drop_timer.stop()
 	cheese_drop_in(false)
 	cracker_drop_in(false)
+	if get_tree().paused == true:
+		death_drop_in()
 
 func hud_drop_out():
 	cheese_drop_out()
 	cracker_drop_out()
+	death_drop_out()
 
 func both_timers():
 	cheese_drop_timer.start()
@@ -113,6 +120,16 @@ func cracker_drop_out():
 	crackers_on_screen = false
 	var tween = create_tween()
 	tween.tween_property(cracker_count, "position", Vector2(cracker_count.position.x, -100), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+
+func death_drop_in():
+	deaths_on_screen = true
+	var tween = create_tween()
+	tween.tween_property(death_count, "position", Vector2(death_count.position.x, 648), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+
+func death_drop_out():
+	deaths_on_screen = false
+	var tween = create_tween()
+	tween.tween_property(death_count, "position", Vector2(death_count.position.x, 748), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 func _on_cheese_drop_timer_timeout() -> void:
 	cheese_drop_out()
