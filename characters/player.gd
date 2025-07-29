@@ -36,6 +36,7 @@ class_name Player extends CharacterBody2D
 @onready var player_camera: Camera2D = $PlayerCamera
 @onready var bubble_marker: Marker2D = $BubbleMarker
 @onready var sound_effects: Node2D = $SoundEffects
+@onready var dust_particles: CPUParticles2D = $DustParticles
 
 # 1 million timers
 @onready var coyote_timer = $CoyoteTimer
@@ -246,7 +247,9 @@ func _physics_process(delta: float) -> void:
 		if Input.is_action_pressed("move_slide"):
 			slide_buffer = true
 			crouch()
-	if is_on_wall_only() and Input.get_axis("move_left", "move_right") and velocity.y >= 0 and not Input.is_action_pressed("move_slide"):
+		if not Input.is_action_pressed("move_slide") and is_crouching:
+			stand()
+	if is_on_wall_only() and direction and velocity.y >= 0 and not Input.is_action_pressed("move_slide"):
 		is_wall_sliding = true
 		velocity.y *= wall_slide_gravity
 	else:
@@ -277,10 +280,7 @@ func handle_direction(delta):
 				velocity.x = move_toward(velocity.x, 0, 30)
 		else:
 			if is_on_floor():
-				#if moving_platform_speed == Vector2.ZERO:
-					velocity.x = move_toward(velocity.x, 0, friction)
-				#else:
-					#velocity.x = move_toward(velocity.x, 0, 1000)
+				velocity.x = move_toward(velocity.x, 0, friction)
 			else:
 				velocity.x = move_toward(velocity.x, 0 + moving_platform_speed_bonus.x, air_resistance)
 			is_p_speed = false
@@ -289,10 +289,14 @@ func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
 		if is_on_floor() or can_coyote_jump and not is_crouching:
 			sound_effects.play_sound("jump")
-			print("normal jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			moving_platform_speed_bonus += moving_platform_speed
-			velocity.y = jump_velocity
+			if is_crouching:
+				velocity.y = jump_velocity * 0.3
+				print("rollout")
+			else:
+				velocity.y = jump_velocity
+				print("normal jump")
 			if can_coyote_jump:
 				can_coyote_jump = false
 		
@@ -305,15 +309,16 @@ func jump():
 			is_long_jumping = true
 			
 			allow_p_speed = false
-			do_slide_boost()
+			#do_slide_boost()
 			if can_coyote_jump:
 				can_coyote_jump = false
 			sprite.scale = Vector2(0.9, 1.2)
 			velocity.y = jump_velocity * 0.6
-			if is_p_speed:
-				velocity.x += 600 * facing_direction
-			else:
-				velocity.x += 300 * facing_direction
+			velocity.x = (speed * slide_boost + 300) * facing_direction
+			#if is_p_speed:
+				#velocity.x += 600 * facing_direction
+			#else:
+				#velocity.x == (speed * slide_boost + 300) * facing_direction
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
 			print("wall jump")
@@ -349,7 +354,7 @@ func _on_jump_buffer_timeout() -> void:
 	jump_buffer = false
 
 func _input(event):
-	if event.is_action_released("move_jump") and not is_wall_jumping and not is_dialog:
+	if event.is_action_released("move_jump") and not is_wall_jumping and not is_dialog and not is_long_jumping:
 		if velocity.y < 0 and not air_jumped:
 			velocity.y *= jump_reduction
 			
@@ -379,17 +384,20 @@ func crouch():
 		stand()
 	if slide_duration.time_left > 0 and velocity.x == 0:
 		slide_duration.stop()
-	if is_crouching and velocity.x == 0 and is_on_wall() and is_on_floor():
+	if is_crouching and velocity.x == 0 and is_on_wall():
 		stand()
-		velocity.x = 1500 * (facing_direction * -1)
-		velocity.y = jump_velocity * 0.3
+		if is_on_floor():
+			velocity.x = 1500 * (facing_direction * -1)
+			velocity.y = jump_velocity * 0.3
 
 func do_slide_boost():
+	if not is_long_jumping:
+		sound_effects.play_sound("slide_boost")
 	if is_p_speed and allow_p_speed:
 		velocity.x = facing_direction * speed * 2.0
 	else:
 		if slope_direction != 0 and not is_long_jumping:
-			velocity.x = direction * speed * 1.5
+			velocity.x = direction * speed * 1.7
 		else:
 			velocity.x = direction * speed * slide_boost
 
@@ -443,28 +451,14 @@ func squish():
 		can_stand = true
 	if is_squished and can_stand:
 		stand()
+		is_squished = false
 
 func update_animations(direction):
-	if direction != 0 and not is_dialog :
-		if is_p_speed:
-			sprite.play("p_speed")
-		else:
-			sprite.play("walk")
+	
+	if is_on_floor() and velocity.x and direction or is_wall_sliding and velocity.y:
+		dust_particles.emitting = true
 	else:
-		sprite.play("idle")
-	if is_crouching:
-		sprite.play("slide")
-		#if velocity.x > 2500 or velocity.x < 2500 * -1:
-			#sprite.play("spin")
-	if not is_on_floor():
-		if velocity.y < 0:
-			sprite.play("jump")
-		else:
-			sprite.play("fall")
-	if is_collecting:
-		sprite.play("collect")
-	if is_dying:
-		sprite.play("die")
+		dust_particles.emitting = false
 
 func slope_rotation():
 	if is_crouching and is_on_floor():

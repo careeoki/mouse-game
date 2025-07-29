@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=49 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -18,6 +18,8 @@
 [ext_resource type="Texture2D" uid="uid://b3ebu0sc4yqtd" path="res://assets/characters/mable/spin.png" id="9_lcfw7"]
 [ext_resource type="Texture2D" uid="uid://cuw4ixqum6x6" path="res://assets/ui/interact arrow.png" id="11_eho78"]
 [ext_resource type="Script" uid="uid://cp2u8sdgqi0c" path="res://characters/player_camera.gd" id="12_6rrl0"]
+[ext_resource type="Texture2D" uid="uid://c2fwjf0k31kk0" path="res://assets/characters/mable/wall_slide.png" id="13_rjhu2"]
+[ext_resource type="Script" uid="uid://c5d5kcrr5k1r6" path="res://characters/player_animation.gd" id="14_ys5vl"]
 [ext_resource type="Script" uid="uid://c1fiueiroyfb" path="res://characters/debug.gd" id="16_h076o"]
 [ext_resource type="Script" uid="uid://dh0t5ss55angs" path="res://characters/player_sound.gd" id="18_ke0a4"]
 [ext_resource type="AudioStream" uid="uid://be0oounebqt5l" path="res://assets/sound/jump.wav" id="19_41yun"]
@@ -27,6 +29,7 @@
 [ext_resource type="AudioStream" uid="uid://qqx50mdtd5d2" path="res://assets/sound/punch.wav" id="25_qp1es"]
 [ext_resource type="AudioStream" uid="uid://csnhcrd26ci6w" path="res://assets/sound/slide.ogg" id="26_qk7w8"]
 [ext_resource type="Texture2D" uid="uid://ba5tcq6p0ccj8" path="res://assets/particles/puff.png" id="27_3t8uj"]
+[ext_resource type="AudioStream" uid="uid://bunatpaxdkdy2" path="res://assets/sound/slide_boost.wav" id="28_lit6r"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qp1es"]
 atlas = ExtResource("9_dx8gg")
@@ -178,6 +181,14 @@ animations = [{
 "loop": true,
 "name": &"walk",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_rjhu2")
+}],
+"loop": true,
+"name": &"wall_slide",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qympx"]
@@ -215,12 +226,15 @@ z_index = 3
 sprite_frames = SubResource("SpriteFrames_7eugy")
 animation = &"idle"
 offset = Vector2(0, -60)
+script = ExtResource("14_ys5vl")
 
 [node name="CollisionFeet" type="CollisionShape2D" parent="."]
+z_index = 5
 position = Vector2(0, -38)
 shape = SubResource("RectangleShape2D_qympx")
 
 [node name="CollisionStand" type="Area2D" parent="."]
+z_index = 5
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionStand"]
@@ -228,6 +242,7 @@ position = Vector2(0, -56)
 shape = SubResource("RectangleShape2D_tory2")
 
 [node name="CollisionSlide" type="CollisionShape2D" parent="."]
+z_index = 5
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_3eadt")
 disabled = true
@@ -265,7 +280,7 @@ wait_time = 0.7
 one_shot = true
 
 [node name="LongJumpTimer" type="Timer" parent="."]
-wait_time = 0.75
+wait_time = 0.4
 one_shot = true
 
 [node name="Hurtbox" type="Area2D" parent="."]
@@ -343,7 +358,7 @@ position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 drag_vertical_enabled = true
 drag_left_margin = 0.1
-drag_top_margin = 0.4
+drag_top_margin = 0.3
 drag_right_margin = 0.1
 drag_bottom_margin = 0.0
 editor_draw_drag_margin = true
@@ -376,7 +391,6 @@ position = Vector2(0, -64)
 script = ExtResource("16_h076o")
 
 [node name="Control" type="Control" parent="Debug"]
-visible = false
 z_index = 2
 layout_mode = 3
 anchors_preset = 0
@@ -398,6 +412,31 @@ offset_right = 40.0
 offset_bottom = -168.0
 theme_override_font_sizes/font_size = 64
 text = "0"
+
+[node name="IsCrouching" type="Label" parent="Debug/Control"]
+layout_mode = 0
+offset_left = -256.0
+offset_top = -384.0
+offset_bottom = -256.0
+theme_override_font_sizes/font_size = 64
+text = "crouch"
+
+[node name="PSpeed" type="Label" parent="Debug/Control"]
+layout_mode = 0
+offset_left = -256.0
+offset_top = -256.0
+offset_bottom = -128.0
+theme_override_font_sizes/font_size = 64
+text = "pspeed"
+
+[node name="CanPSpeed" type="Label" parent="Debug/Control"]
+layout_mode = 0
+offset_left = -384.0
+offset_top = -256.0
+offset_right = -128.0
+offset_bottom = -128.0
+theme_override_font_sizes/font_size = 64
+text = "can"
 
 [node name="SoundEffects" type="Node2D" parent="."]
 script = ExtResource("18_ke0a4")
@@ -426,17 +465,20 @@ volume_db = -25.0
 [node name="Slide" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("26_qk7w8")
 
+[node name="SlideBoost" type="AudioStreamPlayer2D" parent="SoundEffects"]
+stream = ExtResource("28_lit6r")
+
 [node name="FunnyTimer" type="Timer" parent="."]
 one_shot = true
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+[node name="DustParticles" type="CPUParticles2D" parent="."]
 z_index = 1
-emitting = false
-amount = 4
+amount = 5
 texture = ExtResource("27_3t8uj")
 lifetime = 0.75
+randomness = 0.2
 direction = Vector2(0, -1)
-initial_velocity_min = 161.62
+initial_velocity_min = 222.23
 initial_velocity_max = 393.94
 scale_amount_curve = SubResource("Curve_3t8uj")
 
