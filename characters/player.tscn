@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=51 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -16,9 +16,11 @@
 [ext_resource type="Texture2D" uid="uid://dc7sngqajg6h5" path="res://assets/characters/mable/tail.png" id="9_8sqrr"]
 [ext_resource type="Texture2D" uid="uid://cykwr6urwigfl" path="res://assets/characters/mable/slam.png" id="9_dx8gg"]
 [ext_resource type="Texture2D" uid="uid://b3ebu0sc4yqtd" path="res://assets/characters/mable/spin.png" id="9_lcfw7"]
+[ext_resource type="Texture2D" uid="uid://dfufqjwyjbojw" path="res://assets/characters/mable/skid.png" id="9_mjkfq"]
 [ext_resource type="Texture2D" uid="uid://cuw4ixqum6x6" path="res://assets/ui/interact arrow.png" id="11_eho78"]
 [ext_resource type="Script" uid="uid://cp2u8sdgqi0c" path="res://characters/player_camera.gd" id="12_6rrl0"]
 [ext_resource type="Texture2D" uid="uid://c2fwjf0k31kk0" path="res://assets/characters/mable/wall_slide.png" id="13_rjhu2"]
+[ext_resource type="Texture2D" uid="uid://be63lasy85qn1" path="res://assets/characters/mable/wall_slide_tired.png" id="14_3y70i"]
 [ext_resource type="Script" uid="uid://c5d5kcrr5k1r6" path="res://characters/player_animation.gd" id="14_ys5vl"]
 [ext_resource type="Script" uid="uid://c1fiueiroyfb" path="res://characters/debug.gd" id="16_h076o"]
 [ext_resource type="Script" uid="uid://dh0t5ss55angs" path="res://characters/player_sound.gd" id="18_ke0a4"]
@@ -131,6 +133,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("9_mjkfq")
+}],
+"loop": true,
+"name": &"skid",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_qp1es")
 }, {
 "duration": 1.0,
@@ -189,6 +199,14 @@ animations = [{
 "loop": true,
 "name": &"wall_slide",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_3y70i")
+}],
+"loop": true,
+"name": &"wall_slide_tired",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qympx"]
@@ -211,7 +229,7 @@ size = Vector2(68, 41)
 radius = 76.99
 
 [sub_resource type="Curve" id="Curve_3t8uj"]
-_data = [Vector2(0, 0.730337), 0.0, 1.4, 0, 0, Vector2(0.25, 0.977528), 0.756114, 0.756114, 0, 0, Vector2(0.818182, 0), -3.7573, 0.0, 0, 0]
+_data = [Vector2(0, 0.629214), 0.0, 5.33933, 0, 0, Vector2(0.25, 0.977528), 0.756114, 0.756114, 0, 0, Vector2(0.818182, 0), -3.7573, 0.0, 0, 0]
 point_count = 3
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
@@ -276,7 +294,7 @@ one_shot = true
 one_shot = true
 
 [node name="PSpeedTimer" type="Timer" parent="."]
-wait_time = 0.7
+wait_time = 0.6
 one_shot = true
 
 [node name="LongJumpTimer" type="Timer" parent="."]
@@ -413,6 +431,14 @@ offset_bottom = -168.0
 theme_override_font_sizes/font_size = 64
 text = "0"
 
+[node name="SlopeDirection" type="Label" parent="Debug/Control"]
+layout_mode = 0
+offset_top = -512.0
+offset_right = 256.0
+offset_bottom = -384.0
+theme_override_font_sizes/font_size = 64
+text = "0"
+
 [node name="IsCrouching" type="Label" parent="Debug/Control"]
 layout_mode = 0
 offset_left = -256.0
@@ -435,6 +461,14 @@ offset_left = -384.0
 offset_top = -256.0
 offset_right = -128.0
 offset_bottom = -128.0
+theme_override_font_sizes/font_size = 64
+text = "can"
+
+[node name="PTimer" type="Label" parent="Debug/Control"]
+layout_mode = 0
+offset_left = -256.0
+offset_top = -512.0
+offset_bottom = -384.0
 theme_override_font_sizes/font_size = 64
 text = "can"
 
@@ -467,20 +501,26 @@ stream = ExtResource("26_qk7w8")
 
 [node name="SlideBoost" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("28_lit6r")
+pitch_scale = 1.2
 
 [node name="FunnyTimer" type="Timer" parent="."]
 one_shot = true
 
 [node name="DustParticles" type="CPUParticles2D" parent="."]
-z_index = 1
-amount = 5
+position = Vector2(0, -14)
+emitting = false
+amount = 4
 texture = ExtResource("27_3t8uj")
-lifetime = 0.75
+lifetime = 0.6
 randomness = 0.2
 direction = Vector2(0, -1)
-initial_velocity_min = 222.23
-initial_velocity_max = 393.94
+initial_velocity_min = 70.71
+initial_velocity_max = 232.32
 scale_amount_curve = SubResource("Curve_3t8uj")
+
+[node name="BonkTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
 
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
@@ -496,3 +536,4 @@ scale_amount_curve = SubResource("Curve_3t8uj")
 [connection signal="timeout" from="InteractCooldown" to="." method="_on_interact_cooldown_timeout"]
 [connection signal="timeout" from="HUDTimer" to="." method="_on_hud_timer_timeout"]
 [connection signal="timeout" from="FunnyTimer" to="." method="_on_funny_timer_timeout"]
+[connection signal="timeout" from="BonkTimer" to="." method="_on_bonk_timer_timeout"]

@@ -35,7 +35,7 @@ func _physics_process(delta: float) -> void:
 	slide_check()
 
 func p_speed_check():
-	if player.is_p_speed and not player.is_crouching:
+	if player.is_p_speed:
 		if not pspeed.playing:
 			pspeed.play()
 	elif pspeed.playing:

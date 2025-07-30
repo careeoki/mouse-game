@@ -18,14 +18,14 @@ color = Color(0.694118, 0.85098, 0.956863, 1)
 
 [node name="Hills" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.2, 0.2)
-repeat_size = Vector2(1920, 0)
+repeat_size = Vector2(1500, 0)
 repeat_times = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="Hills"]
 modulate = Color(1, 1, 1, 0.486275)
 z_index = -1
 position = Vector2(0, -528)
-scale = Vector2(1.67969, 3.04784)
+scale = Vector2(1.27969, 2.56784)
 texture = ExtResource("1_cmi5u")
 centered = false
 

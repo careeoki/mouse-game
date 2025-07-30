@@ -7,7 +7,10 @@ func _physics_process(delta: float) -> void:
 	if not player.is_dialog:
 		if player.velocity.x and not player.is_dialog :
 			if player.is_p_speed:
-				play("p_speed")
+				if abs(player.velocity.x) < player.p_speed:
+					play("skid")
+				else:
+					play("p_speed")
 			else:
 				play("walk")
 				speed_scale = 1 + ((abs(player.velocity.x) - player.speed) / player.p_speed)
@@ -20,7 +23,10 @@ func _physics_process(delta: float) -> void:
 				play("jump")
 			else:
 				if player.is_wall_sliding:
-					play("wall_slide")
+					if player.wall_tired:
+						play("wall_slide_tired")
+					else:
+						play("wall_slide")
 				else:
 					play("fall")
 		if player.is_collecting:

@@ -6,6 +6,8 @@ extends Node2D
 @onready var is_crouching: Label = $Control/IsCrouching
 @onready var p_speed: Label = $Control/PSpeed
 @onready var can_p_speed: Label = $Control/CanPSpeed
+@onready var slope_direction: Label = $Control/SlopeDirection
+@onready var p_timer: Label = $Control/PTimer
 
 
 var player
@@ -28,6 +30,8 @@ func _process(delta: float) -> void:
 	if control.visible == true:
 		velocity_x.text = str("x:", player.velocity.x)
 		velocity_y.text = str("y:", player.velocity.y)
+		slope_direction.text = str("sl:", player.slope_direction)
+		p_timer.text = str(player.p_speed_timer.time_left)
 		if player.is_crouching:
 			is_crouching.visible = true
 		else:

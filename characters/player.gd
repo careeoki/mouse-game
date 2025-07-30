@@ -1,6 +1,6 @@
 class_name Player extends CharacterBody2D
 	# Parameters
-@export var speed = 1350
+@export var speed = 1400
 @export var p_speed = 2200
 @export var sliding_speed = 3000
 @export var acceleration = 6000
@@ -13,7 +13,7 @@ class_name Player extends CharacterBody2D
 @export var long_jump_boost = 2200
 @export var slide_boost = 1.7
 @export var jump_reduction = 0.5
-@export var max_fall_velocity = 5000
+@export var max_fall_velocity = 3600
 @export var max_move_velocity = 4000
 
 @export var gravity_multiplier = 1.01
@@ -50,6 +50,7 @@ class_name Player extends CharacterBody2D
 @onready var p_speed_timer: Timer = $PSpeedTimer
 @onready var long_jump_timer: Timer = $LongJumpTimer
 @onready var funny_timer: Timer = $FunnyTimer
+@onready var bonk_timer: Timer = $BonkTimer
 
 @onready var slide_duration: Timer = $SlideDuration
 @onready var slide_cooldown: Timer = $SlideCooldown
@@ -62,6 +63,7 @@ var can_coyote_jump = false
 var jump_buffer = false
 var can_slide_boost = true
 var can_stand = true
+var can_bonk = true
 var is_squished = false
 var stand_buffer = false
 var slide_buffer = false
@@ -72,6 +74,7 @@ var is_sliding = false
 var is_long_jumping = false
 var is_wall_jumping = false
 var is_wall_sliding = false
+var wall_tired = false
 var is_dialog = false
 var is_dying = false
 var is_collecting = false
@@ -140,6 +143,11 @@ func _physics_process(delta: float) -> void:
 	if just_left_wall:
 		wall_coyote_timer.start()
 	
+	if get_wall_normal() == last_wall_jump:
+		wall_tired = true
+	else:
+		wall_tired = false
+	
 	if is_sliding:
 		floor_constant_speed = false
 	else:
@@ -176,14 +184,14 @@ func _physics_process(delta: float) -> void:
 			is_p_speed = false
 	
 	if is_p_speed:
-		if abs(velocity.x) > 2400:
+		if abs(velocity.x) > 2100:
 			was_p_speed = true
 			is_p_speed = true
 		else:
 			#if p_speed_timer.time_left > 0:
 				#is_p_speed = true
 			if is_p_speed:
-				if velocity.x == 0 and is_on_floor():
+				if velocity.x == 0 and is_on_floor() and is_on_wall() and not slope_direction:
 					is_p_speed = false
 					sound_effects.play_sound("p_speed_slam")
 					sound_effects.play_sound("punch")
@@ -191,8 +199,9 @@ func _physics_process(delta: float) -> void:
 					sprite.play("slam")
 					funny_timer.start()
 				elif p_speed_timer.is_stopped():
-					p_speed_timer.start()
+						p_speed_timer.start()
 
+	
 	
 	# Stop from moving faster than max_move_velocity
 	if velocity.x > max_move_velocity:
@@ -235,6 +244,8 @@ func _physics_process(delta: float) -> void:
 				velocity.x = 0
 		can_slide_boost = true
 		air_jumped = false
+		can_bonk = false
+		bonk_timer.start()
 		if is_long_jumping:
 			allow_p_speed = false
 			long_jump_timer.start()
@@ -280,10 +291,13 @@ func handle_direction(delta):
 				velocity.x = move_toward(velocity.x, 0, 30)
 		else:
 			if is_on_floor():
-				velocity.x = move_toward(velocity.x, 0, friction)
+				if is_p_speed:
+					velocity.x = move_toward(velocity.x, 0, friction / 2)
+				else:
+					velocity.x = move_toward(velocity.x, 0, friction)
 			else:
 				velocity.x = move_toward(velocity.x, 0 + moving_platform_speed_bonus.x, air_resistance)
-			is_p_speed = false
+			#is_p_speed = false
 
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
@@ -308,17 +322,18 @@ func jump():
 					return
 			is_long_jumping = true
 			
-			allow_p_speed = false
+			if slope_direction == 0:
+				allow_p_speed = false
 			#do_slide_boost()
 			if can_coyote_jump:
 				can_coyote_jump = false
 			sprite.scale = Vector2(0.9, 1.2)
 			velocity.y = jump_velocity * 0.6
-			velocity.x = (speed * slide_boost + 300) * facing_direction
-			#if is_p_speed:
-				#velocity.x += 600 * facing_direction
-			#else:
-				#velocity.x == (speed * slide_boost + 300) * facing_direction
+			
+			if is_p_speed:
+				velocity.x = (p_speed * 1.5) * facing_direction
+			else:
+				velocity.x = (speed * slide_boost + 300) * facing_direction
 			
 		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
 			print("wall jump")
@@ -331,7 +346,10 @@ func jump():
 				is_wall_jumping = true
 				last_wall_jump = Vector2.LEFT
 				sprite.scale = Vector2(0.7, 1.3)
-				velocity.x = wall_normal.x * wall_jump_boost
+				if is_p_speed:
+					velocity.x = wall_normal.x * wall_jump_boost + 500
+				else:
+					velocity.x = wall_normal.x * wall_jump_boost
 				velocity.y = jump_velocity
 			if wall_normal == Vector2.RIGHT and not last_wall_jump == Vector2.RIGHT:
 				sound_effects.play_sound("jump")
@@ -339,7 +357,10 @@ func jump():
 				is_wall_jumping = true
 				last_wall_jump = Vector2.RIGHT
 				sprite.scale = Vector2(0.7, 1.3)
-				velocity.x = wall_normal.x * wall_jump_boost
+				if is_p_speed:
+					velocity.x = wall_normal.x * wall_jump_boost + 500
+				else:
+					velocity.x = wall_normal.x * wall_jump_boost
 				velocity.y = jump_velocity
 		else:
 			if !jump_buffer:
@@ -384,11 +405,10 @@ func crouch():
 		stand()
 	if slide_duration.time_left > 0 and velocity.x == 0:
 		slide_duration.stop()
+	# BONK
 	if is_crouching and velocity.x == 0 and is_on_wall():
 		stand()
-		if is_on_floor():
-			velocity.x = 1500 * (facing_direction * -1)
-			velocity.y = jump_velocity * 0.3
+
 
 func do_slide_boost():
 	if not is_long_jumping:
@@ -572,10 +592,7 @@ func _on_p_speed_timer_timeout() -> void:
 	if is_wall_sliding:
 		print("stop p speed")
 		is_p_speed = false
-	if velocity.x > 0 and velocity.x < 2000:
-		print("stop p speed")
-		is_p_speed = false
-	if velocity.x < 0 and velocity.x > -2000:
+	if abs(velocity.x) >= 0 and abs(velocity.x) < 2000:
 		print("stop p speed")
 		is_p_speed = false
 
@@ -591,3 +608,8 @@ func _on_hud_timer_timeout() -> void:
 
 func _on_funny_timer_timeout() -> void:
 	is_dialog = false
+
+
+func _on_bonk_timer_timeout() -> void:
+	if not is_crouching:
+		can_bonk = true
