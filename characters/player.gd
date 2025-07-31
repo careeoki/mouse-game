@@ -50,10 +50,13 @@ class_name Player extends CharacterBody2D
 @onready var p_speed_timer: Timer = $PSpeedTimer
 @onready var long_jump_timer: Timer = $LongJumpTimer
 @onready var funny_timer: Timer = $FunnyTimer
-@onready var bonk_timer: Timer = $BonkTimer
+@onready var drop_timer: Timer = $DropTimer
 
 @onready var slide_duration: Timer = $SlideDuration
 @onready var slide_cooldown: Timer = $SlideCooldown
+
+var jump_poof = preload("res://particles/jump_poof.tscn")
+var jump_poof_instance = jump_poof.instantiate()
 
 var spawn_position = Vector2.ZERO
 
@@ -63,7 +66,6 @@ var can_coyote_jump = false
 var jump_buffer = false
 var can_slide_boost = true
 var can_stand = true
-var can_bonk = true
 var is_squished = false
 var stand_buffer = false
 var slide_buffer = false
@@ -74,6 +76,8 @@ var is_sliding = false
 var is_long_jumping = false
 var is_wall_jumping = false
 var is_wall_sliding = false
+var is_drop = false
+var is_drop_falling = false
 var wall_tired = false
 var is_dialog = false
 var is_dying = false
@@ -84,6 +88,7 @@ var can_move_slide = true
 var air_jumped = false
 var allow_p_speed = true
 var turned_around = false
+var maintained_momentum = 0
 var look_direction = 0
 var look_down = 0
 var was_wall_normal = Vector2.ZERO
@@ -103,7 +108,7 @@ func _physics_process(delta: float) -> void:
 	sprite.scale.y = move_toward(sprite.scale.y, 1, 1 * delta)
 	# Add the gravity.
 	if not is_on_floor():
-		if velocity.y < max_fall_velocity:
+		if velocity.y < max_fall_velocity and not is_drop:
 			velocity += get_gravity() * delta
 			if velocity.y > 0:
 				fast_fall()
@@ -116,7 +121,7 @@ func _physics_process(delta: float) -> void:
 	crouch()
 	#stand()
 	squish()
-	#can_interact()
+	drop()
 	if not is_dialog:
 		direction = Input.get_axis("move_left", "move_right")
 		update_animations(direction)
@@ -208,11 +213,10 @@ func _physics_process(delta: float) -> void:
 		velocity.x = max_move_velocity
 	if velocity.x < -max_move_velocity:
 		velocity.x = max_move_velocity * -1
-	#if velocity.y > max_fall_velocity * 0.9:
-		#look_down = 1
-		#player_camera.look_down()
-	#else:
-		#look_down = 0
+	
+	
+	if is_drop_falling:
+		velocity.x = 0
 	
 	# Check if player is moving
 	if velocity.x == 0 and velocity.y == 0:
@@ -235,6 +239,7 @@ func _physics_process(delta: float) -> void:
 	# Touched ground
 	if !was_on_floor && is_on_floor():
 		sound_effects.play_sound("land")
+		PlayerManager.create_land_poof()
 		sprite.scale = Vector2(1.3, 0.7)
 		#player_camera.reset_vertical()
 		last_wall_jump = Vector2.ZERO
@@ -244,8 +249,10 @@ func _physics_process(delta: float) -> void:
 				velocity.x = 0
 		can_slide_boost = true
 		air_jumped = false
-		can_bonk = false
-		bonk_timer.start()
+		is_drop_falling = false
+		if abs(maintained_momentum) >= speed:
+			velocity.x = maintained_momentum
+			maintained_momentum = 0
 		if is_long_jumping:
 			allow_p_speed = false
 			long_jump_timer.start()
@@ -305,6 +312,7 @@ func jump():
 			sound_effects.play_sound("jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			moving_platform_speed_bonus += moving_platform_speed
+			#PlayerManager.create_jump_poof()
 			if is_crouching:
 				velocity.y = jump_velocity * 0.3
 				print("rollout")
@@ -377,6 +385,8 @@ func _on_jump_buffer_timeout() -> void:
 func _input(event):
 	if event.is_action_released("move_jump") and not is_wall_jumping and not is_dialog and not is_long_jumping:
 		if velocity.y < 0 and not air_jumped:
+			is_drop_falling = false
+			is_drop = false
 			velocity.y *= jump_reduction
 			
 func crouch():
@@ -472,6 +482,20 @@ func squish():
 	if is_squished and can_stand:
 		stand()
 		is_squished = false
+
+func drop():
+	if Input.is_action_just_pressed("move_drop") and not is_on_floor() and not is_drop_falling:
+		is_drop = true
+		is_drop_falling = true
+		velocity.y = 0
+		maintained_momentum = velocity.x
+		velocity.x = 0
+		drop_timer.start()
+
+func _on_drop_timer_timeout() -> void:
+	is_drop = false
+	velocity.y = max_fall_velocity + 400
+	sound_effects.play_sound("slide_boost")
 
 func update_animations(direction):
 	
@@ -608,8 +632,3 @@ func _on_hud_timer_timeout() -> void:
 
 func _on_funny_timer_timeout() -> void:
 	is_dialog = false
-
-
-func _on_bonk_timer_timeout() -> void:
-	if not is_crouching:
-		can_bonk = true

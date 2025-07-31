@@ -518,8 +518,8 @@ initial_velocity_min = 70.71
 initial_velocity_max = 232.32
 scale_amount_curve = SubResource("Curve_3t8uj")
 
-[node name="BonkTimer" type="Timer" parent="."]
-wait_time = 0.2
+[node name="DropTimer" type="Timer" parent="."]
+wait_time = 0.1
 one_shot = true
 
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
@@ -536,4 +536,4 @@ one_shot = true
 [connection signal="timeout" from="InteractCooldown" to="." method="_on_interact_cooldown_timeout"]
 [connection signal="timeout" from="HUDTimer" to="." method="_on_hud_timer_timeout"]
 [connection signal="timeout" from="FunnyTimer" to="." method="_on_funny_timer_timeout"]
-[connection signal="timeout" from="BonkTimer" to="." method="_on_bonk_timer_timeout"]
+[connection signal="timeout" from="DropTimer" to="." method="_on_drop_timer_timeout"]

@@ -1,0 +1,57 @@
+[gd_scene load_steps=9 format=3 uid="uid://ddbebq2vhpw3r"]
+
+[ext_resource type="Texture2D" uid="uid://br82ufgdo0yee" path="res://assets/particles/land_poof.png" id="1_esq3h"]
+[ext_resource type="Script" uid="uid://dmbeyhti0rmmt" path="res://particles/one_shot_particle.gd" id="2_krk15"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_esq3h"]
+atlas = ExtResource("1_esq3h")
+region = Rect2(0, 0, 256, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_krk15"]
+atlas = ExtResource("1_esq3h")
+region = Rect2(256, 0, 256, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g2j78"]
+atlas = ExtResource("1_esq3h")
+region = Rect2(512, 0, 256, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_to4i2"]
+atlas = ExtResource("1_esq3h")
+region = Rect2(768, 0, 256, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_scl6v"]
+atlas = ExtResource("1_esq3h")
+region = Rect2(1024, 0, 256, 80)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_26gmd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_esq3h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_krk15")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g2j78")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_to4i2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_scl6v")
+}],
+"loop": false,
+"name": &"default",
+"speed": 9.0
+}]
+
+[node name="LandPoof" type="AnimatedSprite2D"]
+z_index = 6
+sprite_frames = SubResource("SpriteFrames_26gmd")
+frame = 4
+frame_progress = 1.0
+offset = Vector2(0, -40)
+script = ExtResource("2_krk15")
+
+[connection signal="animation_finished" from="." to="." method="_on_animation_finished"]

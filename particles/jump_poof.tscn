@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=3 uid="uid://d0a4yjrjr4qkd"]
+
+[ext_resource type="Texture2D" uid="uid://d1f6o22c3567m" path="res://assets/particles/jump_poof.png" id="1_ymt5h"]
+[ext_resource type="Script" uid="uid://dmbeyhti0rmmt" path="res://particles/one_shot_particle.gd" id="2_373ix"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_373ix"]
+atlas = ExtResource("1_ymt5h")
+region = Rect2(0, 0, 256, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lsbtu"]
+atlas = ExtResource("1_ymt5h")
+region = Rect2(256, 0, 256, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6d884"]
+atlas = ExtResource("1_ymt5h")
+region = Rect2(512, 0, 256, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ughpx"]
+atlas = ExtResource("1_ymt5h")
+region = Rect2(768, 0, 256, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_oaoc4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_373ix")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lsbtu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6d884")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ughpx")
+}],
+"loop": false,
+"name": &"default",
+"speed": 8.0
+}]
+
+[node name="JumpPoof" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_oaoc4")
+frame = 3
+frame_progress = 1.0
+offset = Vector2(0, -96)
+script = ExtResource("2_373ix")
+
+[connection signal="animation_finished" from="." to="." method="_on_animation_finished"]
