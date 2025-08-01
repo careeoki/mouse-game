@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3gyd23ejv3bb"]
+
+[ext_resource type="Script" uid="uid://dt88shfdm7ccs" path="res://objects/air_vent.gd" id="1_n0llm"]
+[ext_resource type="Texture2D" uid="uid://d21pea7ky48q3" path="res://assets/objects/air_vent.png" id="2_yldq0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_su8rg"]
+size = Vector2(128, 512)
+
+[node name="AirVent" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+gravity_space_override = 3
+gravity = 0.0
+script = ExtResource("1_n0llm")
+
+[node name="Collider" type="CollisionShape2D" parent="."]
+position = Vector2(0, -256)
+shape = SubResource("RectangleShape2D_su8rg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_yldq0")
+offset = Vector2(0, -64)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

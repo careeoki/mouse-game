@@ -51,12 +51,11 @@ class_name Player extends CharacterBody2D
 @onready var long_jump_timer: Timer = $LongJumpTimer
 @onready var funny_timer: Timer = $FunnyTimer
 @onready var drop_timer: Timer = $DropTimer
+@onready var drop_land_timer: Timer = $DropLandTimer
 
 @onready var slide_duration: Timer = $SlideDuration
 @onready var slide_cooldown: Timer = $SlideCooldown
 
-var jump_poof = preload("res://particles/jump_poof.tscn")
-var jump_poof_instance = jump_poof.instantiate()
 
 var spawn_position = Vector2.ZERO
 
@@ -94,6 +93,7 @@ var look_down = 0
 var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
 var camera_y = 0
+var wind_power: Vector2 = Vector2.ZERO
 
 var slope_direction = 0
 var slope
@@ -107,10 +107,10 @@ func _physics_process(delta: float) -> void:
 	sprite.scale.x = move_toward(sprite.scale.x, 1, 1 * delta)
 	sprite.scale.y = move_toward(sprite.scale.y, 1, 1 * delta)
 	# Add the gravity.
-	if not is_on_floor():
+	if not is_on_floor() or wind_power:
 		if velocity.y < max_fall_velocity and not is_drop:
-			velocity += get_gravity() * delta
-			if velocity.y > 0:
+			velocity += (get_gravity() + wind_power) * delta
+			if velocity.y > 0 and not wind_power:
 				fast_fall()
 			#else:
 				#if is_crouching:
@@ -249,7 +249,9 @@ func _physics_process(delta: float) -> void:
 				velocity.x = 0
 		can_slide_boost = true
 		air_jumped = false
-		is_drop_falling = false
+		if is_drop_falling:
+			is_drop_falling = false
+			drop_land_timer.start()
 		if abs(maintained_momentum) >= speed:
 			velocity.x = maintained_momentum
 			maintained_momentum = 0
@@ -259,9 +261,14 @@ func _physics_process(delta: float) -> void:
 			is_long_jumping = false
 		if jump_buffer:
 			jump_buffer = false
-			velocity.y = jump_velocity
+			if drop_land_timer.time_left > 0 and not maintained_momentum:
+				velocity.y = jump_velocity * 1.2
+				PlayerManager.create_jump_poof()
+				print("buffer drop")
+			else:
+				velocity.y = jump_velocity
+				print("buffer")
 			sound_effects.play_sound("jump")
-			print("bugger")
 		if Input.is_action_pressed("move_slide"):
 			slide_buffer = true
 			crouch()
@@ -316,6 +323,10 @@ func jump():
 			if is_crouching:
 				velocity.y = jump_velocity * 0.3
 				print("rollout")
+			if drop_land_timer.time_left > 0 and not maintained_momentum:
+				velocity.y = jump_velocity * 1.2
+				PlayerManager.create_jump_poof()
+				print("dropjump")
 			else:
 				velocity.y = jump_velocity
 				print("normal jump")
@@ -484,13 +495,19 @@ func squish():
 		is_squished = false
 
 func drop():
-	if Input.is_action_just_pressed("move_drop") and not is_on_floor() and not is_drop_falling:
-		is_drop = true
-		is_drop_falling = true
-		velocity.y = 0
-		maintained_momentum = velocity.x
-		velocity.x = 0
-		drop_timer.start()
+	if Input.is_action_just_pressed("move_drop") and not is_on_floor():
+		if not is_drop_falling:
+			is_drop = true
+			is_drop_falling = true
+			velocity.y = 0
+			maintained_momentum = velocity.x
+			velocity.x = 0
+			drop_timer.start()
+		else:
+			is_drop = false
+			is_drop_falling = false
+			maintained_momentum = 0
+			velocity.y = max_fall_velocity
 
 func _on_drop_timer_timeout() -> void:
 	is_drop = false

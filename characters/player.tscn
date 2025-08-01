@@ -267,7 +267,7 @@ disabled = true
 debug_color = Color(0.213335, 0.629567, 0.333192, 0.42)
 
 [node name="JumpBuffer" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.07
 one_shot = true
 
 [node name="CoyoteTimer" type="Timer" parent="."]
@@ -409,6 +409,7 @@ position = Vector2(0, -64)
 script = ExtResource("16_h076o")
 
 [node name="Control" type="Control" parent="Debug"]
+visible = false
 z_index = 2
 layout_mode = 3
 anchors_preset = 0
@@ -520,6 +521,10 @@ scale_amount_curve = SubResource("Curve_3t8uj")
 
 [node name="DropTimer" type="Timer" parent="."]
 wait_time = 0.1
+one_shot = true
+
+[node name="DropLandTimer" type="Timer" parent="."]
+wait_time = 0.05
 one_shot = true
 
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
