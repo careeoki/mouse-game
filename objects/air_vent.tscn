@@ -1,25 +1,87 @@
-[gd_scene load_steps=4 format=3 uid="uid://d3gyd23ejv3bb"]
+[gd_scene load_steps=9 format=3 uid="uid://d3gyd23ejv3bb"]
 
 [ext_resource type="Script" uid="uid://dt88shfdm7ccs" path="res://objects/air_vent.gd" id="1_n0llm"]
 [ext_resource type="Texture2D" uid="uid://d21pea7ky48q3" path="res://assets/objects/air_vent.png" id="2_yldq0"]
+[ext_resource type="Texture2D" uid="uid://ba5tcq6p0ccj8" path="res://assets/particles/puff.png" id="3_6ranh"]
+[ext_resource type="Texture2D" uid="uid://lgaaeqemuqhl" path="res://assets/particles/vent_wind.png" id="4_m27k3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_su8rg"]
-size = Vector2(128, 512)
+size = Vector2(10, 10)
+
+[sub_resource type="Animation" id="Animation_m27k3"]
+resource_name = "wind"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WindAnim:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.266667),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="Animation" id="Animation_ikj1n"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WindAnim:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hudu3"]
+_data = {
+&"RESET": SubResource("Animation_ikj1n"),
+&"wind": SubResource("Animation_m27k3")
+}
 
 [node name="AirVent" type="Area2D"]
 collision_layer = 0
 collision_mask = 2
-gravity_space_override = 3
-gravity = 0.0
+gravity = 245.0
 script = ExtResource("1_n0llm")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
-position = Vector2(0, -256)
+position = Vector2(0, -64)
 shape = SubResource("RectangleShape2D_su8rg")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_yldq0")
 offset = Vector2(0, -64)
+
+[node name="WindParticles" type="CPUParticles2D" parent="."]
+position = Vector2(0, -30)
+emitting = false
+texture = ExtResource("3_6ranh")
+lifetime = 0.8
+emission_shape = 3
+emission_rect_extents = Vector2(60, 1)
+gravity = Vector2(0, -980)
+
+[node name="WindAnim" type="Sprite2D" parent="."]
+z_index = -1
+texture_repeat = 2
+position = Vector2(0, -64)
+texture = ExtResource("4_m27k3")
+hframes = 3
+region_enabled = true
+region_rect = Rect2(0, 0, 384, 128)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_hudu3")
+}
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

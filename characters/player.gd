@@ -109,7 +109,10 @@ func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if not is_on_floor() or wind_power:
 		if velocity.y < max_fall_velocity and not is_drop:
-			velocity += (get_gravity() + wind_power) * delta
+			if wind_power and velocity.y > -3000:
+				velocity += (get_gravity() + wind_power) * delta
+			else:
+				velocity += get_gravity() * delta
 			if velocity.y > 0 and not wind_power:
 				fast_fall()
 			#else:
@@ -253,7 +256,8 @@ func _physics_process(delta: float) -> void:
 			is_drop_falling = false
 			drop_land_timer.start()
 		if abs(maintained_momentum) >= speed:
-			velocity.x = maintained_momentum
+			if direction:
+				velocity.x = maintained_momentum
 			maintained_momentum = 0
 		if is_long_jumping:
 			allow_p_speed = false
@@ -315,7 +319,7 @@ func handle_direction(delta):
 
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
-		if is_on_floor() or can_coyote_jump and not is_crouching:
+		if is_on_floor() or can_coyote_jump and not is_crouching and not wind_power:
 			sound_effects.play_sound("jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			moving_platform_speed_bonus += moving_platform_speed
@@ -333,7 +337,7 @@ func jump():
 			if can_coyote_jump:
 				can_coyote_jump = false
 		
-		if is_crouching and direction == facing_direction and is_on_floor() or can_coyote_jump:
+		if is_crouching and direction == facing_direction and is_on_floor() or can_coyote_jump and not wind_power:
 			sound_effects.play_sound("jump")
 			if is_sliding:
 				is_sliding = false
@@ -507,11 +511,15 @@ func drop():
 			is_drop = false
 			is_drop_falling = false
 			maintained_momentum = 0
-			velocity.y = max_fall_velocity
+			if not wind_power:
+				velocity.y = max_fall_velocity
 
 func _on_drop_timer_timeout() -> void:
 	is_drop = false
-	velocity.y = max_fall_velocity + 400
+	if wind_power:
+		velocity.y = (max_fall_velocity + 400) * 0.5
+	else:
+		velocity.y = max_fall_velocity + 400
 	sound_effects.play_sound("slide_boost")
 
 func update_animations(direction):
