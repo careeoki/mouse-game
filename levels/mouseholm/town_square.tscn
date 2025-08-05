@@ -62,3 +62,7 @@ target_door = "ExitLeft"
 position = Vector2(10304, -448)
 level = "uid://5w6gybyo32m3"
 target_door = "ExitRight"
+
+[node name="Door" parent="." instance=ExtResource("6_ck7lk")]
+position = Vector2(-5952, -448)
+level = "uid://pl2rnaiqi6s6"

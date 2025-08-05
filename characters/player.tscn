@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=53 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cnmd71kbefpks" path="res://assets/characters/mable/fall.png" id="2_n8jd0"]
 [ext_resource type="Texture2D" uid="uid://37yhr18r23bq" path="res://assets/characters/mable/die.png" id="2_q605b"]
 [ext_resource type="Script" uid="uid://b2shq2gjd4fvt" path="res://addons/ropesim/Rope.gd" id="3_x0jl3"]
+[ext_resource type="Texture2D" uid="uid://glg3jq31id77" path="res://assets/characters/mable/drop.png" id="4_5f4cm"]
 [ext_resource type="Script" uid="uid://dfppmnngy2wx4" path="res://addons/ropesim/RopeRendererLine2D.gd" id="4_evndh"]
 [ext_resource type="Texture2D" uid="uid://dl6nf1vj7i4iw" path="res://assets/characters/mable/jump.png" id="4_q605b"]
 [ext_resource type="Texture2D" uid="uid://qg8oqi7hfujy" path="res://assets/characters/mable/slide.png" id="5_eho78"]
@@ -32,6 +33,10 @@
 [ext_resource type="AudioStream" uid="uid://csnhcrd26ci6w" path="res://assets/sound/slide.ogg" id="26_qk7w8"]
 [ext_resource type="Texture2D" uid="uid://ba5tcq6p0ccj8" path="res://assets/particles/puff.png" id="27_3t8uj"]
 [ext_resource type="AudioStream" uid="uid://bunatpaxdkdy2" path="res://assets/sound/slide_boost.wav" id="28_lit6r"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d3tvb"]
+atlas = ExtResource("4_5f4cm")
+region = Rect2(208, 0, 208, 208)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qp1es"]
 atlas = ExtResource("9_dx8gg")
@@ -89,6 +94,14 @@ animations = [{
 }],
 "loop": false,
 "name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d3tvb")
+}],
+"loop": false,
+"name": &"drop",
 "speed": 5.0
 }, {
 "frames": [{
@@ -242,7 +255,7 @@ script = ExtResource("1_rj012")
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 z_index = 3
 sprite_frames = SubResource("SpriteFrames_7eugy")
-animation = &"idle"
+animation = &"drop"
 offset = Vector2(0, -60)
 script = ExtResource("14_ys5vl")
 

@@ -27,6 +27,8 @@ func _physics_process(delta: float) -> void:
 						play("wall_slide_tired")
 					else:
 						play("wall_slide")
+				elif player.is_drop_falling:
+					play("drop")
 				else:
 					play("fall")
 		if player.is_collecting:

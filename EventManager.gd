@@ -3,7 +3,6 @@ extends Node
 var deaths = 0
 var crackers = 0
 
-
 func _ready():
 	deaths = SaveLoad.contents_to_save.deaths
 	crackers = SaveLoad.contents_to_save.deaths
@@ -25,8 +24,12 @@ func cheese_collect_ui(name: String):
 func player_waiting(value: bool):
 	emit_signal("show_hud", value)
 
+func new_power_state():
+	emit_signal("change_power_state")
+
 signal cracker_update(value: int)
 signal death_update(value: int)
 signal cheese_update()
 signal cheese_ui(name: String)
 signal show_hud()
+signal change_power_state()

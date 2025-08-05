@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqyiutj0tgv0j"]
+
+[ext_resource type="PackedScene" uid="uid://w3ytx11iohor" path="res://objects/power_block.tscn" id="1_es8xb"]
+
+[node name="PowerOffBlock" type="StaticBody2D"]
+
+[node name="Collision" parent="." instance=ExtResource("1_es8xb")]
+disabled = true
+powered = false

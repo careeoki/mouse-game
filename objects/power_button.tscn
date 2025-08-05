@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://ipf8qcwbynba"]
+
+[ext_resource type="Texture2D" uid="uid://dv60vjbj1rya7" path="res://assets/objects/power_button.png" id="1_7pdxx"]
+[ext_resource type="Script" uid="uid://b60mck3bob38h" path="res://objects/power_button.gd" id="1_vugxv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vugxv"]
+size = Vector2(256, 96)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a5ewq"]
+size = Vector2(256, 128)
+
+[node name="PowerButton" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_vugxv")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_7pdxx")
+hframes = 2
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -112)
+shape = SubResource("RectangleShape2D_vugxv")
+
+[node name="ButtonSolid" type="AnimatableBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ButtonSolid"]
+shape = SubResource("RectangleShape2D_a5ewq")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
