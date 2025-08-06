@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bkn8dwvq4qx35"]
+[gd_scene load_steps=4 format=3 uid="uid://bkn8dwvq4qx35"]
 
 [ext_resource type="Theme" uid="uid://lndqrlgegpj8" path="res://UI/themes/base.tres" id="1_jfm1e"]
 [ext_resource type="Script" uid="uid://b3j741xhcfc3" path="res://UI/pause_menu.gd" id="1_ltd3m"]
+[ext_resource type="Texture2D" uid="uid://xfk2k8c5paca" path="res://assets/ui/phone.png" id="3_03fe5"]
 
 [node name="PauseMenu" type="Control"]
 process_mode = 3
@@ -14,7 +15,46 @@ grow_vertical = 2
 theme = ExtResource("1_jfm1e")
 script = ExtResource("1_ltd3m")
 
-[node name="MainPanel" type="PanelContainer" parent="."]
+[node name="Gameplay" type="PanelContainer" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -129.0
+offset_top = -146.0
+offset_right = 119.0
+offset_bottom = 106.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="Resume" type="Button" parent="Gameplay/VBox"]
+layout_mode = 2
+button_mask = 0
+text = "Resume"
+
+[node name="Checklist" type="Button" parent="Gameplay/VBox"]
+layout_mode = 2
+text = "Checklist"
+
+[node name="Button" type="Button" parent="Gameplay/VBox"]
+layout_mode = 2
+text = "Statistics"
+
+[node name="Go Home" type="Button" parent="Gameplay/VBox"]
+layout_mode = 2
+text = "Go Home"
+
+[node name="Options" type="PanelContainer" parent="."]
+visible = false
+z_index = 1
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -28,38 +68,46 @@ offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel"]
+[node name="Vbox" type="VBoxContainer" parent="Options"]
 layout_mode = 2
 alignment = 1
 
-[node name="Resume" type="Button" parent="MainPanel/VBoxContainer"]
-layout_mode = 2
-button_mask = 0
-text = "Resume"
-
-[node name="Checklist" type="Button" parent="MainPanel/VBoxContainer"]
-layout_mode = 2
-text = "Checklist"
-
-[node name="Go Home" type="Button" parent="MainPanel/VBoxContainer"]
-layout_mode = 2
-text = "Go Home"
-
-[node name="HSeparator" type="HSeparator" parent="MainPanel/VBoxContainer"]
-layout_mode = 2
-
-[node name="Options" type="Button" parent="MainPanel/VBoxContainer"]
+[node name="Options" type="Button" parent="Options/Vbox"]
 layout_mode = 2
 text = "Options
 "
 
-[node name="Quit" type="Button" parent="MainPanel/VBoxContainer"]
+[node name="Button" type="Button" parent="Options/Vbox"]
+layout_mode = 2
+text = "Controls"
+
+[node name="Button2" type="Button" parent="Options/Vbox"]
+layout_mode = 2
+text = "Return to Title"
+
+[node name="Quit" type="Button" parent="Options/Vbox"]
 layout_mode = 2
 text = "Quit
 "
 
-[connection signal="pressed" from="MainPanel/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
-[connection signal="pressed" from="MainPanel/VBoxContainer/Checklist" to="." method="_on_checklist_pressed"]
-[connection signal="pressed" from="MainPanel/VBoxContainer/Go Home" to="." method="_on_return_to_mouseholm_pressed"]
-[connection signal="pressed" from="MainPanel/VBoxContainer/Options" to="." method="_on_options_pressed"]
-[connection signal="pressed" from="MainPanel/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = -276.0
+offset_right = 269.0
+offset_bottom = 241.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_03fe5")
+stretch_mode = 5
+
+[connection signal="pressed" from="Gameplay/VBox/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Gameplay/VBox/Checklist" to="." method="_on_checklist_pressed"]
+[connection signal="pressed" from="Gameplay/VBox/Go Home" to="." method="_on_return_to_mouseholm_pressed"]
+[connection signal="pressed" from="Options/Vbox/Options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="Options/Vbox/Quit" to="." method="_on_quit_pressed"]

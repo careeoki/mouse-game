@@ -7,3 +7,4 @@ base_font = ExtResource("1_0q1kq")
 variation_embolden = 1.0
 spacing_glyph = 1
 spacing_space = 8
+spacing_top = 8

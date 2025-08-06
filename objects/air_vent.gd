@@ -19,14 +19,7 @@ var wind: Vector2 = Vector2(0, -12000)
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	EventManager.connect("change_power_state", change_state)
-	sprite.scale.x = width
-	var shape = RectangleShape2D.new()
-	shape.size = Vector2(width * 128, height * 128)
-	collider.set_shape(shape)
-	collider.position.y = height * 128 / -2
-	wind_anim.region_rect = Rect2(0, 0, 384 * width, 128 * height)
-	wind_anim.position.y = height * 128 / -2
-	animation_player.play("wind")
+	update_shape()
 	if is_power_type:
 		if powered:
 			sprite.play("on")
@@ -37,6 +30,8 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		update_shape()
 	if not is_power_type or powered:
 		var bodies = get_overlapping_bodies()
 		if bodies.size() > 0:
@@ -63,3 +58,13 @@ func change_state():
 			powered = true
 			sprite.play("on")
 			wind_anim.visible = true
+
+func update_shape():
+	sprite.scale.x = width
+	var shape = RectangleShape2D.new()
+	shape.size = Vector2(width * 128, height * 128)
+	collider.set_shape(shape)
+	collider.position.y = height * 128 / -2
+	wind_anim.region_rect = Rect2(0, 0, 384 * width, 128 * height)
+	wind_anim.position.y = height * 128 / -2
+	animation_player.play("wind")

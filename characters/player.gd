@@ -104,6 +104,8 @@ var moving_platform_speed_bonus = Vector2.ZERO
 
 
 func _physics_process(delta: float) -> void:
+	#var stretch_amount_y = 1 + (abs(velocity.y) / 5000)
+	#var stretch_amount_x = 1 - ((abs(velocity.y) / 5000) / 2)
 	sprite.scale.x = move_toward(sprite.scale.x, 1, 1 * delta)
 	sprite.scale.y = move_toward(sprite.scale.y, 1, 1 * delta)
 	# Add the gravity.
@@ -319,7 +321,7 @@ func handle_direction(delta):
 
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
-		if is_on_floor() or can_coyote_jump and not is_crouching and not wind_power:
+		if is_on_floor() or can_coyote_jump and not is_crouching:
 			sound_effects.play_sound("jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			moving_platform_speed_bonus += moving_platform_speed
