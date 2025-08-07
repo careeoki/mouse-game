@@ -6,6 +6,7 @@ class_name MovingPlatform extends Path2D
 @onready var body: AnimatableBody2D = $AnimatableBody2D
 @onready var sprite: Sprite2D = $AnimatableBody2D/Sprite
 @onready var collider: CollisionShape2D = $AnimatableBody2D/Collider
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 @export_category("Platform")
 @export var texture: Texture2D
@@ -13,7 +14,10 @@ class_name MovingPlatform extends Path2D
 @export var scale_height: float = 1.0
 
 @export_category("Movement")
+@export var closed_path = true
+
 @export var speed = 256
+@export var speed_scale = 1.0
 
 var path_progress = 0
 
@@ -25,11 +29,14 @@ func _ready() -> void:
 	path_progress = 0
 	
 	resize_collider_to_sprite()
+	if not closed_path and not Engine.is_editor_hint():
+		animation_player.play("move")
+		animation_player.speed_scale = speed_scale
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	if not Engine.is_editor_hint():
+	if not Engine.is_editor_hint() and closed_path:
 		path_progress += speed * delta
 		path.set_progress(path_progress)
 

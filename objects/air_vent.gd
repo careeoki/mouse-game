@@ -45,6 +45,8 @@ func _on_body_exited(body: Node2D) -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if not is_power_type or powered:
+		if body.is_drop_falling:
+			body.is_drop_falling = false
 		if body.velocity.y > 0:
 			body.velocity.y *= 0.4
 
