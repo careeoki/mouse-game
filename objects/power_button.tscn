@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://ipf8qcwbynba"]
 
 [ext_resource type="Texture2D" uid="uid://dv60vjbj1rya7" path="res://assets/objects/power_button.png" id="1_7pdxx"]
-[ext_resource type="Script" uid="uid://b60mck3bob38h" path="res://objects/power_button.gd" id="1_vugxv"]
+[ext_resource type="Script" uid="uid://b60mck3bob38h" path="res://objects/scripts/power_button.gd" id="1_vugxv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vugxv"]
 size = Vector2(256, 96)

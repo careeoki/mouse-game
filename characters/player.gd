@@ -496,7 +496,7 @@ func squish():
 		is_squished = true
 	else:
 		can_stand = true
-	if is_squished and can_stand:
+	if is_squished and can_stand and not Input.is_action_pressed("move_slide"):
 		stand()
 		is_squished = false
 

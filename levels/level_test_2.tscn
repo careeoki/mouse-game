@@ -10,9 +10,9 @@
 [ext_resource type="PackedScene" uid="uid://dvrt2nk5b5oi7" path="res://objects/cheese.tscn" id="8_jfknh"]
 [ext_resource type="PackedScene" uid="uid://k6ukycm768rs" path="res://characters/stupid.tscn" id="9_jfknh"]
 [ext_resource type="PackedScene" uid="uid://b8obnpqag5o46" path="res://assets/actionable.tscn" id="10_y2vrn"]
-[ext_resource type="Resource" uid="uid://cj300lbfq8m6w" path="res://dialog/showcase.dialogue" id="11_y2vrn"]
+[ext_resource type="Resource" path="res://dialog/showcase.dialogue" id="11_y2vrn"]
 [ext_resource type="PackedScene" uid="uid://cq3hg1d8yydqy" path="res://objects/level_transition.tscn" id="13_11110"]
-[ext_resource type="PackedScene" uid="uid://jndsp3c7r5uy" path="res://levels/PlayerSpawn.tscn" id="13_m47b4"]
+[ext_resource type="PackedScene" uid="uid://jndsp3c7r5uy" path="res://objects/PlayerSpawn.tscn" id="13_m47b4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_djxo2"]
 texture = ExtResource("1_3mtb7")

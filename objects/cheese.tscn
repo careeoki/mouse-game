@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://dvrt2nk5b5oi7"]
 
-[ext_resource type="Script" uid="uid://d4fiea5m5kgmh" path="res://objects/cheese.gd" id="1_a5xy8"]
+[ext_resource type="Script" uid="uid://d4fiea5m5kgmh" path="res://objects/scripts/cheese.gd" id="1_a5xy8"]
 [ext_resource type="Texture2D" uid="uid://d1j08xltam68a" path="res://assets/objects/cheese.png" id="1_o2umf"]
 [ext_resource type="PackedScene" uid="uid://d0vxr4jg6hndo" path="res://objects/persistent_data_handler.tscn" id="3_7ctu6"]
 

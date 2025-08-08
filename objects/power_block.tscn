@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://w3ytx11iohor"]
 
 [ext_resource type="Texture2D" uid="uid://b156do1ryjtfx" path="res://assets/objects/power_block.png" id="1_1pglb"]
-[ext_resource type="Script" uid="uid://cj3k0tccgoadm" path="res://objects/power_block.gd" id="1_fq1y4"]
+[ext_resource type="Script" uid="uid://cj3k0tccgoadm" path="res://objects/scripts/power_block.gd" id="1_fq1y4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fq1y4"]
 size = Vector2(128, 128)

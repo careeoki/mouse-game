@@ -6,9 +6,16 @@ extends Control
 @onready var options_button: Button = $Wallpaper/HomeScreen/Options/Vbox/Options
 @onready var resume_button: Button = $Wallpaper/HomeScreen/Gameplay/VBox/Resume
 @onready var checklist_button: Button = $Wallpaper/HomeScreen/Gameplay/VBox/Checklist
+@onready var photos_button: Button = $Wallpaper/HomeScreen/Gameplay/VBox/Photos
 
-@onready var checklist: Control = $Wallpaper/Checklist
 
+
+@onready var checklist_app: Control = $Wallpaper/ChecklistApp
+@onready var photos_app: Control = $Wallpaper/PhotosApp
+
+
+var initial_x
+var initial_y
 
 var current_menu = "gameplay"
 var app_open = false
@@ -19,6 +26,8 @@ func _ready() -> void:
 	visible = false
 	position.y = 660
 	options_menu.position.x += menu_offset
+	initial_x = home_screen.position.x
+	initial_y = home_screen.position.y
 
 func _process(delta: float) -> void:
 	escape_press()
@@ -41,6 +50,7 @@ func resume():
 	get_tree().paused = false
 	drop_out()
 	get_parent().hud_drop_out()
+	PlayerManager.get_child(0).interact_cooldown.start()
 
 	if current_menu == "options":
 		change_menu()
@@ -51,6 +61,7 @@ func pause():
 	resume_button.grab_focus()
 	drop_in()
 	get_parent().hud_drop_in()
+	PlayerManager.get_child(0).is_dialog = true
 
 func escape_press():
 	if not Dialogic.current_timeline != null:
@@ -71,12 +82,12 @@ func change_menu():
 	if current_menu == "gameplay":
 		current_menu = "options"
 		var tween = create_tween()
-		tween.tween_property(home_screen, "position", Vector2(position.x - menu_offset, 0), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		tween.tween_property(home_screen, "position", Vector2(initial_x - menu_offset, initial_y), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 		options_button.grab_focus()
 	elif current_menu == "options":
 		current_menu = "gameplay"
 		var tween = create_tween()
-		tween.tween_property(home_screen, "position", Vector2(0, 0), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		tween.tween_property(home_screen, "position", Vector2(initial_x, initial_y), 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 		resume_button.grab_focus()
 
 func _on_resume_pressed() -> void:
@@ -86,12 +97,13 @@ func return_focus():
 	app_open = false
 	if last_focus == "checklist":
 		checklist_button.grab_focus()
-		
+	if last_focus == "photos":
+		photos_button.grab_focus()
 
 func _on_checklist_pressed() -> void:
 	app_open = true
-	checklist.open()
-	home_screen.hide()
+	checklist_app.open()
+	checklist_button.release_focus()
 	last_focus = "checklist"
 
 func _on_return_to_mouseholm_pressed() -> void:
@@ -104,3 +116,9 @@ func _on_options_pressed() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
+
+
+func _on_statistics_pressed() -> void:
+	app_open = true
+	photos_app.open()
+	last_focus = "photos"

@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://d3l4n05ojcl1c"]
 
-[ext_resource type="Script" uid="uid://bdyyjmti00e7y" path="res://objects/cracker.gd" id="1_y2ajn"]
+[ext_resource type="Script" uid="uid://bdyyjmti00e7y" path="res://objects/scripts/cracker.gd" id="1_y2ajn"]
 [ext_resource type="Texture2D" uid="uid://5s5sx3b30l1o" path="res://assets/objects/cracker_spin.png" id="2_y2ajn"]
 [ext_resource type="AudioStream" uid="uid://be5islccnrrlk" path="res://assets/sound/cracker.wav" id="3_rolyy"]
 

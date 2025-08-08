@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cq3hg1d8yydqy" path="res://objects/level_transition.tscn" id="3_bl6cj"]
 [ext_resource type="PackedScene" uid="uid://raq1rs1583ho" path="res://characters/chef_fauxmage.tscn" id="4_mcn2j"]
 [ext_resource type="PackedScene" uid="uid://d3gyd23ejv3bb" path="res://objects/air_vent.tscn" id="5_bl6cj"]
-[ext_resource type="PackedScene" uid="uid://jndsp3c7r5uy" path="res://levels/PlayerSpawn.tscn" id="6_01u77"]
+[ext_resource type="PackedScene" uid="uid://jndsp3c7r5uy" path="res://objects/PlayerSpawn.tscn" id="6_01u77"]
 [ext_resource type="PackedScene" uid="uid://50xm1tby6jq" path="res://objects/checkpoint.tscn" id="7_d2056"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_01u77"]

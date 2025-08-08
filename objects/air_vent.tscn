@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://d3gyd23ejv3bb"]
 
-[ext_resource type="Script" uid="uid://dt88shfdm7ccs" path="res://objects/air_vent.gd" id="1_n0llm"]
+[ext_resource type="Script" uid="uid://dt88shfdm7ccs" path="res://objects/scripts/air_vent.gd" id="1_n0llm"]
 [ext_resource type="Texture2D" uid="uid://d21pea7ky48q3" path="res://assets/objects/air_vent.png" id="2_yldq0"]
 [ext_resource type="Texture2D" uid="uid://qhkqu5h4hq2" path="res://assets/objects/power_air_vent.png" id="3_m27k3"]
 [ext_resource type="Texture2D" uid="uid://lgaaeqemuqhl" path="res://assets/particles/vent_wind.png" id="4_m27k3"]

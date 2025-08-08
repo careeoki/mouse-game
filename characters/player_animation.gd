@@ -12,8 +12,11 @@ func _physics_process(delta: float) -> void:
 				else:
 					play("p_speed")
 			else:
-				play("walk")
-				speed_scale = 1 + ((abs(player.velocity.x) - player.speed) / player.p_speed)
+				if player.velocity.x > 0 and player.direction == -1 or player.velocity.x < 0 and player.direction == 1:
+					play("skid")
+				else:
+					play("walk")
+					speed_scale = 1 + ((abs(player.velocity.x) - player.speed) / player.p_speed)
 		else:
 			play("idle")
 		if player.is_crouching:

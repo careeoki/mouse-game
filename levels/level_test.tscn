@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://1l26j032kbek" path="res://levels/level.gd" id="1_ca4i1"]
 [ext_resource type="PackedScene" uid="uid://k6ukycm768rs" path="res://characters/stupid.tscn" id="3_5yd65"]
 [ext_resource type="PackedScene" uid="uid://b8obnpqag5o46" path="res://assets/actionable.tscn" id="4_y0s4v"]
-[ext_resource type="Resource" uid="uid://bx2g2pdot0q3n" path="res://dialog/test.dialogue" id="5_tt56a"]
-[ext_resource type="Resource" uid="uid://ce3gqegkx7tsl" path="res://dialog/options.dialogue" id="6_y0s4v"]
+[ext_resource type="Resource" path="res://dialog/test.dialogue" id="5_tt56a"]
+[ext_resource type="Resource" path="res://dialog/options.dialogue" id="6_y0s4v"]
 [ext_resource type="PackedScene" uid="uid://dvrt2nk5b5oi7" path="res://objects/cheese.tscn" id="8_sop0g"]
 [ext_resource type="PackedScene" uid="uid://cnrh6gtxrph3u" path="res://objects/checkpoint_manager.tscn" id="8_vac4a"]
 [ext_resource type="PackedScene" uid="uid://50xm1tby6jq" path="res://objects/checkpoint.tscn" id="9_cd850"]
@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://dvwc42rxsbgbs" path="res://objects/spring.tscn" id="12_d4l3b"]
 [ext_resource type="PackedScene" uid="uid://bcatcel8fkw83" path="res://objects/door.tscn" id="13_41qk1"]
 [ext_resource type="PackedScene" uid="uid://cq3hg1d8yydqy" path="res://objects/level_transition.tscn" id="15_8sp67"]
-[ext_resource type="PackedScene" uid="uid://jndsp3c7r5uy" path="res://levels/PlayerSpawn.tscn" id="15_qyf36"]
+[ext_resource type="PackedScene" uid="uid://jndsp3c7r5uy" path="res://objects/PlayerSpawn.tscn" id="15_qyf36"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_21bpw"]
 texture = ExtResource("1_2jocc")

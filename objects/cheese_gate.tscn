@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bo448gij1mw6r"]
 
-[ext_resource type="Script" uid="uid://cqq5r750k6glp" path="res://objects/cheese_gate.gd" id="1_bsbop"]
+[ext_resource type="Script" uid="uid://cqq5r750k6glp" path="res://objects/scripts/cheese_gate.gd" id="1_bsbop"]
 [ext_resource type="PackedScene" uid="uid://d0vxr4jg6hndo" path="res://objects/persistent_data_handler.tscn" id="2_8ljp3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vghl1"]
