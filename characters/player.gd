@@ -1,5 +1,14 @@
 class_name Player extends CharacterBody2D
 	# Parameters
+
+@export var jump_height: float
+@export var jump_time_to_peak: float
+@export var jump_time_to_descent: float
+
+@onready var jump_velocity = ((2.0 * jump_height) / jump_time_to_peak) * -1
+@onready var jump_gravity = ((-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)) * -1
+@onready var fall_gravity = ((-2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)) * -1
+
 @export var speed = 1400
 @export var p_speed = 2200
 @export var sliding_speed = 3000
@@ -8,7 +17,7 @@ class_name Player extends CharacterBody2D
 @export var friction = 120
 @export var slope_friction = 1000
 @export var air_resistance = 80
-@export var jump_velocity = -2900
+
 @export var wall_jump_boost = 1000
 @export var long_jump_boost = 2200
 @export var slide_boost = 1.7
@@ -16,7 +25,7 @@ class_name Player extends CharacterBody2D
 @export var max_fall_velocity = 3600
 @export var max_move_velocity = 4000
 
-@export var gravity_multiplier = 1.01
+@export var gravity_multiplier = 1
 @export var wall_slide_gravity = 0.8
 
 	# Variables
@@ -112,9 +121,9 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor() or wind_power:
 		if velocity.y < max_fall_velocity and not is_drop:
 			if wind_power and velocity.y > -3000:
-				velocity += (get_gravity() + wind_power) * delta
+				velocity.y += (get_gravity_type() + wind_power.y) * delta
 			else:
-				velocity += get_gravity() * delta
+				velocity.y += get_gravity_type() * delta
 			if velocity.y > 0 and not wind_power:
 				fast_fall()
 			#else:
@@ -286,6 +295,9 @@ func _physics_process(delta: float) -> void:
 	else:
 		is_wall_sliding = false
 
+func get_gravity_type() -> float:
+	return jump_gravity if velocity.y < 0.0 else fall_gravity
+
 func handle_direction(delta):
 	var direction := Input.get_axis("move_left", "move_right")
 	if direction and not is_crouching and can_move_slide and not is_dialog:
@@ -325,7 +337,6 @@ func jump():
 			sound_effects.play_sound("jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			moving_platform_speed_bonus += moving_platform_speed
-			#PlayerManager.create_jump_poof()
 			if is_crouching:
 				velocity.y = jump_velocity * 0.3
 				print("rollout")

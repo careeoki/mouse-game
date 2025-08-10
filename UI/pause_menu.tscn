@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bkn8dwvq4qx35"]
+[gd_scene load_steps=16 format=3 uid="uid://bkn8dwvq4qx35"]
 
 [ext_resource type="Theme" uid="uid://lndqrlgegpj8" path="res://UI/themes/base.tres" id="1_jfm1e"]
 [ext_resource type="Script" uid="uid://b3j741xhcfc3" path="res://UI/pause_menu.gd" id="1_ltd3m"]
@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://b0biw50od6ccn" path="res://UI/apps/photos.gd" id="10_onkq6"]
 [ext_resource type="Texture2D" uid="uid://2euouhg0f8aa" path="res://assets/ui/wallpapers/cool.png" id="10_pwekk"]
 [ext_resource type="Texture2D" uid="uid://lt76sk1wgv8j" path="res://assets/ui/wallpapers/best_friends.png" id="11_onkq6"]
+[ext_resource type="Theme" uid="uid://c1a1jt7qxh377" path="res://UI/themes/pop_up.tres" id="14_6b54m"]
+[ext_resource type="Script" uid="uid://dsk4hgml736c0" path="res://UI/apps/popup.gd" id="15_ljfgm"]
 
 [node name="PauseMenu" type="Control"]
 process_mode = 3
@@ -282,9 +284,86 @@ layout_mode = 2
 [node name="Button5" type="Button" parent="Wallpaper/PhotosApp/Photos/GridContainer"]
 layout_mode = 2
 
+[node name="PopupApp" parent="Wallpaper" instance=ExtResource("8_mxjhc")]
+visible = false
+layout_mode = 1
+theme = ExtResource("14_6b54m")
+hide_home_screen = false
+
+[node name="Popup" type="Control" parent="Wallpaper/PopupApp"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("15_ljfgm")
+
+[node name="Darken" type="ColorRect" parent="Wallpaper/PopupApp/Popup"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.368627)
+
+[node name="PopupPanel" type="PanelContainer" parent="Wallpaper/PopupApp/Popup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -117.5
+offset_top = -85.5
+offset_right = 117.5
+offset_bottom = 85.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PopText" type="RichTextLabel" parent="Wallpaper/PopupApp/Popup/PopupPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Are you sure?? Like super sure!?"
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="Choices" type="HFlowContainer" parent="Wallpaper/PopupApp/Popup/PopupPanel"]
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 1
+
+[node name="Yes" type="Button" parent="Wallpaper/PopupApp/Popup/PopupPanel/Choices"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../No")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+action_mode = 0
+text = "Yeah"
+
+[node name="No" type="Button" parent="Wallpaper/PopupApp/Popup/PopupPanel/Choices"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath("../Yes")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+action_mode = 0
+text = "Nope"
+
 [connection signal="pressed" from="Wallpaper/HomeScreen/Gameplay/VBox/Resume" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="Wallpaper/HomeScreen/Gameplay/VBox/Checklist" to="." method="_on_checklist_pressed"]
 [connection signal="pressed" from="Wallpaper/HomeScreen/Gameplay/VBox/Photos" to="." method="_on_statistics_pressed"]
 [connection signal="pressed" from="Wallpaper/HomeScreen/Gameplay/VBox/Go Home" to="." method="_on_return_to_mouseholm_pressed"]
 [connection signal="pressed" from="Wallpaper/HomeScreen/Options/Vbox/Options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="Wallpaper/HomeScreen/Options/Vbox/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Wallpaper/PopupApp/Popup/PopupPanel/Choices/Yes" to="Wallpaper/PopupApp/Popup" method="_on_yes_pressed"]
+[connection signal="pressed" from="Wallpaper/PopupApp/Popup/PopupPanel/Choices/No" to="Wallpaper/PopupApp/Popup" method="_on_no_pressed"]

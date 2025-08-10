@@ -1,5 +1,7 @@
 extends Control
 
+@export var hide_home_screen = true
+
 var is_open = false
 @onready var pause_menu: Control = $"../.."
 
@@ -18,7 +20,8 @@ func open():
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1, 1), 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await tween.finished
-	if is_open:
+	
+	if is_open and hide_home_screen:
 		pause_menu.home_screen.hide()
 
 func close():

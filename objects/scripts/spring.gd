@@ -3,6 +3,7 @@ extends Area2D
 @onready var sprite: Sprite2D = $Sprite
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var collider: CollisionShape2D = $Collider
+@onready var boing: AudioStreamPlayer2D = $Boing
 
 @export var spring_power = 1.5
 @export var sliding_spring_power = 1
@@ -16,16 +17,18 @@ func _ready() -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is Player:
-		if animation_player.current_animation == "Idle":
-			animation_player.play("Bounce")
-			player = body
-			body.air_jumped = true
-			if body.is_crouching and body.direction != 0:
-				body.velocity.x = body.speed * sliding_spring_boost * body.direction
-				body.velocity.y = body.jump_velocity * sliding_spring_power
-			else:
-				body.velocity.y = body.jump_velocity * spring_power
-			
+		#if animation_player.current_animation == "Idle":
+		animation_player.play("Bounce")
+		player = body
+		body.air_jumped = true
+		boing.pitch_scale = randf_range(0.9, 1.1)
+		boing.play()
+		if body.is_crouching and Input.is_action_pressed("move_slide") and body.direction != 0:
+			body.velocity.x = body.speed * sliding_spring_boost * body.direction
+			body.velocity.y = body.jump_velocity * sliding_spring_power
+		else:
+			body.velocity.y = body.jump_velocity * spring_power
+		
 
 
 

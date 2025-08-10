@@ -7,11 +7,15 @@ extends Control
 @onready var resume_button: Button = $Wallpaper/HomeScreen/Gameplay/VBox/Resume
 @onready var checklist_button: Button = $Wallpaper/HomeScreen/Gameplay/VBox/Checklist
 @onready var photos_button: Button = $Wallpaper/HomeScreen/Gameplay/VBox/Photos
+@onready var go_home_button: Button = $"Wallpaper/HomeScreen/Gameplay/VBox/Go Home"
+@onready var quit_button: Button = $Wallpaper/HomeScreen/Options/Vbox/Quit
 
 
 
 @onready var checklist_app: Control = $Wallpaper/ChecklistApp
 @onready var photos_app: Control = $Wallpaper/PhotosApp
+@onready var popup_app: Control = $Wallpaper/PopupApp
+@onready var popup: Control = $Wallpaper/PopupApp/Popup
 
 
 var initial_x
@@ -99,6 +103,10 @@ func return_focus():
 		checklist_button.grab_focus()
 	if last_focus == "photos":
 		photos_button.grab_focus()
+	if last_focus == "go_home":
+		go_home_button.grab_focus()
+	if last_focus == "quit":
+		quit_button.grab_focus()
 
 func _on_checklist_pressed() -> void:
 	app_open = true
@@ -107,16 +115,29 @@ func _on_checklist_pressed() -> void:
 	last_focus = "checklist"
 
 func _on_return_to_mouseholm_pressed() -> void:
+	app_open = true
+	popup_app.open()
+	go_home_button.release_focus()
+	popup.new_popup("go_home")
+	last_focus = "go_home"
+
+func go_home():
 	resume()
 	LevelManager.load_new_level("res://levels/mouseholm/town_square.tscn", "EnterLeft")
 
 func _on_options_pressed() -> void:
-	pass # Replace with function body.
+	pass
 
 
 func _on_quit_pressed() -> void:
-	get_tree().quit()
+	app_open = true
+	popup_app.open()
+	go_home_button.release_focus()
+	popup.new_popup("quit")
+	last_focus = "quit"
 
+func quit():
+	get_tree().quit()
 
 func _on_statistics_pressed() -> void:
 	app_open = true

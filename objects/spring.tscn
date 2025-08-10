@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dvwc42rxsbgbs"]
+[gd_scene load_steps=10 format=3 uid="uid://dvwc42rxsbgbs"]
 
 [ext_resource type="Script" uid="uid://bx4dvbnf3xrl3" path="res://objects/scripts/spring.gd" id="1_vfg45"]
 [ext_resource type="Texture2D" uid="uid://ci34dunkuah1" path="res://assets/objects/spring_bounce.png" id="2_vfg45"]
+[ext_resource type="AudioStream" uid="uid://c5glkofhovnbc" path="res://assets/sound/boing.wav" id="3_14s6j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_14s6j"]
 size = Vector2(128, 64)
@@ -96,6 +97,9 @@ shape = SubResource("RectangleShape2D_14s6j")
 libraries = {
 &"": SubResource("AnimationLibrary_mcih0")
 }
+
+[node name="Boing" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_14s6j")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

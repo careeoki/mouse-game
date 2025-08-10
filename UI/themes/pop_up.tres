@@ -1,0 +1,32 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://c1a1jt7qxh377"]
+
+[ext_resource type="FontVariation" uid="uid://c1lna6xvakjow" path="res://UI/themes/bold_type.tres" id="1_8isuv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8isuv"]
+bg_color = Color(1, 1, 1, 1)
+border_color = Color(0.678944, 0.678944, 0.678943, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dh62x"]
+bg_color = Color(0.815686, 0.835294, 0.870588, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.815686, 0.835294, 0.870588, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[resource]
+default_font = ExtResource("1_8isuv")
+Button/colors/font_color = Color(0, 0, 0, 1)
+Button/colors/font_focus_color = Color(0, 0, 0, 1)
+Button/styles/normal = SubResource("StyleBoxFlat_8isuv")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_dh62x")
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
+RichTextLabel/font_sizes/normal_font_size = 28
