@@ -25,6 +25,7 @@ func open():
 		pause_menu.home_screen.hide()
 
 func close():
+	get_child(0).remove_focus()
 	is_open = false
 	pause_menu.home_screen.show()
 	var tween = create_tween()

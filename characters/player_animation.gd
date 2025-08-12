@@ -1,7 +1,12 @@
 extends AnimatedSprite2D
 
 @onready var player: Player = $".."
+@onready var tail_end: RopeHandle = $"../Tail/HandleEnd"
 
+var initial_tail_position
+
+func _ready() -> void:
+	initial_tail_position = tail_end.position
 
 func _physics_process(delta: float) -> void:
 	if not player.is_dialog:

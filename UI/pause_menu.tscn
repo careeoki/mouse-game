@@ -284,6 +284,20 @@ layout_mode = 2
 [node name="Button5" type="Button" parent="Wallpaper/PhotosApp/Photos/GridContainer"]
 layout_mode = 2
 
+[node name="Darken" type="ColorRect" parent="Wallpaper"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 19.5
+offset_top = 5.0
+offset_right = 19.5
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.368627)
+
 [node name="PopupApp" parent="Wallpaper" instance=ExtResource("8_mxjhc")]
 visible = false
 layout_mode = 1
@@ -298,16 +312,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("15_ljfgm")
-
-[node name="Darken" type="ColorRect" parent="Wallpaper/PopupApp/Popup"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.368627)
 
 [node name="PopupPanel" type="PanelContainer" parent="Wallpaper/PopupApp/Popup"]
 layout_mode = 1
