@@ -14,7 +14,7 @@ extends Area2D
 @onready var wind_anim: Sprite2D = $WindAnim
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
-var wind: Vector2 = Vector2(0, -12000)
+var wind: Vector2 = Vector2(0, -10000)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

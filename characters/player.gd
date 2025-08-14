@@ -158,6 +158,7 @@ func _physics_process(delta: float) -> void:
 		can_coyote_jump = true
 		coyote_timer.start()
 	
+	
 	var just_left_wall = was_on_wall and not is_on_wall()
 	if just_left_wall:
 		wall_coyote_timer.start()
@@ -555,6 +556,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if actionables.size() > 0:
 			actionables[0].player = self
 			actionables[0].action()
+			sprite.play("idle")
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
 		interact_cooldown.start()

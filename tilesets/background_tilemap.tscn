@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://17pul818uph4"]
+
+[ext_resource type="TileSet" uid="uid://bhfulmyhjcymy" path="res://tilesets/background.tres" id="1_d155u"]
+
+[node name="BackgroundTilemap" type="TileMapLayer"]
+z_index = -1
+tile_set = ExtResource("1_d155u")

@@ -44,8 +44,8 @@ func look_down():
 	await tween.finished
 	vertical_look_dir = 700
 
-func on_land_look():
-	global_position.y = player.camera_y
+#func on_land_look():
+	#global_position.y = player.camera_y
 
 func reset_vertical():
 	var tween = create_tween()

@@ -1,36 +1,34 @@
-[gd_scene load_steps=2 format=3 uid="uid://bplgmp033tq5d"]
+[gd_scene load_steps=4 format=3 uid="uid://bplgmp033tq5d"]
 
+[ext_resource type="Texture2D" uid="uid://b7qs6rc136hkn" path="res://assets/backgrounds/sky.png" id="1_c2jn7"]
 [ext_resource type="Texture2D" uid="uid://b4qqxv070hu5j" path="res://assets/backgrounds/retro_hills.png" id="1_cmi5u"]
+[ext_resource type="Texture2D" uid="uid://bvmyu7ey2jrwp" path="res://assets/backgrounds/retro_hills_far.png" id="2_mk5l2"]
 
 [node name="TestBack" type="Node2D"]
 z_index = -50
 
 [node name="Sky" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0, 0)
-repeat_size = Vector2(1920, 1080)
-repeat_times = 4
 
-[node name="ColorRect" type="ColorRect" parent="Sky"]
-z_index = -2
-offset_right = 1920.0
-offset_bottom = 1080.0
-color = Color(0.647059, 0.858824, 1, 1)
+[node name="Sprite2D" type="Sprite2D" parent="Sky"]
+z_index = -7
+position = Vector2(576, 324)
+scale = Vector2(2.4, 2.4)
+texture = ExtResource("1_c2jn7")
 
 [node name="Hills" type="Parallax2D" parent="."]
-scroll_scale = Vector2(0.2, 0.2)
-repeat_size = Vector2(1500, 0)
-repeat_times = 3
+scroll_scale = Vector2(0.1, 0.1)
+repeat_size = Vector2(3840, 0)
+repeat_times = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="Hills"]
-modulate = Color(1, 1, 1, 0.486275)
 z_index = -1
-position = Vector2(0, -528)
-scale = Vector2(1.27969, 2.56784)
-texture = ExtResource("1_cmi5u")
-centered = false
+position = Vector2(576, 324)
+scale = Vector2(2.4, 2.4)
+texture = ExtResource("2_mk5l2")
 
 [node name="Hills2" type="Parallax2D" parent="."]
-scroll_scale = Vector2(0.5, 0.5)
+scroll_scale = Vector2(0.2, 0.2)
 repeat_size = Vector2(1920, 0)
 repeat_times = 3
 

@@ -38,9 +38,12 @@ directories/dtl_directory={
 "fauxmage_test": "res://dialog/fauxmage_test.dtl",
 "hungry_door": "res://dialog/hungry_door.dtl",
 "if_this_works_i_kill_you": "res://if_this_works_i_kill_you.dtl",
+"long_jump": "res://dialog/tutorial/long_jump.dtl",
 "pants_guy": "res://dialog/pants_guy.dtl",
 "sign_interact": "res://dialog/sign_interact.dtl",
-"testi": "res://dialog/testi.dtl"
+"slide": "res://dialog/tutorial/slide.dtl",
+"testi": "res://dialog/testi.dtl",
+"wall_jump": "res://dialog/tutorial/wall_jump.dtl"
 }
 layout/style_list=["res://UI/dialog/bubble.tres"]
 layout/default_style="res://UI/dialog/bubble.tres"

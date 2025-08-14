@@ -34,8 +34,13 @@ func air_jump():
 	if not is_cooldown:
 		player.air_jumped = true
 		player.velocity.y = player.jump_velocity * 1.1
+		if player.direction == 1 and player.velocity.x < player.speed:
+			player.velocity.x = player.speed
+		elif player.direction == -1 and player.velocity.x > -player.speed:
+			player.velocity.x = -player.speed
 		player.is_drop = false
 		player.is_drop_falling = false
+		player.drop_timer.stop()
 		player.maintained_momentum = 0
 		animation_player.play("Pop")
 		is_cooldown = true
