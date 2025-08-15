@@ -22,7 +22,7 @@ class_name Player extends CharacterBody2D
 @export var long_jump_boost = 2200
 @export var slide_boost = 1.7
 @export var jump_reduction = 0.5
-@export var max_fall_velocity = 3600
+@export var max_fall_velocity = 3200
 @export var max_move_velocity = 4000
 
 @export var gravity_multiplier = 1
@@ -124,8 +124,6 @@ func _physics_process(delta: float) -> void:
 				velocity.y += (get_gravity_type() + wind_power.y) * delta
 			else:
 				velocity.y += get_gravity_type() * delta
-			if velocity.y > 0 and not wind_power:
-				fast_fall()
 			#else:
 				#if is_crouching:
 					#velocity += get_gravity() * delta
@@ -556,7 +554,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		if actionables.size() > 0:
 			actionables[0].player = self
 			actionables[0].action()
-			sprite.play("idle")
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
 		interact_cooldown.start()
@@ -567,6 +564,7 @@ func dialog_start():
 	player_camera.focus_zoom()
 	is_dialog = true
 	velocity.x = 0
+	sprite.play("idle")
 
 func _ready():
 	Dialogic.timeline_ended.connect(_on_timeline_ended)
@@ -581,8 +579,7 @@ func _on_timeline_ended():
 	player_camera.reset_zoom()
 
 
-func fast_fall():
-	velocity.y *= gravity_multiplier
+
 
 func _on_wall_jump_timer_timeout() -> void:
 	is_wall_jumping = false

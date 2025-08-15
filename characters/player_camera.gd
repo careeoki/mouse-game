@@ -34,7 +34,7 @@ func update_limits(bounds : Array[Vector2]) -> void:
 
 func lookahead(look_direction: int):
 	look_tween = create_tween()
-	look_tween.tween_property(self, "position:x", 200 * look_direction, 3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	look_tween.tween_property(self, "position:x", 200 * look_direction, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await look_tween.finished
 	look_dir = 200 * look_direction
 

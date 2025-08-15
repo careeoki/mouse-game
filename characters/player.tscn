@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=60 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://qg8oqi7hfujy" path="res://assets/characters/mable/slide.png" id="5_eho78"]
 [ext_resource type="Script" uid="uid://1xluodkpnre3" path="res://addons/ropesim/RopeHandle.gd" id="5_evndh"]
 [ext_resource type="Texture2D" uid="uid://deqi8wvtstywf" path="res://assets/characters/mable/walk.png" id="6_8sqrr"]
+[ext_resource type="Texture2D" uid="uid://cbjtyi35wi1br" path="res://assets/characters/mable/fall_loop.png" id="7_nbheu"]
 [ext_resource type="Texture2D" uid="uid://bniv4d4ljq8uj" path="res://assets/characters/mable/p_speed.png" id="7_vcag3"]
 [ext_resource type="Texture2D" uid="uid://d1kya7kpf000w" path="res://assets/characters/mable/serious.png" id="8_4rspn"]
 [ext_resource type="Texture2D" uid="uid://dc7sngqajg6h5" path="res://assets/characters/mable/tail.png" id="9_8sqrr"]
@@ -37,6 +38,26 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d3tvb"]
 atlas = ExtResource("4_5f4cm")
+region = Rect2(208, 0, 208, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nbheu"]
+atlas = ExtResource("2_n8jd0")
+region = Rect2(0, 0, 208, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5mswt"]
+atlas = ExtResource("2_n8jd0")
+region = Rect2(208, 0, 208, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o8c8i"]
+atlas = ExtResource("2_n8jd0")
+region = Rect2(416, 0, 208, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cbb7d"]
+atlas = ExtResource("7_nbheu")
+region = Rect2(0, 0, 208, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xvpab"]
+atlas = ExtResource("7_nbheu")
 region = Rect2(208, 0, 208, 208)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qp1es"]
@@ -114,11 +135,28 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 1.0,
-"texture": ExtResource("2_n8jd0")
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_nbheu")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_5mswt")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_o8c8i")
+}],
+"loop": false,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_cbb7d")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_xvpab")
 }],
 "loop": true,
-"name": &"fall",
+"name": &"fall_loop",
 "speed": 5.0
 }, {
 "frames": [{
@@ -267,7 +305,9 @@ jump_time_to_descent = 0.35
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 z_index = 3
 sprite_frames = SubResource("SpriteFrames_7eugy")
-animation = &"idle"
+animation = &"fall"
+frame = 2
+frame_progress = 1.0
 offset = Vector2(0, -60)
 script = ExtResource("14_ys5vl")
 
@@ -316,6 +356,7 @@ wait_time = 0.4
 one_shot = true
 
 [node name="DeathTimer" type="Timer" parent="."]
+wait_time = 0.8
 one_shot = true
 
 [node name="PSpeedTimer" type="Timer" parent="."]
@@ -553,6 +594,8 @@ one_shot = true
 wait_time = 0.05
 one_shot = true
 
+[connection signal="animation_changed" from="Sprite" to="Sprite" method="_on_animation_changed"]
+[connection signal="animation_finished" from="Sprite" to="Sprite" method="_on_animation_finished"]
 [connection signal="frame_changed" from="Sprite" to="Sprite" method="_on_frame_changed"]
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_jump_buffer_timeout"]
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
