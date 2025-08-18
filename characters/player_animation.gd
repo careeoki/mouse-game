@@ -10,6 +10,7 @@ func _ready() -> void:
 	initial_tail_position = tail_end.position
 
 func _physics_process(delta: float) -> void:
+	tail_handling()
 	if not player.is_dialog:
 		if player.velocity.x and not player.is_dialog and player.is_on_floor():
 			if player.is_p_speed:
@@ -31,7 +32,7 @@ func _physics_process(delta: float) -> void:
 			play("slide")
 		
 		if not player.is_on_floor():
-			if player.velocity.y < 0:
+			if player.velocity.y < -100:
 				play("jump")
 			else:
 				if player.is_wall_sliding:
@@ -41,16 +42,25 @@ func _physics_process(delta: float) -> void:
 						play("wall_slide")
 				elif player.is_drop_falling:
 					play("drop")
-				elif not animation == "fall_loop":
+				elif animation == "jump":
 					play("fall")
 					speed_scale = 1
 					print("fallanim")
+				elif not animation == "fall_loop" and not animation == "fall":
+					play("fall_loop")
 		
 		if player.is_collecting:
 			play("collect")
 		if player.is_dying:
 			play("die")
 
+func tail_handling():
+	pass
+	#if animation == "fall_loop":
+		#tail_end.position.y = initial_tail_position.y - 500
+		#tail_end.position.x = initial_tail_position.x - 200
+	#elif not tail_end.position.y == initial_tail_position.y:
+		#tail_end.position.y = initial_tail_position.y
 
 func _on_animation_finished() -> void:
 	if  animation == "fall":

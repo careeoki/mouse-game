@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dplns4xkwo54l"]
+[gd_scene load_steps=10 format=3 uid="uid://dplns4xkwo54l"]
 
 [ext_resource type="Script" uid="uid://0vosibi3yic1" path="res://objects/scripts/bounce_bubble.gd" id="1_xobm6"]
+[ext_resource type="Material" uid="uid://u6w6f23thwrw" path="res://shaders/basic_outline.tres" id="2_mutad"]
 [ext_resource type="Texture2D" uid="uid://bldqwlmx11620" path="res://assets/objects/bounce_bubble.png" id="2_xobm6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8uksb"]
@@ -86,6 +87,7 @@ collision_mask = 2
 script = ExtResource("1_xobm6")
 
 [node name="Sprite" type="Sprite2D" parent="."]
+material = ExtResource("2_mutad")
 texture = ExtResource("2_xobm6")
 hframes = 8
 

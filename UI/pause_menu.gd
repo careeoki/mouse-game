@@ -123,7 +123,7 @@ func _on_return_to_mouseholm_pressed() -> void:
 
 func go_home():
 	resume()
-	LevelManager.load_new_level("res://levels/mouseholm/town_square.tscn", "EnterLeft")
+	LevelManager.load_new_level("res://levels/mouseholm/town_square.tscn", "PhoneExit")
 
 func _on_options_pressed() -> void:
 	pass

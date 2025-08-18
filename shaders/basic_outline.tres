@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://u6w6f23thwrw"]
+
+[ext_resource type="Shader" uid="uid://b6m4pg2us2bex" path="res://shaders/blotchy_aura.gdshader" id="1_r6xog"]
+
+[resource]
+shader = ExtResource("1_r6xog")
+shader_parameter/maxLineWidth = 3.0
+shader_parameter/minLineWidth = 0.0
+shader_parameter/speed = 2.0
+shader_parameter/blockSize = 15.0
+shader_parameter/color = Color(0, 0, 0, 1)
+shader_parameter/tolerance = 0.921
