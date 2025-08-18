@@ -24,7 +24,6 @@ func _physics_process(delta: float) -> void:
 				else:
 					play("walk")
 					speed_scale = 1 + ((abs(player.velocity.x) - player.speed) / player.p_speed)
-					print("walkanim")
 		elif player.is_on_floor():
 			play("idle")
 		
@@ -45,7 +44,6 @@ func _physics_process(delta: float) -> void:
 				elif animation == "jump":
 					play("fall")
 					speed_scale = 1
-					print("fallanim")
 				elif not animation == "fall_loop" and not animation == "fall":
 					play("fall_loop")
 		

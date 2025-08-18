@@ -356,7 +356,7 @@ wait_time = 0.4
 one_shot = true
 
 [node name="DeathTimer" type="Timer" parent="."]
-wait_time = 0.8
+wait_time = 0.3
 one_shot = true
 
 [node name="PSpeedTimer" type="Timer" parent="."]
@@ -436,7 +436,7 @@ rope_position = 0.0
 metadata/_custom_type_script = "uid://1xluodkpnre3"
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
-offset = Vector2(0, -230)
+position = Vector2(0, -230)
 zoom = Vector2(0.25, 0.25)
 process_callback = 0
 position_smoothing_enabled = true

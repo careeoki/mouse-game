@@ -89,6 +89,7 @@ var is_drop_falling = false
 var wall_tired = false
 var is_dialog = false
 var is_dying = false
+var has_died = false
 var is_collecting = false
 var is_moving = false
 var hud_up = false
@@ -148,6 +149,8 @@ func _physics_process(delta: float) -> void:
 	if not can_move_slide:
 		look_direction = 0
 		player_camera.reset_vertical()
+	if is_dying:
+		look_direction = 0
 	
 	moving_platform_speed = get_platform_velocity()
 	
@@ -175,9 +178,9 @@ func _physics_process(delta: float) -> void:
 	# Slow to normal speed when real fast
 	if velocity.x > speed and direction == 1 or velocity.x < -speed and direction == -1:
 		if not is_on_floor():
-			acceleration = 400
-		else:
 			acceleration = 500
+		else:
+			acceleration = 600
 	else:
 		acceleration = 6000
 		
@@ -197,6 +200,7 @@ func _physics_process(delta: float) -> void:
 	
 	if abs(velocity.x) > 2500:
 		if not is_p_speed and allow_p_speed:
+			print("initial p speed activate")
 			is_p_speed = true
 		if not allow_p_speed:
 			is_p_speed = false
@@ -218,7 +222,11 @@ func _physics_process(delta: float) -> void:
 					funny_timer.start()
 				elif p_speed_timer.is_stopped():
 						p_speed_timer.start()
-
+						print("started timer...")
+	
+	if not allow_p_speed and abs(velocity.x) < p_speed:
+		allow_p_speed = true
+		print("slowed to normal speed")
 	
 	
 	# Stop from moving faster than max_move_velocity
@@ -269,9 +277,9 @@ func _physics_process(delta: float) -> void:
 			if direction:
 				velocity.x = maintained_momentum
 			maintained_momentum = 0
-		if is_long_jumping:
+		if is_long_jumping and not is_p_speed:
 			allow_p_speed = false
-			long_jump_timer.start()
+			#long_jump_timer.start()
 			is_long_jumping = false
 		if jump_buffer:
 			jump_buffer = false
@@ -281,7 +289,6 @@ func _physics_process(delta: float) -> void:
 				print("buffer drop")
 			else:
 				velocity.y = jump_velocity
-				print("buffer")
 			sound_effects.play_sound("jump")
 		if Input.is_action_pressed("move_slide"):
 			slide_buffer = true
@@ -336,16 +343,20 @@ func jump():
 			sound_effects.play_sound("jump")
 			sprite.scale = Vector2(0.7, 1.3)
 			moving_platform_speed_bonus += moving_platform_speed
+			
+			#soumersalt
+			#if velocity.x > 0 and direction == -1:
+				#velocity.x = -speed
+			#elif velocity.x < 0 and direction == 1:
+				#velocity.x = speed
+			
 			if is_crouching:
 				velocity.y = jump_velocity * 0.3
-				print("rollout")
 			if drop_land_timer.time_left > 0 and not maintained_momentum:
 				velocity.y = jump_velocity * 1.2
 				PlayerManager.create_jump_poof()
-				print("dropjump")
 			else:
 				velocity.y = jump_velocity
-				print("normal jump")
 			if can_coyote_jump:
 				can_coyote_jump = false
 		
@@ -357,7 +368,7 @@ func jump():
 					return
 			is_long_jumping = true
 			
-			if slope_direction == 0:
+			if not is_p_speed:
 				allow_p_speed = false
 			#do_slide_boost()
 			if can_coyote_jump:
@@ -586,10 +597,12 @@ func _on_wall_jump_timer_timeout() -> void:
 
 
 func _on_hurtbox_body_entered(body: Node2D) -> void:
+	player_camera.apply_shake()
 	print("im hurt")
 	is_dying = true
 	can_move_slide = false
 	death_timer.start()
+
 
 #func can_interact():
 	#var actionables = actionable_finder.get_overlapping_areas()
@@ -612,11 +625,27 @@ func _on_slide_cooldown_timeout() -> void:
 
 
 func _on_death_timer_timeout() -> void:
-	is_dying = false
-	can_move_slide = true
-	var value = 1
-	EventManager.player_died(value)
-	PlayerManager.set_player_position(spawn_position)
+	
+	if not has_died:
+		can_move_slide = true
+		is_dialog = true
+		has_died = true
+		air_resistance = 1
+		velocity.x = (-speed * facing_direction) * 0.7
+		velocity.y = jump_velocity * 0.8
+		death_timer.wait_time = 0.5
+		death_timer.start()
+		var value = 1
+		EventManager.player_died(value)
+	else:
+		death_timer.wait_time = 0.3
+		air_resistance = 80
+		has_died = false
+		is_dying = false
+		is_dialog = false
+		can_move_slide = false
+		PlayerManager.set_player_position(spawn_position)
+		can_move_slide = true
 
 func collect_cheese():
 	can_move_slide = false
@@ -648,8 +677,8 @@ func _on_interact_cooldown_timeout() -> void:
 	can_move_slide = true
 
 func _on_p_speed_timer_timeout() -> void:
-	#pass
-	#if not is_wall_sliding:
+	if abs(velocity.x) > 2000:
+		print("timeout, but still p speed")
 	if is_wall_sliding:
 		print("stop p speed")
 		is_p_speed = false

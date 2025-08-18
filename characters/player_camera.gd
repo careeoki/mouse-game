@@ -2,6 +2,13 @@ extends Camera2D
 
 @onready var smoothing_timer: Timer = $SmoothingTimer
 @onready var player: Player = $".."
+
+@export var death_shake = 50.0
+@export var shake_falloff = 20.0
+
+var rng = RandomNumberGenerator.new()
+var shake_strength: float = 0.0
+
 var look_tween: Tween
 var look_dir = 0
 var vertical_look_dir = 0
@@ -15,13 +22,17 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if player.can_move_slide:
+	if player.can_move_slide and not player.is_dying:
 		position.x = look_dir
-		position.y = vertical_look_dir
 	else:
 		if look_tween:
 			look_tween.kill()
 		position.x = 0
+	
+	if shake_strength > 0:
+		shake_strength = lerpf(shake_strength, 0, shake_falloff * delta)
+		
+		offset = randomOffset()
 
 func update_limits(bounds : Array[Vector2]) -> void:
 	if bounds == []:
@@ -31,6 +42,12 @@ func update_limits(bounds : Array[Vector2]) -> void:
 	limit_right = int(bounds[1].x)
 	limit_bottom = int(bounds[1].y)
 	pass
+
+func apply_shake():
+	shake_strength = death_shake
+
+func randomOffset() -> Vector2:
+	return Vector2(rng.randf_range(-shake_strength, shake_strength), randf_range(-shake_strength, shake_strength))
 
 func lookahead(look_direction: int):
 	look_tween = create_tween()

@@ -1,18 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://dvrt2nk5b5oi7"]
+[gd_scene load_steps=9 format=3 uid="uid://dvrt2nk5b5oi7"]
 
 [ext_resource type="Script" uid="uid://d4fiea5m5kgmh" path="res://objects/scripts/cheese.gd" id="1_a5xy8"]
 [ext_resource type="Texture2D" uid="uid://d1j08xltam68a" path="res://assets/objects/cheese.png" id="1_o2umf"]
-[ext_resource type="Shader" uid="uid://b6m4pg2us2bex" path="res://shaders/blotchy_aura.gdshader" id="2_1jo43"]
+[ext_resource type="Material" uid="uid://u6w6f23thwrw" path="res://shaders/basic_outline.tres" id="2_1jo43"]
 [ext_resource type="PackedScene" uid="uid://d0vxr4jg6hndo" path="res://objects/persistent_data_handler.tscn" id="3_7ctu6"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ebjcb"]
-shader = ExtResource("2_1jo43")
-shader_parameter/maxLineWidth = 15.0
-shader_parameter/minLineWidth = 1.0
-shader_parameter/speed = 6.0
-shader_parameter/blockSize = 5.0
-shader_parameter/color = Color(1, 0.33, 0.586833, 0.823529)
-shader_parameter/tolerance = 0.337
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_a5xy8"]
 radius = 75.0
@@ -61,7 +52,7 @@ collision_mask = 2
 script = ExtResource("1_a5xy8")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_ebjcb")
+material = ExtResource("2_1jo43")
 texture = ExtResource("1_o2umf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
