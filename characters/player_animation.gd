@@ -30,7 +30,7 @@ func _physics_process(delta: float) -> void:
 		if player.is_crouching:
 			play("slide")
 		
-		if not player.is_on_floor():
+		if not player.is_on_floor() and not player.is_dying:
 			if player.velocity.y < -100:
 				play("jump")
 			else:
@@ -49,8 +49,8 @@ func _physics_process(delta: float) -> void:
 		
 		if player.is_collecting:
 			play("collect")
-		if player.is_dying:
-			play("die")
+		if player.is_dying and not animation == "die_direction":
+			play("die_direction")
 
 func tail_handling():
 	pass

@@ -2,6 +2,7 @@ extends Area2D
 
 @export_file("*.tscn") var level
 @export var target_door : String  = "Door"
+@onready var focus_transform: RemoteTransform2D = $FocusTransform
 @onready var door: Area2D = $"."
 
 

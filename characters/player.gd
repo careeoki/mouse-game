@@ -42,10 +42,10 @@ class_name Player extends CharacterBody2D
 @onready var collision_slide: CollisionShape2D = $CollisionSlide
 @onready var actionable_finder: Area2D = $ActionableFinder
 @onready var collision_stand: Area2D = $CollisionStand
-@onready var player_camera: Camera2D = $PlayerCamera
 @onready var bubble_marker: Marker2D = $BubbleMarker
 @onready var sound_effects: Node2D = $SoundEffects
 @onready var dust_particles: CPUParticles2D = $DustParticles
+@onready var camera_transform: RemoteTransform2D = $CameraTransform
 
 # 1 million timers
 @onready var coyote_timer = $CoyoteTimer
@@ -62,11 +62,13 @@ class_name Player extends CharacterBody2D
 @onready var drop_timer: Timer = $DropTimer
 @onready var drop_land_timer: Timer = $DropLandTimer
 
+
 @onready var slide_duration: Timer = $SlideDuration
 @onready var slide_cooldown: Timer = $SlideCooldown
 
 
 var spawn_position = Vector2.ZERO
+var camera
 
 var direction
 var facing_direction = 1
@@ -148,7 +150,7 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 	if not can_move_slide:
 		look_direction = 0
-		player_camera.reset_vertical()
+		camera.reset_vertical()
 	if is_dying:
 		look_direction = 0
 	
@@ -260,9 +262,10 @@ func _physics_process(delta: float) -> void:
 	# Touched ground
 	if !was_on_floor && is_on_floor():
 		sound_effects.play_sound("land")
-		PlayerManager.create_land_poof()
+		if not is_dying:
+			PlayerManager.create_land_poof()
 		sprite.scale = Vector2(1.3, 0.7)
-		#player_camera.reset_vertical()
+		#camera.reset_vertical()
 		last_wall_jump = Vector2.ZERO
 		if not moving_platform_speed_bonus == Vector2.ZERO :
 			moving_platform_speed_bonus = Vector2.ZERO
@@ -271,6 +274,7 @@ func _physics_process(delta: float) -> void:
 		can_slide_boost = true
 		air_jumped = false
 		if is_drop_falling:
+			camera.apply_shake("drop")
 			is_drop_falling = false
 			drop_land_timer.start()
 		if abs(maintained_momentum) >= speed:
@@ -315,12 +319,12 @@ func handle_direction(delta):
 			change_direction(-1)
 			if velocity.x < -1300 and velocity.y == 0:
 				look_direction = -1
-				player_camera.lookahead(look_direction)
+				camera.lookahead(look_direction)
 		else:
 			change_direction(1)
 			if velocity.x > 1300 and velocity.y == 0:
 				look_direction = 1
-				player_camera.lookahead(look_direction)
+				camera.lookahead(look_direction)
 	else:
 		if is_crouching:
 			if is_sliding and is_on_floor():
@@ -565,14 +569,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		if actionables.size() > 0:
 			actionables[0].player = self
 			actionables[0].action()
+			if actionables[0] is Actionable:
+				camera_transform.remote_path = ""
+				actionables[0].focus_transform.remote_path = camera.get_path()
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
 		interact_cooldown.start()
 		velocity = Vector2.ZERO
-		player_camera.reset_zoom()
+		camera.reset_zoom()
 
 func dialog_start():
-	player_camera.focus_zoom()
+	camera.focus_zoom()
 	is_dialog = true
 	velocity.x = 0
 	sprite.play("idle")
@@ -587,7 +594,8 @@ func _on_dialogic_signal(argument):
 
 func _on_timeline_ended():
 	interact_cooldown.start()
-	player_camera.reset_zoom()
+	camera.reset_zoom()
+	camera_transform.remote_path = camera.get_path()
 
 
 
@@ -597,7 +605,7 @@ func _on_wall_jump_timer_timeout() -> void:
 
 
 func _on_hurtbox_body_entered(body: Node2D) -> void:
-	player_camera.apply_shake()
+	camera.apply_shake("death")
 	print("im hurt")
 	is_dying = true
 	can_move_slide = false
@@ -627,29 +635,30 @@ func _on_slide_cooldown_timeout() -> void:
 func _on_death_timer_timeout() -> void:
 	
 	if not has_died:
-		can_move_slide = true
-		is_dialog = true
+		camera_transform.remote_path = ""
+		#can_move_slide = true
+		#is_dialog = true
 		has_died = true
 		air_resistance = 1
-		velocity.x = (-speed * facing_direction) * 0.7
-		velocity.y = jump_velocity * 0.8
-		death_timer.wait_time = 0.5
-		death_timer.start()
+		var tween = create_tween()
+		tween.tween_property(self, "global_position", global_position + Vector2(-208 * facing_direction, -208), 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		var value = 1
 		EventManager.player_died(value)
-	else:
-		death_timer.wait_time = 0.3
+		
+		await tween.finished
+		
+		camera.apply_shake("death")
+		visible = false
 		air_resistance = 80
 		has_died = false
 		is_dying = false
-		is_dialog = false
-		can_move_slide = false
+		PlayerManager.create_die_poof()
 		PlayerManager.set_player_position(spawn_position)
-		can_move_slide = true
+
 
 func collect_cheese():
 	can_move_slide = false
-	player_camera.focus_zoom()
+	camera.focus_zoom()
 	is_collecting = true
 
 func change_direction(new_direction):
