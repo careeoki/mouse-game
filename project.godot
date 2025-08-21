@@ -35,6 +35,7 @@ directories/dch_directory={
 "pants_guy": "res://dialog/characters/pants_guy.dch"
 }
 directories/dtl_directory={
+"drop": "res://dialog/tutorial/drop.dtl",
 "fauxmage_test": "res://dialog/fauxmage_test.dtl",
 "hungry_door": "res://dialog/hungry_door.dtl",
 "if_this_works_i_kill_you": "res://if_this_works_i_kill_you.dtl",

@@ -91,7 +91,7 @@ var is_drop_falling = false
 var wall_tired = false
 var is_dialog = false
 var is_dying = false
-var has_died = false
+var die_direction = 1
 var is_collecting = false
 var is_moving = false
 var hud_up = false
@@ -161,6 +161,8 @@ func _physics_process(delta: float) -> void:
 		can_coyote_jump = true
 		coyote_timer.start()
 	
+	if is_drop_falling and velocity.y < 0:
+		is_drop_falling = false
 	
 	var just_left_wall = was_on_wall and not is_on_wall()
 	if just_left_wall:
@@ -528,12 +530,7 @@ func squish():
 func drop():
 	if Input.is_action_just_pressed("move_drop") and not is_on_floor():
 		if not is_drop_falling:
-			is_drop = true
-			is_drop_falling = true
-			velocity.y = 0
-			maintained_momentum = velocity.x
-			velocity.x = 0
-			drop_timer.start()
+			do_drop()
 		else:
 			is_drop = false
 			is_drop_falling = false
@@ -541,7 +538,18 @@ func drop():
 			if not wind_power:
 				velocity.y = max_fall_velocity
 
+func do_drop():
+	is_drop = true
+	is_drop_falling = true
+	velocity.y = 0
+	maintained_momentum = velocity.x
+	velocity.x = 0
+	drop_timer.start()
+
 func _on_drop_timer_timeout() -> void:
+	do_drop_fall()
+
+func do_drop_fall():
 	is_drop = false
 	if wind_power:
 		velocity.y = (max_fall_velocity + 400) * 0.5
@@ -606,19 +614,14 @@ func _on_wall_jump_timer_timeout() -> void:
 
 func _on_hurtbox_body_entered(body: Node2D) -> void:
 	camera.apply_shake("death")
+	if velocity.y < 0:
+		die_direction = -1
+	else:
+		die_direction = 1
 	print("im hurt")
 	is_dying = true
 	can_move_slide = false
 	death_timer.start()
-
-
-#func can_interact():
-	#var actionables = actionable_finder.get_overlapping_areas()
-	#var doors = door_finder.get_overlapping_areas()
-	#if actionables.size() > 0 or doors.size() > 0 and not is_dialog:
-		#interact_icon.visible = true
-	#else:
-		#interact_icon.visible = false
 
 func _on_slide_duration_timeout() -> void:
 	
@@ -634,26 +637,23 @@ func _on_slide_cooldown_timeout() -> void:
 
 func _on_death_timer_timeout() -> void:
 	
-	if not has_died:
-		camera_transform.remote_path = ""
-		#can_move_slide = true
-		#is_dialog = true
-		has_died = true
-		air_resistance = 1
-		var tween = create_tween()
-		tween.tween_property(self, "global_position", global_position + Vector2(-208 * facing_direction, -208), 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		var value = 1
-		EventManager.player_died(value)
-		
-		await tween.finished
-		
-		camera.apply_shake("death")
-		visible = false
-		air_resistance = 80
-		has_died = false
-		is_dying = false
-		PlayerManager.create_die_poof()
-		PlayerManager.set_player_position(spawn_position)
+	camera_transform.remote_path = ""
+	#can_move_slide = true
+	#is_dialog = true
+	air_resistance = 1
+	var tween = create_tween()
+	tween.tween_property(self, "global_position", global_position + Vector2(-208 * facing_direction, -208 * die_direction), 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	var value = 1
+	EventManager.player_died(value)
+	
+	await tween.finished
+	
+	camera.apply_shake("death")
+	visible = false
+	air_resistance = 80
+	is_dying = false
+	PlayerManager.create_die_poof()
+	PlayerManager.set_player_position(spawn_position)
 
 
 func collect_cheese():

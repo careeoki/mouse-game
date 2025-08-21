@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://c8cxy11wyhg5b"]
+
+[ext_resource type="Texture2D" uid="uid://bsk40d3iu80p3" path="res://assets/objects/destructible_block.png" id="1_5bo7j"]
+[ext_resource type="Script" uid="uid://0vxyre3kjapb" path="res://objects/scripts/destructible_block.gd" id="1_q8uku"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q8uku"]
+size = Vector2(128, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1eojr"]
+size = Vector2(128, 64)
+
+[node name="DestructibleBlock" type="StaticBody2D"]
+script = ExtResource("1_q8uku")
+
+[node name="SolidCollider" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_q8uku")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_5bo7j")
+
+[node name="DropArea" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DropArea"]
+position = Vector2(0, -96)
+shape = SubResource("RectangleShape2D_1eojr")
+
+[connection signal="body_entered" from="DropArea" to="." method="_on_drop_area_body_entered"]
