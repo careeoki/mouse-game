@@ -3,13 +3,14 @@
 [ext_resource type="Script" uid="uid://cp2u8sdgqi0c" path="res://characters/player_camera.gd" id="1_4dr1p"]
 
 [node name="PlayerCamera" type="Camera2D"]
+position = Vector2(0, -128)
 zoom = Vector2(0.25, 0.25)
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 drag_vertical_enabled = true
 drag_left_margin = 0.1
-drag_top_margin = 0.3
+drag_top_margin = 0.43
 drag_right_margin = 0.1
 drag_bottom_margin = 0.0
 editor_draw_drag_margin = true

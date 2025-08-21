@@ -32,14 +32,21 @@ class_name Player extends CharacterBody2D
 @onready var starting_position = global_position
 @onready var sprite = $Sprite
 @onready var interact_icon: Sprite2D = $InteractIcon
+
 @onready var tail_start = $Tail
 @onready var tail_end = $Tail/HandleEnd
 @onready var tail_start_initial = tail_start.position.x
 @onready var tail_end_initial = tail_end.position.x
+@onready var tail_slash: AnimatedSprite2D = $TailSlash
+
 @onready var hurt_shape: CollisionShape2D = $Hurtbox/HurtShape
 @onready var slide_hurt_shape: CollisionShape2D = $Hurtbox/SlideHurtShape
 @onready var collision_feet: CollisionShape2D = $CollisionFeet
 @onready var collision_slide: CollisionShape2D = $CollisionSlide
+
+@onready var attack_area: Area2D = $AttackArea
+@onready var attack_collider: CollisionShape2D = $AttackArea/AttackCollider
+
 @onready var actionable_finder: Area2D = $ActionableFinder
 @onready var collision_stand: Area2D = $CollisionStand
 @onready var bubble_marker: Marker2D = $BubbleMarker
@@ -86,6 +93,7 @@ var is_sliding = false
 var is_long_jumping = false
 var is_wall_jumping = false
 var is_wall_sliding = false
+var is_tail_spinning = false
 var is_drop = false
 var is_drop_falling = false
 var wall_tired = false
@@ -276,7 +284,7 @@ func _physics_process(delta: float) -> void:
 		can_slide_boost = true
 		air_jumped = false
 		if is_drop_falling:
-			camera.apply_shake("drop")
+			do_shake("drop")
 			is_drop_falling = false
 			drop_land_timer.start()
 		if abs(maintained_momentum) >= speed:
@@ -528,29 +536,52 @@ func squish():
 		is_squished = false
 
 func drop():
-	if Input.is_action_just_pressed("move_drop") and not is_on_floor():
-		if not is_drop_falling:
-			do_drop()
+	if is_drop_falling and not is_drop:
+		velocity.y = move_toward(velocity.y, max_fall_velocity + 400, 500)
+	if Input.is_action_just_pressed("move_drop"):
+		if not Input.is_action_pressed("move_down"):
+			tail_spin()
 		else:
-			is_drop = false
-			is_drop_falling = false
-			maintained_momentum = 0
-			if not wind_power:
-				velocity.y = max_fall_velocity
+			if not is_drop_falling:
+				do_drop()
+			else:
+				is_drop = false
+				is_drop_falling = false
+				maintained_momentum = 0
+				if not wind_power:
+					velocity.y = max_fall_velocity
+
+func tail_spin():
+	var targets = attack_area.get_overlapping_bodies()
+	if targets.size() > 0:
+		for element in targets:
+			element.destroy()
+	
+	is_tail_spinning = true
+	tail_start.position.x = tail_start_initial * -facing_direction
+	tail_slash.show()
+	tail_slash.play("default")
+	tail_start.gravity = 490
+	tail_end.position_smoothing_speed = 2
+	tail_end.position.x = 800 * facing_direction
 
 func do_drop():
 	is_drop = true
-	is_drop_falling = true
+	
 	velocity.y = 0
 	maintained_momentum = velocity.x
 	velocity.x = 0
 	drop_timer.start()
+
+func do_shake(name):
+	camera.apply_shake(name)
 
 func _on_drop_timer_timeout() -> void:
 	do_drop_fall()
 
 func do_drop_fall():
 	is_drop = false
+	is_drop_falling = true
 	if wind_power:
 		velocity.y = (max_fall_velocity + 400) * 0.5
 	else:
@@ -667,8 +698,12 @@ func change_direction(new_direction):
 		turned_around = true
 	if new_direction == -1:
 		sprite.flip_h = true
+		tail_slash.flip_h = true
 	else:
 		sprite.flip_h = false
+		tail_slash.flip_h = false
+	attack_collider.position.x = 100 * new_direction
+	tail_slash.position.x = 104 * new_direction
 	tail_start.position.x = tail_start_initial * new_direction
 	tail_end.position.x = tail_end_initial * new_direction
 
@@ -707,3 +742,11 @@ func _on_hud_timer_timeout() -> void:
 
 func _on_funny_timer_timeout() -> void:
 	is_dialog = false
+
+
+func _on_tail_slash_animation_finished() -> void:
+	tail_slash.hide()
+	is_tail_spinning = false
+	tail_end.position_smoothing_speed = 8
+	tail_start.position.x = tail_start_initial * facing_direction
+	tail_end.position.x = tail_end_initial * facing_direction

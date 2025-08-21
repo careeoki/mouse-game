@@ -5,10 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://dyk1p42mg341o" path="res://assets/objects/cheese_gate.png" id="2_s4fp2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vghl1"]
-size = Vector2(320, 512)
+size = Vector2(320, 128)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bsbop"]
-size = Vector2(256, 512)
+size = Vector2(256, 128)
 
 [node name="CheeseGate" type="Area2D"]
 collision_mask = 2

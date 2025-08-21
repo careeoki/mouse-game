@@ -5,6 +5,7 @@ var player_transform
 
 @export var death_shake = Vector2(25.0, 25.0)
 @export var drop_shake = Vector2(0.0, 10.0)
+@export var break_shake = Vector2(6.0, 0.0)
 @export var shake_falloff = 15.0
 
 var rng = RandomNumberGenerator.new()
@@ -27,7 +28,10 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	
+	if player.is_on_floor():
+		drag_vertical_enabled = false
+	else:
+		drag_vertical_enabled = true
 	#position.x = look_dir
 	
 	#if look_tween:
@@ -53,6 +57,8 @@ func apply_shake(shake_it):
 		shake_strength = death_shake
 	if shake_it == "drop":
 		shake_strength = drop_shake
+	if shake_it == "break":
+		shake_strength = break_shake
 	#*epic drop*
 
 func randomOffset() -> Vector2:

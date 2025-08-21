@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=74 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -28,6 +28,7 @@
 [ext_resource type="Script" uid="uid://c5d5kcrr5k1r6" path="res://characters/player_animation.gd" id="14_ys5vl"]
 [ext_resource type="Script" uid="uid://c1fiueiroyfb" path="res://characters/debug.gd" id="16_h076o"]
 [ext_resource type="Script" uid="uid://dh0t5ss55angs" path="res://characters/player_sound.gd" id="18_ke0a4"]
+[ext_resource type="Texture2D" uid="uid://dnx64wmku53bm" path="res://assets/characters/mable/tail_spin.png" id="18_o8c8i"]
 [ext_resource type="AudioStream" uid="uid://be0oounebqt5l" path="res://assets/sound/jump.wav" id="19_41yun"]
 [ext_resource type="AudioStream" uid="uid://li1qtnq6w0lm" path="res://assets/sound/land.wav" id="20_41yun"]
 [ext_resource type="AudioStream" uid="uid://ds1srno2dv4t" path="res://assets/sound/p_speed.ogg" id="21_svrv0"]
@@ -36,6 +37,7 @@
 [ext_resource type="AudioStream" uid="uid://csnhcrd26ci6w" path="res://assets/sound/slide.ogg" id="26_qk7w8"]
 [ext_resource type="Texture2D" uid="uid://ba5tcq6p0ccj8" path="res://assets/particles/puff.png" id="27_3t8uj"]
 [ext_resource type="AudioStream" uid="uid://bunatpaxdkdy2" path="res://assets/sound/slide_boost.wav" id="28_lit6r"]
+[ext_resource type="Texture2D" uid="uid://cbxllnujji55m" path="res://assets/particles/tail_slash.png" id="38_akagt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_akagt"]
 atlas = ExtResource("5_5mswt")
@@ -264,6 +266,14 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
+"duration": 1.0,
+"texture": ExtResource("18_o8c8i")
+}],
+"loop": true,
+"name": &"tail_spin",
+"speed": 5.0
+}, {
+"frames": [{
 "duration": 0.6,
 "texture": SubResource("AtlasTexture_eus45")
 }, {
@@ -322,6 +332,52 @@ size = Vector2(68, 41)
 [sub_resource type="CircleShape2D" id="CircleShape2D_3eadt"]
 radius = 76.99
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5mswt"]
+size = Vector2(200, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rpeu7"]
+atlas = ExtResource("38_akagt")
+region = Rect2(0, 0, 376, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u23gh"]
+atlas = ExtResource("38_akagt")
+region = Rect2(376, 0, 376, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o21vo"]
+atlas = ExtResource("38_akagt")
+region = Rect2(752, 0, 376, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fwlip"]
+atlas = ExtResource("38_akagt")
+region = Rect2(1128, 0, 376, 208)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uqn2e"]
+atlas = ExtResource("38_akagt")
+region = Rect2(1504, 0, 376, 208)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cbb7d"]
+animations = [{
+"frames": [{
+"duration": 0.6,
+"texture": SubResource("AtlasTexture_rpeu7")
+}, {
+"duration": 0.6,
+"texture": SubResource("AtlasTexture_u23gh")
+}, {
+"duration": 1.4,
+"texture": SubResource("AtlasTexture_o21vo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fwlip")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uqn2e")
+}],
+"loop": false,
+"name": &"default",
+"speed": 12.0
+}]
+
 [sub_resource type="Curve" id="Curve_3t8uj"]
 _data = [Vector2(0, 0.629214), 0.0, 5.33933, 0, 0, Vector2(0.25, 0.977528), 0.756114, 0.756114, 0, 0, Vector2(0.818182, 0), -3.7573, 0.0, 0, 0]
 point_count = 3
@@ -340,8 +396,7 @@ jump_time_to_descent = 0.35
 z_index = 3
 material = ExtResource("2_5mswt")
 sprite_frames = SubResource("SpriteFrames_7eugy")
-animation = &"idle"
-frame_progress = 0.265794
+animation = &"tail_spin"
 offset = Vector2(0, -60)
 script = ExtResource("14_ys5vl")
 
@@ -425,6 +480,21 @@ collision_mask = 8
 position = Vector2(0, -64)
 shape = SubResource("CircleShape2D_3eadt")
 
+[node name="AttackArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 32
+
+[node name="AttackCollider" type="CollisionShape2D" parent="AttackArea"]
+position = Vector2(100, -64)
+shape = SubResource("RectangleShape2D_5mswt")
+
+[node name="TailSlash" type="AnimatedSprite2D" parent="."]
+z_index = 1
+position = Vector2(104, -77)
+sprite_frames = SubResource("SpriteFrames_cbb7d")
+frame = 4
+frame_progress = 1.0
+
 [node name="Tail" type="Node2D" parent="."]
 position = Vector2(-23, -37)
 script = ExtResource("3_x0jl3")
@@ -443,7 +513,7 @@ metadata/_custom_type_script = "uid://b2shq2gjd4fvt"
 z_index = 2
 material = ExtResource("2_5mswt")
 position = Vector2(31, -30)
-points = PackedVector2Array(-31, 30, -36.6218, 34.2574, -42.5562, 38.0602, -49.0208, 40.8679, -55.9779, 42.0548, -63.0081, 41.1958, -69.5564, 38.4013, -75.3292, 34.161, -80.3218, 28.9649, -84.6536, 23.1565, -88.4618, 16.9515, -91.8664, 10.4846, -94.965, 3.84317, -97.8367, -2.91265, -100.547, -9.73875, -103.154, -16.6002, -105.551, -23.0438)
+points = PackedVector2Array(-31, 30, -36.6218, 34.2574, -42.5562, 38.0602, -49.0208, 40.8679, -55.9779, 42.0548, -63.0081, 41.1958, -69.5564, 38.4013, -75.3292, 34.161, -80.3218, 28.9649, -84.6536, 23.1565, -88.4618, 16.9515, -91.8664, 10.4846, -94.965, 3.84318, -97.8367, -2.91265, -100.547, -9.73875, -103.154, -16.6002, -105.551, -23.0438)
 width = 24.0
 texture = ExtResource("9_8sqrr")
 texture_mode = 2
@@ -566,6 +636,7 @@ bus = &"Sounds"
 
 [node name="Land" type="AudioStreamPlayer2D" parent="SoundEffects"]
 stream = ExtResource("20_41yun")
+pitch_scale = 1.3
 bus = &"Sounds"
 
 [node name="Pspeed" type="AudioStreamPlayer2D" parent="SoundEffects"]
@@ -625,6 +696,7 @@ one_shot = true
 [connection signal="timeout" from="PSpeedTimer" to="." method="_on_p_speed_timer_timeout"]
 [connection signal="timeout" from="LongJumpTimer" to="." method="_on_long_jump_timer_timeout"]
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
+[connection signal="animation_finished" from="TailSlash" to="." method="_on_tail_slash_animation_finished"]
 [connection signal="timeout" from="CameraTweenTimer" to="." method="_on_camera_tween_timer_timeout"]
 [connection signal="timeout" from="InteractCooldown" to="." method="_on_interact_cooldown_timeout"]
 [connection signal="timeout" from="HUDTimer" to="." method="_on_hud_timer_timeout"]

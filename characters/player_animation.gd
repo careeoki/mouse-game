@@ -47,6 +47,8 @@ func _physics_process(delta: float) -> void:
 				elif not animation == "fall_loop" and not animation == "fall":
 					play("fall_loop")
 		
+		if player.is_tail_spinning:
+			play("tail_spin")
 		if player.is_collecting:
 			play("collect")
 		if player.is_dying and not animation == "die_direction":
