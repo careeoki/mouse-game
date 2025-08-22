@@ -22,9 +22,10 @@ class_name Player extends CharacterBody2D
 @export var long_jump_boost = 2200
 @export var slide_boost = 1.7
 @export var jump_reduction = 0.5
-@export var max_fall_velocity = 3200
+@export var max_fall_velocity = 3000
 @export var max_move_velocity = 4000
 
+@export var spin_decceleration = 8.0
 @export var gravity_multiplier = 1
 @export var wall_slide_gravity = 0.8
 
@@ -68,6 +69,7 @@ class_name Player extends CharacterBody2D
 @onready var funny_timer: Timer = $FunnyTimer
 @onready var drop_timer: Timer = $DropTimer
 @onready var drop_land_timer: Timer = $DropLandTimer
+@onready var spin_deccel_timer: Timer = $SpinDeccelTimer
 
 
 @onready var slide_duration: Timer = $SlideDuration
@@ -144,7 +146,7 @@ func _physics_process(delta: float) -> void:
 	crouch()
 	#stand()
 	squish()
-	drop()
+	drop(delta)
 	if not is_dialog:
 		direction = Input.get_axis("move_left", "move_right")
 		update_animations(direction)
@@ -326,12 +328,14 @@ func handle_direction(delta):
 		else:
 			velocity.x = move_toward(velocity.x, (speed + moving_platform_speed_bonus.x) * direction, acceleration * delta)
 		if direction == -1:
-			change_direction(-1)
+			if not facing_direction == -1:
+				change_direction(-1)
 			if velocity.x < -1300 and velocity.y == 0:
 				look_direction = -1
 				camera.lookahead(look_direction)
-		else:
-			change_direction(1)
+		elif direction == 1:
+			if not facing_direction == 1:
+				change_direction(1)
 			if velocity.x > 1300 and velocity.y == 0:
 				look_direction = 1
 				camera.lookahead(look_direction)
@@ -535,14 +539,26 @@ func squish():
 		stand()
 		is_squished = false
 
-func drop():
+func drop(delta):
+	if is_tail_spinning:
+		var targets = attack_area.get_overlapping_bodies()
+		if targets.size() > 0:
+			for element in targets:
+				element.destroy()
+		if tail_slash.frame >= 0:
+			velocity.y -= velocity.y * spin_decceleration * delta
+			if is_on_floor():
+				velocity.x -= velocity.x * 5.0 * delta
+			else:
+				velocity.x -= velocity.x * 3.0 * delta
+	
 	if is_drop_falling and not is_drop:
 		velocity.y = move_toward(velocity.y, max_fall_velocity + 400, 500)
 	if Input.is_action_just_pressed("move_drop"):
-		if not Input.is_action_pressed("move_down"):
+		if not Input.is_action_pressed("move_slide"):
 			tail_spin()
 		else:
-			if not is_drop_falling:
+			if not is_on_floor() and not is_drop_falling:
 				do_drop()
 			else:
 				is_drop = false
@@ -552,17 +568,21 @@ func drop():
 					velocity.y = max_fall_velocity
 
 func tail_spin():
+	air_resistance = 10
 	var targets = attack_area.get_overlapping_bodies()
 	if targets.size() > 0:
 		for element in targets:
 			element.destroy()
+	if velocity.y < 0:
+		tail_slash.flip_v = true
+	else:
+		tail_slash.flip_v = false
 	
 	is_tail_spinning = true
 	tail_start.position.x = tail_start_initial * -facing_direction
 	tail_slash.show()
 	tail_slash.play("default")
 	tail_start.gravity = 490
-	tail_end.position_smoothing_speed = 2
 	tail_end.position.x = 800 * facing_direction
 
 func do_drop():
@@ -745,8 +765,8 @@ func _on_funny_timer_timeout() -> void:
 
 
 func _on_tail_slash_animation_finished() -> void:
+	air_resistance = 80
 	tail_slash.hide()
 	is_tail_spinning = false
-	tail_end.position_smoothing_speed = 8
 	tail_start.position.x = tail_start_initial * facing_direction
 	tail_end.position.x = tail_end_initial * facing_direction
