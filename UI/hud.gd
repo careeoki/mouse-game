@@ -4,7 +4,7 @@ extends CanvasLayer
 @onready var cracker_label: Label = $CrackerCount/HFlowContainer/CrackerLabel
 @onready var cheese_label: Label = $CheeseCount/HFlowContainer/CheeseLabel
 @onready var cheese_collect: MarginContainer = $CheeseCollect
-@onready var cheese_name: RichTextLabel = $CheeseCollect/VBoxContainer/CheeseName
+@onready var cheese_name: RichTextLabel = $CheeseCollect/CheeseName
 @onready var cheese_drop_timer: Timer = $CheeseDropTimer
 @onready var cracker_drop_timer: Timer = $CrackerDropTimer
 
@@ -25,6 +25,7 @@ var deaths_on_screen = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	player = PlayerManager.get_child(0)
 	if not loaded:
 		deaths = SaveLoad.contents_to_save.deaths
 		crackers = SaveLoad.contents_to_save.deaths 
@@ -69,8 +70,9 @@ func _on_event_cheese_update() -> void:
 	cheese_label.text = str(cheese)
 
 func _on_event_cheese_collect(name: String) -> void:
-	cheese_collect.visible = true
+	#cheese_collect.visible = true
 	cheese_name.text = name
+	cheese_collect.position = player.get_global_transform_with_canvas().get_origin()
 	
 func _on_event_show_hud(value: bool) -> void:
 	if value:

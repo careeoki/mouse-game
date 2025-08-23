@@ -43,6 +43,7 @@ directories/dtl_directory={
 "pants_guy": "res://dialog/pants_guy.dtl",
 "sign_interact": "res://dialog/sign_interact.dtl",
 "slide": "res://dialog/tutorial/slide.dtl",
+"tail_spin": "res://dialog/tutorial/tail_spin.dtl",
 "testi": "res://dialog/testi.dtl",
 "wall_jump": "res://dialog/tutorial/wall_jump.dtl"
 }
@@ -81,7 +82,6 @@ runtime/balloon_path="res://dialog/balloon.tscn"
 
 [display]
 
-window/size/mode=3
 window/stretch/mode="canvas_items"
 
 [editor]

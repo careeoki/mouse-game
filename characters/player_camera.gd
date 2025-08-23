@@ -28,7 +28,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if player.is_on_floor():
+	if player.is_on_floor() or not player.can_move_slide:
 		drag_vertical_enabled = false
 	else:
 		drag_vertical_enabled = true
@@ -94,12 +94,11 @@ func reset_vertical():
 func focus_zoom():
 	var tween = create_tween()
 	look_dir = 0
-	position = Vector2(0, 0)
 	tween.tween_property(self, "zoom", close_zoom, 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 func reset_zoom():
 	var tween = create_tween()
-	tween.tween_property(self, "zoom", default_zoom, 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "zoom", default_zoom, 2).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 
 func _on_smoothing_timer_timeout() -> void:

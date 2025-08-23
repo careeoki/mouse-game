@@ -116,6 +116,7 @@ var was_wall_normal = Vector2.ZERO
 var last_wall_jump = Vector2.ZERO
 var camera_y = 0
 var wind_power: Vector2 = Vector2.ZERO
+var current_cheese
 
 var slope_direction = 0
 var slope
@@ -545,18 +546,16 @@ func drop(delta):
 		if targets.size() > 0:
 			for element in targets:
 				element.destroy()
-		if tail_slash.frame >= 0:
+		if tail_slash.frame >= 1:
 			velocity.y -= velocity.y * spin_decceleration * delta
 			if is_on_floor():
 				velocity.x -= velocity.x * 5.0 * delta
-			else:
-				velocity.x -= velocity.x * 3.0 * delta
 	
 	if is_drop_falling and not is_drop:
 		velocity.y = move_toward(velocity.y, max_fall_velocity + 400, 500)
 	if Input.is_action_just_pressed("move_drop"):
 		if not Input.is_action_pressed("move_slide"):
-			tail_spin()
+			tail_spin(delta)
 		else:
 			if not is_on_floor() and not is_drop_falling:
 				do_drop()
@@ -567,7 +566,7 @@ func drop(delta):
 				if not wind_power:
 					velocity.y = max_fall_velocity
 
-func tail_spin():
+func tail_spin(delta):
 	air_resistance = 10
 	var targets = attack_area.get_overlapping_bodies()
 	if targets.size() > 0:
@@ -636,6 +635,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		interact_cooldown.start()
 		velocity = Vector2.ZERO
 		camera.reset_zoom()
+		camera_transform.remote_path = camera.get_path()
 
 func dialog_start():
 	camera.focus_zoom()
@@ -707,10 +707,14 @@ func _on_death_timer_timeout() -> void:
 	PlayerManager.set_player_position(spawn_position)
 
 
-func collect_cheese():
+func collect_cheese(cheese):
+	is_dialog = true
+	sprite.play("collect")
 	can_move_slide = false
 	camera.focus_zoom()
+	camera.lookahead(0)
 	is_collecting = true
+	current_cheese = cheese
 
 func change_direction(new_direction):
 	facing_direction = new_direction
