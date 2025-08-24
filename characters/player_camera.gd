@@ -94,7 +94,7 @@ func reset_vertical():
 func focus_zoom():
 	var tween = create_tween()
 	look_dir = 0
-	tween.tween_property(self, "zoom", close_zoom, 1).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "zoom", close_zoom, 2).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
 func reset_zoom():
 	var tween = create_tween()

@@ -8,6 +8,7 @@ extends Node2D
 @onready var punch: AudioStreamPlayer2D = $Punch
 @onready var slide: AudioStreamPlayer2D = $Slide
 @onready var slide_boost: AudioStreamPlayer2D = $SlideBoost
+@onready var woosh: AudioStreamPlayer2D = $Woosh
 
 var p_speed_volume
 
@@ -29,6 +30,8 @@ func play_sound(name):
 		punch.play()
 	if name == "slide_boost":
 		slide_boost.play()
+	if name == "woosh":
+		woosh.play()
 
 func _physics_process(delta: float) -> void:
 	p_speed_check()

@@ -84,6 +84,7 @@ theme = ExtResource("4_1ui3w")
 text = "0"
 
 [node name="CheeseCollect" type="MarginContainer" parent="."]
+visible = false
 offset_right = 18.0
 
 [node name="Sprite2D" type="Sprite2D" parent="CheeseCollect"]

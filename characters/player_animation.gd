@@ -66,6 +66,8 @@ func _on_animation_finished() -> void:
 		play("fall_loop")
 	if animation == "tail_spin":
 		play("idle")
+	if animation == "collect":
+		player.current_cheese.popup_appear()
 
 
 func _on_animation_changed() -> void:

@@ -55,6 +55,12 @@ class_name Player extends CharacterBody2D
 @onready var dust_particles: CPUParticles2D = $DustParticles
 @onready var camera_transform: RemoteTransform2D = $CameraTransform
 
+@onready var right_outer: RayCast2D = $Raycasts/RightOuter
+@onready var right_inner: RayCast2D = $Raycasts/RightInner
+@onready var left_outer: RayCast2D = $Raycasts/LeftOuter
+@onready var left_inner: RayCast2D = $Raycasts/LeftInner
+
+
 # 1 million timers
 @onready var coyote_timer = $CoyoteTimer
 @onready var jump_buffer_timer = $JumpBuffer
@@ -69,7 +75,7 @@ class_name Player extends CharacterBody2D
 @onready var funny_timer: Timer = $FunnyTimer
 @onready var drop_timer: Timer = $DropTimer
 @onready var drop_land_timer: Timer = $DropLandTimer
-@onready var spin_deccel_timer: Timer = $SpinDeccelTimer
+@onready var spin_cooldown: Timer = $SpinCooldown
 
 
 @onready var slide_duration: Timer = $SlideDuration
@@ -85,6 +91,7 @@ var can_coyote_jump = false
 var jump_buffer = false
 var can_slide_boost = true
 var can_stand = true
+var can_tail_spin = true
 var is_squished = false
 var stand_buffer = false
 var slide_buffer = false
@@ -148,6 +155,7 @@ func _physics_process(delta: float) -> void:
 	#stand()
 	squish()
 	drop(delta)
+	push_off_ledge()
 	if not is_dialog:
 		direction = Input.get_axis("move_left", "move_right")
 		update_animations(direction)
@@ -213,7 +221,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			slope_friction = 700
 	
-	if abs(velocity.x) > 2500:
+	if abs(velocity.x) > 2400:
 		if not is_p_speed and allow_p_speed:
 			print("initial p speed activate")
 			is_p_speed = true
@@ -286,6 +294,7 @@ func _physics_process(delta: float) -> void:
 				velocity.x = 0
 		can_slide_boost = true
 		air_jumped = false
+		can_tail_spin = true
 		if is_drop_falling:
 			do_shake("drop")
 			is_drop_falling = false
@@ -356,6 +365,12 @@ func handle_direction(delta):
 				velocity.x = move_toward(velocity.x, 0 + moving_platform_speed_bonus.x, air_resistance)
 			#is_p_speed = false
 
+func push_off_ledge():
+	if right_outer.is_colliding() and not right_inner.is_colliding() and not left_inner.is_colliding() and not left_outer.is_colliding():
+		global_position.x -= 16
+	elif left_outer.is_colliding() and not left_inner.is_colliding() and not right_inner.is_colliding() and not right_outer.is_colliding():
+		global_position.x += 16
+
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
 		if is_on_floor() or can_coyote_jump and not is_crouching:
@@ -400,8 +415,10 @@ func jump():
 			else:
 				velocity.x = (speed * slide_boost + 300) * facing_direction
 			
-		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching:
+		if is_on_wall_only() or wall_coyote_timer.time_left > 0.0 and not is_crouching and not is_drop_falling:
 			print("wall jump")
+			if not can_tail_spin:
+				can_tail_spin = true
 			var wall_normal = get_wall_normal()
 			if wall_jump_timer.time_left > 0.0:
 				wall_normal = was_wall_normal
@@ -478,15 +495,16 @@ func crouch():
 
 
 func do_slide_boost():
-	if not is_long_jumping:
-		sound_effects.play_sound("slide_boost")
-	if is_p_speed and allow_p_speed:
-		velocity.x = facing_direction * speed * 2.0
-	else:
-		if slope_direction != 0 and not is_long_jumping:
-			velocity.x = direction * speed * 1.7
+	if not is_dialog:
+		if not is_long_jumping:
+			sound_effects.play_sound("slide_boost")
+		if is_p_speed and allow_p_speed:
+			velocity.x = facing_direction * speed * 2.0
 		else:
-			velocity.x = direction * speed * slide_boost
+			if slope_direction != 0 and not is_long_jumping:
+				velocity.x = direction * speed * 1.7
+			else:
+				velocity.x = direction * speed * slide_boost
 
 
 func stand():
@@ -546,27 +564,34 @@ func drop(delta):
 		if targets.size() > 0:
 			for element in targets:
 				element.destroy()
-		if tail_slash.frame >= 1:
-			velocity.y -= velocity.y * spin_decceleration * delta
+		if tail_slash.frame <= 2:
+			#velocity.y -= velocity.y * spin_decceleration * delta
+			if velocity.y < 0:
+				velocity.y += 200
+			if velocity.y > 0:
+				velocity.y -= 200
 			if is_on_floor():
 				velocity.x -= velocity.x * 5.0 * delta
 	
 	if is_drop_falling and not is_drop:
 		velocity.y = move_toward(velocity.y, max_fall_velocity + 400, 500)
 	if Input.is_action_just_pressed("move_drop"):
-		if not Input.is_action_pressed("move_slide"):
+		if not Input.is_action_pressed("move_slide") and can_tail_spin:
 			tail_spin(delta)
-		else:
+		elif Input.is_action_pressed("move_slide"):
 			if not is_on_floor() and not is_drop_falling:
 				do_drop()
-			else:
-				is_drop = false
-				is_drop_falling = false
-				maintained_momentum = 0
-				if not wind_power:
-					velocity.y = max_fall_velocity
+			#else:
+				#is_drop = false
+				#is_drop_falling = false
+				#maintained_momentum = 0
+				#if not wind_power:
+					#velocity.y = max_fall_velocity
 
 func tail_spin(delta):
+	sound_effects.play_sound("woosh")
+	spin_cooldown.start()
+	can_tail_spin = false
 	air_resistance = 10
 	var targets = attack_area.get_overlapping_bodies()
 	if targets.size() > 0:
@@ -576,6 +601,7 @@ func tail_spin(delta):
 		tail_slash.flip_v = true
 	else:
 		tail_slash.flip_v = false
+	
 	
 	is_tail_spinning = true
 	tail_start.position.x = tail_start_initial * -facing_direction
@@ -632,6 +658,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				actionables[0].focus_transform.remote_path = camera.get_path()
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
+		current_cheese.popup.hide()
 		interact_cooldown.start()
 		velocity = Vector2.ZERO
 		camera.reset_zoom()
@@ -774,3 +801,7 @@ func _on_tail_slash_animation_finished() -> void:
 	is_tail_spinning = false
 	tail_start.position.x = tail_start_initial * facing_direction
 	tail_end.position.x = tail_end_initial * facing_direction
+
+
+func _on_spin_cooldown_timeout() -> void:
+	can_tail_spin = true

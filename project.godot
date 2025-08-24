@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Mable & the Magic Cheese Wheel"
-run/main_scene="uid://pl2rnaiqi6s6"
+run/main_scene="uid://5w6gybyo32m3"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
