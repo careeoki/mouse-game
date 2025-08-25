@@ -25,7 +25,7 @@ func destroy():
 	player.do_shake("break")
 	if player.velocity.y > 0:
 		player.velocity.y = 0
-	if not Input.is_action_pressed("move_drop"):
+	if not Input.is_action_pressed("move_attack"):
 		player.is_drop_falling = false
 	await break_particles.finished
 	queue_free()

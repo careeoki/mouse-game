@@ -12,7 +12,6 @@ var is_collected = false
 @export var cheese_name: String = "Cheese Name"
 
 func _ready() -> void:
-	cheese_name_text.text = cheese_name
 	is_collected_data.data_loaded.connect( set_cheese_state ) #this too
 	set_cheese_state()
 	animation_player.play("float")
@@ -24,6 +23,7 @@ func set_cheese_state() -> void:
 		sprite.modulate = "ffffff78"
 
 func _on_body_entered(body: Node2D) -> void:
+	cheese_name_text.text = cheese_name
 	popup.scale = Vector2.ZERO
 	body.collect_cheese(self)
 	body.global_position = global_position

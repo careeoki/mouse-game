@@ -37,5 +37,5 @@ func close():
 
 func back_press():
 	if get_tree().paused == true and is_open:
-		if Input.is_action_just_pressed("move_drop"):
+		if Input.is_action_just_pressed("move_attack"):
 			close()

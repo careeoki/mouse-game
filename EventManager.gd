@@ -27,9 +27,13 @@ func player_waiting(value: bool):
 func new_power_state():
 	emit_signal("change_power_state")
 
+func camera_tween_finish():
+	emit_signal("camera_tween_finished")
+
 signal cracker_update(value: int)
 signal death_update(value: int)
 signal cheese_update()
 signal cheese_ui(name: String)
 signal show_hud()
 signal change_power_state()
+signal camera_tween_finished()

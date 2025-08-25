@@ -102,10 +102,14 @@ var is_sliding = false
 var is_long_jumping = false
 var is_wall_jumping = false
 var is_wall_sliding = false
+var wall_tired = false
+
 var is_tail_spinning = false
+var is_tail_swiping = false
+
 var is_drop = false
 var is_drop_falling = false
-var wall_tired = false
+
 var is_dialog = false
 var is_dying = false
 var die_direction = 1
@@ -154,7 +158,7 @@ func _physics_process(delta: float) -> void:
 	crouch()
 	#stand()
 	squish()
-	drop(delta)
+	attack(delta)
 	push_off_ledge()
 	if not is_dialog:
 		direction = Input.get_axis("move_left", "move_right")
@@ -338,13 +342,13 @@ func handle_direction(delta):
 		else:
 			velocity.x = move_toward(velocity.x, (speed + moving_platform_speed_bonus.x) * direction, acceleration * delta)
 		if direction == -1:
-			if not facing_direction == -1:
+			if not facing_direction == -1 and not is_tail_spinning:
 				change_direction(-1)
 			if velocity.x < -1300 and velocity.y == 0:
 				look_direction = -1
 				camera.lookahead(look_direction)
 		elif direction == 1:
-			if not facing_direction == 1:
+			if not facing_direction == 1 and not is_tail_spinning:
 				change_direction(1)
 			if velocity.x > 1300 and velocity.y == 0:
 				look_direction = 1
@@ -367,9 +371,9 @@ func handle_direction(delta):
 
 func push_off_ledge():
 	if right_outer.is_colliding() and not right_inner.is_colliding() and not left_inner.is_colliding() and not left_outer.is_colliding():
-		global_position.x -= 16
+		global_position.x -= 20
 	elif left_outer.is_colliding() and not left_inner.is_colliding() and not right_inner.is_colliding() and not right_outer.is_colliding():
-		global_position.x += 16
+		global_position.x += 20
 
 func jump():
 	if Input.is_action_just_pressed("move_jump") and can_stand and not is_dialog:
@@ -411,7 +415,7 @@ func jump():
 			velocity.y = jump_velocity * 0.6
 			
 			if is_p_speed:
-				velocity.x = (p_speed * 1.5) * facing_direction
+				velocity.x = (p_speed * 1.5 + 300) * facing_direction
 			else:
 				velocity.x = (speed * slide_boost + 300) * facing_direction
 			
@@ -458,7 +462,7 @@ func _on_jump_buffer_timeout() -> void:
 
 func _input(event):
 	if event.is_action_released("move_jump") and not is_wall_jumping and not is_dialog and not is_long_jumping:
-		if velocity.y < 0 and not air_jumped:
+		if velocity.y < 0 and not air_jumped and not wind_power:
 			is_drop_falling = false
 			is_drop = false
 			velocity.y *= jump_reduction
@@ -485,7 +489,7 @@ func crouch():
 		
 		slide_hurt_shape.disabled = false
 		collision_slide.disabled = false
-	if Input.is_action_just_released("move_slide") and slide_duration.is_stopped():
+	if Input.is_action_just_released("move_slide") and slide_duration.is_stopped() and not is_tail_swiping:
 		stand()
 	if slide_duration.time_left > 0 and velocity.x == 0:
 		slide_duration.stop()
@@ -558,8 +562,8 @@ func squish():
 		stand()
 		is_squished = false
 
-func drop(delta):
-	if is_tail_spinning:
+func attack(delta):
+	if is_tail_spinning or is_tail_swiping:
 		var targets = attack_area.get_overlapping_bodies()
 		if targets.size() > 0:
 			for element in targets:
@@ -570,17 +574,21 @@ func drop(delta):
 				velocity.y += 200
 			if velocity.y > 0:
 				velocity.y -= 200
-			if is_on_floor():
+			if is_on_floor() and is_tail_spinning:
 				velocity.x -= velocity.x * 5.0 * delta
+			if is_on_floor() and is_tail_swiping:
+				velocity.x -= velocity.x * 2.0 * delta
 	
 	if is_drop_falling and not is_drop:
 		velocity.y = move_toward(velocity.y, max_fall_velocity + 400, 500)
-	if Input.is_action_just_pressed("move_drop"):
+	if Input.is_action_just_pressed("move_attack"):
 		if not Input.is_action_pressed("move_slide") and can_tail_spin:
 			tail_spin(delta)
 		elif Input.is_action_pressed("move_slide"):
 			if not is_on_floor() and not is_drop_falling:
 				do_drop()
+			elif is_on_floor():
+				tail_swipe()
 			#else:
 				#is_drop = false
 				#is_drop_falling = false
@@ -604,6 +612,24 @@ func tail_spin(delta):
 	
 	
 	is_tail_spinning = true
+	tail_forwards()
+
+func tail_swipe():
+	tail_slash.flip_v = false
+	is_tail_swiping = true
+	sound_effects.play_sound("woosh")
+	tail_forwards()
+	await sound_effects.woosh.finished
+	change_direction(facing_direction * -1)
+	tail_forwards()
+	is_tail_swiping = true
+	sound_effects.play_sound("woosh")
+	await sound_effects.woosh.finished
+	change_direction(facing_direction * -1)
+	if not Input.is_action_pressed("move_down"):
+		stand()
+
+func tail_forwards():
 	tail_start.position.x = tail_start_initial * -facing_direction
 	tail_slash.show()
 	tail_slash.play("default")
@@ -654,8 +680,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			actionables[0].player = self
 			actionables[0].action()
 			if actionables[0] is Actionable:
-				camera_transform.remote_path = ""
-				actionables[0].focus_transform.remote_path = camera.get_path()
+				camera.get_focus(actionables[0].focus_transform.remote_path)
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
 		current_cheese.popup.hide()
@@ -681,7 +706,6 @@ func _on_dialogic_signal(argument):
 func _on_timeline_ended():
 	interact_cooldown.start()
 	camera.reset_zoom()
-	camera_transform.remote_path = camera.get_path()
 
 
 
@@ -691,15 +715,16 @@ func _on_wall_jump_timer_timeout() -> void:
 
 
 func _on_hurtbox_body_entered(body: Node2D) -> void:
-	camera.apply_shake("death")
-	if velocity.y < 0:
-		die_direction = -1
-	else:
-		die_direction = 1
-	print("im hurt")
-	is_dying = true
-	can_move_slide = false
-	death_timer.start()
+	if not is_dying:
+		camera.apply_shake("death")
+		if velocity.y < 0:
+			die_direction = -1
+		else:
+			die_direction = 1
+		print("im hurt")
+		is_dying = true
+		can_move_slide = false
+		death_timer.start()
 
 func _on_slide_duration_timeout() -> void:
 	
@@ -799,6 +824,7 @@ func _on_tail_slash_animation_finished() -> void:
 	air_resistance = 80
 	tail_slash.hide()
 	is_tail_spinning = false
+	is_tail_swiping = false
 	tail_start.position.x = tail_start_initial * facing_direction
 	tail_end.position.x = tail_end_initial * facing_direction
 

@@ -65,7 +65,20 @@ func randomOffset() -> Vector2:
 	return Vector2(rng.randf_range(-shake_strength.x, shake_strength.x), randf_range(-shake_strength.y, shake_strength.y))
 
 func get_focus(focus):
+	player.camera_transform.remote_path = ""
 	focus.remote_path = get_path()
+
+func return_focus(old_focus):
+	old_focus.remote_path = ""
+	player.camera_transform.remote_path = get_path()
+
+func tween_to_pos(new_pos):
+	player.camera_transform.remote_path = ""
+	var tween = create_tween()
+	tween.tween_property(self, "global_position", new_pos.global_position, 1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	await tween.finished
+	EventManager.camera_tween_finish()
+
 
 func lookahead(look_direction: int):
 	
@@ -99,7 +112,3 @@ func focus_zoom():
 func reset_zoom():
 	var tween = create_tween()
 	tween.tween_property(self, "zoom", default_zoom, 2).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-
-
-func _on_smoothing_timer_timeout() -> void:
-	position_smoothing_enabled = true

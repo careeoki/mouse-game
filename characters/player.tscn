@@ -801,7 +801,7 @@ target_position = Vector2(0, -32)
 
 [node name="RightInner" type="RayCast2D" parent="Raycasts"]
 z_index = 4
-position = Vector2(24, -74)
+position = Vector2(20, -74)
 target_position = Vector2(0, -32)
 
 [node name="LeftOuter" type="RayCast2D" parent="Raycasts"]
@@ -811,7 +811,7 @@ target_position = Vector2(0, -32)
 
 [node name="LeftInner" type="RayCast2D" parent="Raycasts"]
 z_index = 4
-position = Vector2(-24, -74)
+position = Vector2(-20, -74)
 target_position = Vector2(0, -32)
 
 [connection signal="animation_changed" from="Sprite" to="Sprite" method="_on_animation_changed"]

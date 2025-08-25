@@ -36,4 +36,4 @@ func action() -> void:
 	layout.register_character(load("res://dialog/characters/mable.dch"), player.bubble_marker)
 
 func _on_timeline_ended():
-	focus_transform.remote_path = ""
+	PlayerManager.return_focus(focus_transform)
