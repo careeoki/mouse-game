@@ -683,7 +683,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				camera.get_focus(actionables[0].focus_transform.remote_path)
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
-		current_cheese.popup.hide()
+		current_cheese.queue_free()
 		interact_cooldown.start()
 		velocity = Vector2.ZERO
 		camera.reset_zoom()

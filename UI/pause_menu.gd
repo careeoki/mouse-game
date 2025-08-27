@@ -55,6 +55,7 @@ func resume():
 	drop_out()
 	get_parent().hud_drop_out()
 	PlayerManager.get_child(0).interact_cooldown.start()
+	PlayerManager.get_child(0).tail_start.pause = false
 
 	if current_menu == "options":
 		change_menu()
@@ -71,9 +72,11 @@ func escape_press():
 	if not Dialogic.current_timeline != null:
 		if Input.is_action_just_pressed("escape") and get_tree().paused == false:
 			PlayerManager.get_child(0).sprite.play("phone")
+			PlayerManager.get_child(0).tail_start.pause = true
 			pause()
 		elif Input.is_action_just_pressed("escape") and get_tree().paused == true:
 			resume()
+			
 
 func direction_press():
 	if get_tree().paused == true and not app_open:

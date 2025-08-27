@@ -4,6 +4,7 @@ extends Area2D
 @onready var collector: Node2D = $Collector
 
 @export var animated = false
+@export var use_signal = false
 var is_collected = false
 
 func _ready() -> void:
@@ -21,4 +22,9 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _on_collect_sound_finished() -> void:
+	if not use_signal:
+		queue_free()
+
+
+func _on_collector_complete() -> void:
 	queue_free()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dvrt2nk5b5oi7"]
+[gd_scene load_steps=18 format=3 uid="uid://dvrt2nk5b5oi7"]
 
 [ext_resource type="Script" uid="uid://d4fiea5m5kgmh" path="res://objects/scripts/cheese.gd" id="1_a5xy8"]
 [ext_resource type="Texture2D" uid="uid://d1j08xltam68a" path="res://assets/objects/cheese.png" id="1_o2umf"]
@@ -6,7 +6,16 @@
 [ext_resource type="PackedScene" uid="uid://d0vxr4jg6hndo" path="res://objects/persistent_data_handler.tscn" id="3_7ctu6"]
 [ext_resource type="Texture2D" uid="uid://hnjeultrwo0s" path="res://assets/ui/got_cheese.png" id="5_ebjcb"]
 [ext_resource type="Texture2D" uid="uid://dgngxynvhbm38" path="res://assets/ui/cheese_action.png" id="6_0vi0v"]
-[ext_resource type="FontVariation" uid="uid://c1lna6xvakjow" path="res://UI/themes/bold_type.tres" id="6_d4vx1"]
+[ext_resource type="FontFile" uid="uid://d1hq5cxmitppe" path="res://assets/fonts/CarrieType.ttf" id="6_d4vx1"]
+[ext_resource type="Texture2D" uid="uid://dwp5r77acfysp" path="res://assets/particles/sparkle.png" id="8_lv4xl"]
+
+[sub_resource type="Curve" id="Curve_cbrsd"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.420455, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -0.930602, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_x2lpd"]
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.879111, 0.546667, 1, 1, 0.733333, 0, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_a5xy8"]
 radius = 50.0
@@ -36,6 +45,34 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_d4vx1"]
+resource_name = "appear"
+length = 1.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 1.6),
+"transitions": PackedFloat32Array(0.297302, 2.82843, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -96), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.566667),
+"transitions": PackedFloat32Array(0.554785, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_0vi0v"]
@@ -70,34 +107,6 @@ tracks/0/keys = {
 "values": [Vector2(0, 16), Vector2(0, -16), Vector2(0, 16)]
 }
 
-[sub_resource type="Animation" id="Animation_d4vx1"]
-resource_name = "appear"
-length = 1.6
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1, 1.6),
-"transitions": PackedFloat32Array(0.297302, 2.82843, 1),
-"update": 0,
-"values": [Vector2(0, 0), Vector2(0, -96), Vector2(0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.566667),
-"transitions": PackedFloat32Array(0.554785, 1),
-"update": 0,
-"values": [Vector2(0, 0), Vector2(1, 1)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ebjcb"]
 _data = {
 &"RESET": SubResource("Animation_1jo43"),
@@ -105,6 +114,12 @@ _data = {
 &"collect": SubResource("Animation_0vi0v"),
 &"float": SubResource("Animation_7ctu6")
 }
+
+[sub_resource type="FontVariation" id="FontVariation_lv4xl"]
+base_font = ExtResource("6_d4vx1")
+variation_embolden = 1.2
+spacing_glyph = 4
+spacing_space = 32
 
 [node name="Cheese" type="Area2D"]
 collision_layer = 0
@@ -115,6 +130,22 @@ script = ExtResource("1_a5xy8")
 z_index = 4
 material = ExtResource("2_1jo43")
 texture = ExtResource("1_o2umf")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Sprite"]
+z_index = 5
+emitting = false
+amount = 1
+texture = ExtResource("8_lv4xl")
+lifetime = 0.9
+emission_shape = 3
+emission_rect_extents = Vector2(80, 80)
+gravity = Vector2(0, 0)
+angular_velocity_min = 102.37
+angular_velocity_max = 274.78
+angle_min = -147.5
+angle_max = 141.0
+scale_amount_curve = SubResource("Curve_cbrsd")
+color_ramp = SubResource("Gradient_x2lpd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_a5xy8")
@@ -127,6 +158,7 @@ libraries = {
 }
 
 [node name="Popup" type="Node2D" parent="."]
+visible = false
 position = Vector2(0, -60)
 
 [node name="GotCheese" type="Sprite2D" parent="Popup"]
@@ -135,21 +167,21 @@ position = Vector2(-2.00001, -483)
 scale = Vector2(2.0061, 2.0061)
 texture = ExtResource("5_ebjcb")
 
-[node name="CheeseNameText" type="RichTextLabel" parent="Popup"]
+[node name="CheeseNameText" type="Label" parent="Popup"]
 z_index = 4
 offset_left = -441.0
 offset_top = 296.0
 offset_right = 445.0
 offset_bottom = 462.0
-theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 24
-theme_override_fonts/normal_font = ExtResource("6_d4vx1")
-theme_override_font_sizes/normal_font_size = 116
+theme_override_constants/outline_size = 20
+theme_override_fonts/font = SubResource("FontVariation_lv4xl")
+theme_override_font_sizes/font_size = 96
 text = "cheese space"
-fit_content = true
-scroll_active = false
 horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="ActionLines" type="Sprite2D" parent="Popup"]
 z_index = 1

@@ -24,12 +24,14 @@ radius = 52.0
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_trxjm")
+use_signal = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 material = ExtResource("2_yyx46")
 sprite_frames = SubResource("SpriteFrames_yyx46")
 
 [node name="Collector" type="Node2D" parent="."]
+position = Vector2(0, -93)
 script = ExtResource("3_na0el")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -39,4 +41,5 @@ shape = SubResource("CircleShape2D_h1sol")
 stream = ExtResource("5_yyx46")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="complete" from="Collector" to="." method="_on_collector_complete"]
 [connection signal="finished" from="CollectSound" to="." method="_on_collect_sound_finished"]

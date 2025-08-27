@@ -7,7 +7,7 @@ var can_be_collected = true
 @onready var sprite: Sprite2D = $Sprite
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var popup: Node2D = $Popup
-@onready var cheese_name_text: RichTextLabel = $Popup/CheeseNameText
+@onready var cheese_name_text: Label = $Popup/CheeseNameText
 
 
 @export var cheese_name: String = "Cheese Name"
