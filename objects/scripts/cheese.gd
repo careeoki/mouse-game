@@ -1,6 +1,7 @@
 extends Area2D
 
 var is_collected = false
+var can_be_collected = true
 
 @onready var is_collected_data: PersistentDataHandler = $IsCollected
 @onready var sprite: Sprite2D = $Sprite
@@ -10,6 +11,7 @@ var is_collected = false
 
 
 @export var cheese_name: String = "Cheese Name"
+@export var spawned_type: bool = false
 
 func _ready() -> void:
 	is_collected_data.data_loaded.connect( set_cheese_state ) #this too
@@ -21,18 +23,30 @@ func set_cheese_state() -> void:
 	is_collected = is_collected_data.value
 	if is_collected:
 		sprite.modulate = "ffffff78"
+	if spawned_type:
+		can_be_collected = false
+		hide()
 
 func _on_body_entered(body: Node2D) -> void:
-	cheese_name_text.text = cheese_name
-	popup.scale = Vector2.ZERO
-	body.collect_cheese(self)
-	body.global_position = global_position
-	body.camera_transform.position = Vector2.ZERO
-	sprite.offset.y = -200
-	if not is_collected:
-		is_collected_data.set_value()
-		EventManager.emit_signal("cheese_update")
-	EventManager.emit_signal("cheese_ui", cheese_name)
+	if can_be_collected:
+		cheese_name_text.text = cheese_name
+		popup.scale = Vector2.ZERO
+		body.collect_cheese(self)
+		body.global_position = global_position
+		body.camera_transform.position = Vector2.ZERO
+		sprite.offset.y = -200
+		if not is_collected:
+			is_collected_data.set_value()
+			EventManager.emit_signal("cheese_update")
+		EventManager.emit_signal("cheese_ui", cheese_name)
+
+func reveal():
+	#play an amination
+	show()
+	can_be_collected = true
+	animation_player.play("appear")
+	await animation_player.animation_finished
+	animation_player.play("float")
 
 func popup_appear():
 	popup.show()

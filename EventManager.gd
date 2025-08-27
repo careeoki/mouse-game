@@ -27,6 +27,9 @@ func player_waiting(value: bool):
 func new_power_state():
 	emit_signal("change_power_state")
 
+func all_cheese_curds_collected():
+	emit_signal("curds_cheese_spawn")
+
 func camera_tween_finish():
 	emit_signal("camera_tween_finished")
 
@@ -36,4 +39,5 @@ signal cheese_update()
 signal cheese_ui(name: String)
 signal show_hud()
 signal change_power_state()
+signal curds_cheese_spawn()
 signal camera_tween_finished()

@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://tx37kg2do8j"]
+[gd_scene load_steps=8 format=3 uid="uid://tx37kg2do8j"]
 
 [ext_resource type="Script" uid="uid://bdyyjmti00e7y" path="res://objects/scripts/collectible.gd" id="1_trxjm"]
 [ext_resource type="Texture2D" uid="uid://cuf2y50w1s0cc" path="res://assets/objects/cheese_curd.png" id="2_1x3e1"]
+[ext_resource type="Material" uid="uid://u6w6f23thwrw" path="res://shaders/basic_outline.tres" id="2_yyx46"]
 [ext_resource type="Script" uid="uid://fxp4wqoutmr8" path="res://objects/scripts/collectors/cheese_curd.gd" id="3_na0el"]
-[ext_resource type="AudioStream" uid="uid://divo1etyw4jkc" path="res://assets/sound/crate_break.wav" id="4_na0el"]
+[ext_resource type="AudioStream" uid="uid://be5islccnrrlk" path="res://assets/sound/cracker.wav" id="5_yyx46"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_yyx46"]
 animations = [{
@@ -25,6 +26,7 @@ collision_mask = 2
 script = ExtResource("1_trxjm")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
+material = ExtResource("2_yyx46")
 sprite_frames = SubResource("SpriteFrames_yyx46")
 
 [node name="Collector" type="Node2D" parent="."]
@@ -34,7 +36,7 @@ script = ExtResource("3_na0el")
 shape = SubResource("CircleShape2D_h1sol")
 
 [node name="CollectSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("4_na0el")
+stream = ExtResource("5_yyx46")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="finished" from="CollectSound" to="." method="_on_collect_sound_finished"]

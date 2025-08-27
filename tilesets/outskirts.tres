@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=12 format=3 uid="uid://4sqjyjowhf0j"]
+[gd_resource type="TileSet" load_steps=13 format=3 uid="uid://4sqjyjowhf0j"]
 
 [ext_resource type="Texture2D" uid="uid://njq0ks2nq02k" path="res://assets/tilesets/mousehold_outskirts.png" id="1_dlj26"]
 [ext_resource type="PackedScene" uid="uid://d3l4n05ojcl1c" path="res://objects/cracker.tscn" id="2_wvn2r"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cl51kfej7cdvh" path="res://objects/power_on_block.tscn" id="5_qsjxn"]
 [ext_resource type="PackedScene" uid="uid://bqyiutj0tgv0j" path="res://objects/power_off_block.tscn" id="6_qlgxr"]
 [ext_resource type="PackedScene" uid="uid://c8cxy11wyhg5b" path="res://objects/destructible_block.tscn" id="7_qlgxr"]
+[ext_resource type="PackedScene" uid="uid://tx37kg2do8j" path="res://objects/cheese_curd.tscn" id="8_if43n"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ucqwy"]
 texture = ExtResource("1_dlj26")
@@ -457,6 +458,7 @@ scenes/3/scene = ExtResource("4_edps0")
 scenes/4/scene = ExtResource("5_qsjxn")
 scenes/5/scene = ExtResource("6_qlgxr")
 scenes/6/scene = ExtResource("7_qlgxr")
+scenes/7/scene = ExtResource("8_if43n")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dl6b0"]
 texture = ExtResource("5_7310o")
