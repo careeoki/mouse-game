@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://b5d8n81v88qsr" path="res://assets/tilesets/blockout.png" id="5_7310o"]
 [ext_resource type="PackedScene" uid="uid://cl51kfej7cdvh" path="res://objects/power_on_block.tscn" id="5_qsjxn"]
 [ext_resource type="PackedScene" uid="uid://bqyiutj0tgv0j" path="res://objects/power_off_block.tscn" id="6_qlgxr"]
-[ext_resource type="PackedScene" uid="uid://c8cxy11wyhg5b" path="res://objects/destructible_block.tscn" id="7_qlgxr"]
+[ext_resource type="PackedScene" uid="uid://c8cxy11wyhg5b" path="res://objects/cardboard_box.tscn" id="7_qlgxr"]
 [ext_resource type="PackedScene" uid="uid://tx37kg2do8j" path="res://objects/cheese_curd.tscn" id="8_if43n"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ucqwy"]

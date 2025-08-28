@@ -565,9 +565,9 @@ func squish():
 func attack(delta):
 	if is_tail_spinning or is_tail_swiping:
 		var targets = attack_area.get_overlapping_bodies()
-		if targets.size() > 0:
+		if targets.size() > 0 and tail_slash.frame <= 2:
 			for element in targets:
-				element.destroy()
+				element.damage()
 		if tail_slash.frame <= 2:
 			#velocity.y -= velocity.y * spin_decceleration * delta
 			if velocity.y < 0:
@@ -581,7 +581,7 @@ func attack(delta):
 	
 	if is_drop_falling and not is_drop:
 		velocity.y = move_toward(velocity.y, max_fall_velocity + 400, 500)
-	if Input.is_action_just_pressed("move_attack"):
+	if Input.is_action_just_pressed("move_attack") and not is_dialog:
 		if not Input.is_action_pressed("move_slide") and can_tail_spin:
 			tail_spin(delta)
 		elif Input.is_action_pressed("move_slide"):
@@ -597,19 +597,21 @@ func attack(delta):
 					#velocity.y = max_fall_velocity
 
 func tail_spin(delta):
-	sound_effects.play_sound("woosh")
-	spin_cooldown.start()
-	can_tail_spin = false
+	if not is_tail_spinning:
+		sound_effects.play_sound("woosh")
+	if not is_on_floor():
+		spin_cooldown.start()
+		can_tail_spin = false
 	air_resistance = 10
-	var targets = attack_area.get_overlapping_bodies()
-	if targets.size() > 0:
-		for element in targets:
-			element.destroy()
+	#var targets = attack_area.get_overlapping_bodies()
+	#if targets.size() > 0:
+		#for element in targets:
+			#element.damage()
 	if velocity.y < 0:
 		tail_slash.flip_v = true
 	else:
 		tail_slash.flip_v = false
-	
+
 	
 	is_tail_spinning = true
 	tail_forwards()
@@ -680,7 +682,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			actionables[0].player = self
 			actionables[0].action()
 			if actionables[0] is Actionable:
-				camera.get_focus(actionables[0].focus_transform.remote_path)
+				camera.get_focus(actionables[0].focus_transform)
 			return
 	if Input.is_action_just_pressed("move_jump") and is_collecting:
 		current_cheese.queue_free()

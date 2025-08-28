@@ -36,4 +36,4 @@ func action() -> void:
 	layout.register_character(load("res://dialog/characters/mable.dch"), player.bubble_marker)
 
 func _on_timeline_ended():
-	PlayerManager.return_focus(focus_transform)
+	PlayerManager.camera.return_focus(focus_transform)
