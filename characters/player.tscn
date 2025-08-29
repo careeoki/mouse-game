@@ -1,4 +1,4 @@
-[gd_scene load_steps=89 format=3 uid="uid://dvvptb056tr2u"]
+[gd_scene load_steps=91 format=3 uid="uid://dvvptb056tr2u"]
 
 [ext_resource type="Script" uid="uid://c1g546q1hk7ro" path="res://characters/player.gd" id="1_rj012"]
 [ext_resource type="Texture2D" uid="uid://dwmbdrfg6pkc" path="res://assets/characters/mable/idle.png" id="2_3eadt"]
@@ -39,6 +39,7 @@
 [ext_resource type="AudioStream" uid="uid://bunatpaxdkdy2" path="res://assets/sound/slide_boost.wav" id="28_lit6r"]
 [ext_resource type="Texture2D" uid="uid://cbxllnujji55m" path="res://assets/particles/tail_slash.png" id="38_akagt"]
 [ext_resource type="AudioStream" uid="uid://busxm8fptmywx" path="res://assets/sound/woosh.wav" id="38_cbb7d"]
+[ext_resource type="Script" uid="uid://366tchjb764v" path="res://characters/foreground_check.gd" id="40_xvpab"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cibmm"]
 atlas = ExtResource("18_o8c8i")
@@ -481,6 +482,9 @@ animations = [{
 _data = [Vector2(0, 0.629214), 0.0, 5.33933, 0, 0, Vector2(0.25, 0.977528), 0.756114, 0.756114, 0, 0, Vector2(0.818182, 0), -3.7573, 0.0, 0, 0]
 point_count = 3
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6mya6"]
+size = Vector2(128, 128)
+
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 2
 floor_stop_on_slope = false
@@ -814,6 +818,15 @@ z_index = 4
 position = Vector2(-20, -74)
 target_position = Vector2(0, -32)
 
+[node name="ForegroundCheck" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 64
+script = ExtResource("40_xvpab")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ForegroundCheck"]
+position = Vector2(0, -64)
+shape = SubResource("RectangleShape2D_6mya6")
+
 [connection signal="animation_changed" from="Sprite" to="Sprite" method="_on_animation_changed"]
 [connection signal="animation_finished" from="Sprite" to="Sprite" method="_on_animation_finished"]
 [connection signal="frame_changed" from="Sprite" to="Sprite" method="_on_frame_changed"]
@@ -833,3 +846,5 @@ target_position = Vector2(0, -32)
 [connection signal="timeout" from="FunnyTimer" to="." method="_on_funny_timer_timeout"]
 [connection signal="timeout" from="DropTimer" to="." method="_on_drop_timer_timeout"]
 [connection signal="timeout" from="SpinCooldown" to="." method="_on_spin_cooldown_timeout"]
+[connection signal="body_entered" from="ForegroundCheck" to="ForegroundCheck" method="_on_body_entered"]
+[connection signal="body_exited" from="ForegroundCheck" to="ForegroundCheck" method="_on_body_exited"]

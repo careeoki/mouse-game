@@ -128,6 +128,7 @@ var last_wall_jump = Vector2.ZERO
 var camera_y = 0
 var wind_power: Vector2 = Vector2.ZERO
 var current_cheese
+var is_on_foreground = false
 
 var slope_direction = 0
 var slope
@@ -225,7 +226,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			slope_friction = 700
 	
-	if abs(velocity.x) > 2400:
+	if abs(velocity.x) > 2600:
 		if not is_p_speed and allow_p_speed:
 			print("initial p speed activate")
 			is_p_speed = true
@@ -506,7 +507,7 @@ func do_slide_boost():
 			velocity.x = facing_direction * speed * 2.0
 		else:
 			if slope_direction != 0 and not is_long_jumping:
-				velocity.x = direction * speed * 1.7
+				velocity.x = direction * speed * slide_boost
 			else:
 				velocity.x = direction * speed * slide_boost
 
@@ -573,7 +574,7 @@ func attack(delta):
 			if velocity.y < 0:
 				velocity.y += 200
 			if velocity.y > 0:
-				velocity.y -= 200
+				velocity.y -= 300
 			if is_on_floor() and is_tail_spinning:
 				velocity.x -= velocity.x * 5.0 * delta
 			if is_on_floor() and is_tail_swiping:

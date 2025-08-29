@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dop6mqeurmmm7"]
+[gd_scene load_steps=9 format=3 uid="uid://dop6mqeurmmm7"]
 
 [ext_resource type="Script" uid="uid://c0fbmoxdhajwe" path="res://UI/hud.gd" id="1_bytes"]
 [ext_resource type="Texture2D" uid="uid://57idvxg4qdmv" path="res://assets/objects/cracker.png" id="2_2o5uh"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://d1j08xltam68a" path="res://assets/objects/cheese.png" id="4_b1lf8"]
 [ext_resource type="PackedScene" uid="uid://bkn8dwvq4qx35" path="res://UI/pause_menu.tscn" id="5_rnl6m"]
 [ext_resource type="Texture2D" uid="uid://hnjeultrwo0s" path="res://assets/ui/got_cheese.png" id="6_0j753"]
+[ext_resource type="Script" uid="uid://67exslspi4a" path="res://UI/fps.gd" id="8_i0a73"]
 
 [node name="HUD" type="CanvasLayer"]
 process_mode = 3
@@ -113,6 +114,24 @@ one_shot = true
 
 [node name="PauseMenu" parent="." instance=ExtResource("5_rnl6m")]
 visible = false
+
+[node name="FPS" type="Label" parent="."]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -92.0
+offset_top = -65.0
+offset_right = -52.0
+offset_bottom = -42.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("4_1ui3w")
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 16
+text = "fps:"
+script = ExtResource("8_i0a73")
 
 [connection signal="timeout" from="CheeseDropTimer" to="." method="_on_cheese_drop_timer_timeout"]
 [connection signal="timeout" from="CrackerDropTimer" to="." method="_on_cracker_drop_timer_timeout"]

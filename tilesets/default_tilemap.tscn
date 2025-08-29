@@ -5,5 +5,4 @@
 
 [node name="DefaultTilemap" type="TileMapLayer"]
 tile_set = ExtResource("1_4uf7l")
-rendering_quadrant_size = 128
 script = ExtResource("2_8tybs")

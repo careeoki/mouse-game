@@ -9,9 +9,9 @@ func _ready() -> void:
 func get_tilemap_bounds() -> Array[Vector2]:
 	var bounds : Array[Vector2] = []
 	bounds.append(
-		Vector2(get_used_rect().position * rendering_quadrant_size)
+		Vector2(get_used_rect().position * 128)
 	)
 	bounds.append(
-		Vector2(get_used_rect().end * rendering_quadrant_size)
+		Vector2(get_used_rect().end * 128)
 	)
 	return bounds
